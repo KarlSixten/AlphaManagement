@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projektkalkulator</title>
+    <link rel="stylesheet" href="../static/Stylesheet.css">
+</head>
+<body>
+
+<div id="projekt-container">
+    <div class="projekt" th:each="projekt : ${projekter}">
+        <h2 th:text="${projekt.navn}">Projekt 1</h2>
+        <p class="projektleder" th:text="'Projektleder: ' + ${projekt.projektleder}">Projektleder: John Doe</p>
+        <p th:text="'Startdato: ' + ${projekt.startdato}">Startdato: 01-01-2024</p>
+        <p th:text="'Slutdato: ' + ${projekt.slutdato}">Slutdato: 31-01-2024</p>
+        <button class="se-task-knap">Se Task</button>
+    </div>
+    <div class="projekt" th:each="projekt : ${projekter}">
+        <h2 th:text="${projekt.navn}">Projekt 1</h2>
+        <p class="projektleder" th:text="'Projektleder: ' + ${projekt.projektleder}">Projektleder: John Doe</p>
+        <p th:text="'Startdato: ' + ${projekt.startdato}">Startdato: 01-01-2024</p>
+        <p th:text="'Slutdato: ' + ${projekt.slutdato}">Slutdato: 31-01-2024</p>
+        <button class="se-task-knap">Se Task</button>
+    </div>
+    <div class="projekt" th:each="projekt : ${projekter}">
+        <h2 th:text="${projekt.navn}">Projekt 1</h2>
+        <p class="projektleder" th:text="'Projektleder: ' + ${projekt.projektleder}">Projektleder: John Doe</p>
+        <p th:text="'Startdato: ' + ${projekt.startdato}">Startdato: 01-01-2024</p>
+        <p th:text="'Slutdato: ' + ${projekt.slutdato}">Slutdato: 31-01-2024</p>
+        <button class="se-task-knap">Se Task</button>
+    </div>
+    <div class="projekt" th:each="projekt : ${projekter}">
+        <h2 th:text="${projekt.navn}">Projekt 1</h2>
+        <p class="projektleder" th:text="'Projektleder: ' + ${projekt.projektleder}">Projektleder: John Doe</p>
+        <p th:text="'Startdato: ' + ${projekt.startdato}">Startdato: 01-01-2024</p>
+        <p th:text="'Slutdato: ' + ${projekt.slutdato}">Slutdato: 31-01-2024</p>
+        <button class="se-task-knap">Se Task</button>
+    </div>
+    <div class="projekt" th:each="projekt : ${projekter}">
+        <h2 th:text="${projekt.navn}">Projekt 1</h2>
+        <p class="projektleder" th:text="'Projektleder: ' + ${projekt.projektleder}">Projektleder: John Doe</p>
+        <p th:text="'Startdato: ' + ${projekt.startdato}">Startdato: 01-01-2024</p>
+        <p th:text="'Slutdato: ' + ${projekt.slutdato}">Slutdato: 31-01-2024</p>
+        <button class="se-task-knap">Se Task</button>
+    </div>
+
+</div>
+
+<div class="tilføj-knap-form">
+    <form>
+        <input type="submit" value="Tilføj projekt">
+    </form>
+</div>
+
+</body>
+</html>
