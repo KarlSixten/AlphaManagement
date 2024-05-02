@@ -107,4 +107,15 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
     }
+    public void deleteEmp(String username){
+        String sql = "DELETE FROM EMP WHERE username = ?";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)){
+            pstmt.setString(1, username);
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }

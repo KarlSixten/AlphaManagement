@@ -63,4 +63,10 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+
+    @PostMapping("")
+    public String deleteEmp(@PathVariable String username){
+        alphaService.deleteEmp(username);
+        return "";
+    }
 }

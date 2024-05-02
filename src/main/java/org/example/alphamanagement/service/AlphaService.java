@@ -25,4 +25,8 @@ public class AlphaService {
     public Object findEmpByUsername(String username) {
         return alphaRepository.findEmpByUsername(username);
     }
+    public void deleteEmp(String username){
+        alphaRepository.deleteEmp(username);
+    }
+
 }
