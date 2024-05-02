@@ -1,6 +1,7 @@
 package org.example.alphamanagement.repository;
 
 import org.example.alphamanagement.model.Emp;
+import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -88,6 +89,20 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Project createProject(Project newProject) {
+        String SQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            preparedStatement.setString(1, newProject.getProjectName());
+            preparedStatement.setDate(2,java.sql.Date.valueOf(newProject.getStartDate()));
+            preparedStatement.setDate(3,java.sql.Date.valueOf(newProject.getEndDate()));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }return newProject;
     }
 
     public Emp findEmpByUsername(String username) {
