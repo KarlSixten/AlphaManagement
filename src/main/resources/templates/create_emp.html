@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opret Emp</title>
+</head>
+<body>
+<h2>Opret ny Emp</h2>
+<form action="/submit-create-emp" method="POST">
+    <label>Brugernavn:</label><br>
+    <input type="text" name="username" required><br><br>
+
+    <label>Adgangskode:</label><br>
+    <input type="password" name="password" required><br><br>
+
+    <label>Jobtype:</label><br>
+    <input type="checkbox" name="jobType[]" value="3">
+    <label>Systemadministrator</label><br>
+    <input type="checkbox" name="jobType[]" value="1">
+    <label>Medarbejder</label><br>
+    <input type="checkbox" name="jobType[]" value="2">
+    <label>Projektleder</label><br><br>
+
+    <input type="submit" value="Opret Emp">
+</form>
+</body>
+</html>
