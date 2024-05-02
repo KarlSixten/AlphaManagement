@@ -11,6 +11,8 @@ public class Emp {
         this.jobType = jobType;
     }
 
+    public Emp() {}
+
     public String getUsername() {
         return username;
     }

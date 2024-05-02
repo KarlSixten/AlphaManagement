@@ -1,5 +1,6 @@
 package org.example.alphamanagement.service;
 
+import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.repository.AlphaRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,5 +10,9 @@ public class AlphaService {
 
     public AlphaService(AlphaRepository alphaRepository) {
         this.alphaRepository = alphaRepository;
+    }
+
+    public Emp checkValidLogin(Emp empToCheck) {
+        return alphaRepository.checkValidLogin(empToCheck);
     }
 }

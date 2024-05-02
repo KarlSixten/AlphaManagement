@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<div>
+    <h4>LOGIN</h4>
+    <div>
+        <form action="/submit-login" method="post">
+            <div>
+                    <input id="username" type="text" name="name" th:field="*{emp.username}" class="validate" required>
+                    <label for="username">Brugernavn</label>
+            </div>
+            <div>
+                    <input id="password" type="password" name="password" th:field="*{emp.password}" class="validate" required>
+                    <label for="password">Adgangskode</label>
+            </div>
+            <div>
+                <button type="submit" name="action">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
