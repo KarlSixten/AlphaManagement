@@ -71,6 +71,8 @@ public class AlphaController {
         return "createProject";
     }
 
+    //Denne skal måske postmappe til /projects/new/submit
+    //Dette kan så videre redirecte til siden for det nye projekt eller Home
     @PostMapping("/projects")
     public String createProject(@ModelAttribute Project project) {
         alphaService.createProject(project);
