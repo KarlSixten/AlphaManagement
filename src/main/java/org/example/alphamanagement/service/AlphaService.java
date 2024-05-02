@@ -25,4 +25,12 @@ public class AlphaService {
     public Project createProject(Project newProject){
         return alphaRepository.createProject(newProject);
     }
+
+    public Object findEmpByUsername(String username) {
+        return alphaRepository.findEmpByUsername(username);
+    }
+    public void deleteEmp(String username){
+        alphaRepository.deleteEmp(username);
+    }
+
 }

@@ -28,10 +28,16 @@ public class AlphaController {
     @PostMapping("/submit-create-emp")
     public String getSaveNewEmp(@ModelAttribute Emp emp) {
         if (alphaService.createEmp(emp) != null) {
-            return "redirect:/create-emp";
+            return "redirect:/user-created-success/" + emp.getUsername();
         } else {
-            return "TEST_create_emp_success";
+            return "redirect:/";
         }
+    }
+
+    @GetMapping("/user-created-success/{username}")
+    public String getCreateUserSuccess(@PathVariable("username") String username, Model model) {
+        model.addAttribute("created_user", alphaService.findEmpByUsername(username));
+        return "user_created_success";
     }
 
     @GetMapping("")
@@ -68,5 +74,11 @@ public class AlphaController {
     public String createProject(@ModelAttribute Project project) {
         alphaService.createProject(project);
         return "redirect:/projectView";
+    }
+
+    @PostMapping("")
+    public String deleteEmp(@PathVariable String username){
+        alphaService.deleteEmp(username);
+        return "";
     }
 }

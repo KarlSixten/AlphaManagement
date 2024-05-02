@@ -6,10 +6,7 @@ import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Random;
 
 @Repository
@@ -23,8 +20,8 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        if (createUserID(newEmp.getUsername()) != null) {
-            String sql = "INSERT INTO emp(username, password,jobType) VALUES (?, ?,?);";
+        if (createUserID(newEmp.getUsername())!= null) {
+            String sql = "INSERT INTO emp(username, password, jobTypeID) VALUES (?, ?, ?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -70,7 +67,7 @@ public class AlphaRepository {
         Random random = new Random();
         int numbers = random.nextInt(10000);
         userID = String.format("%s%04d", userIDLetters, numbers);
-        if (checkUniqueUsername(userID)) {
+        if (checkUniqueUsername(userID)){
             return userID;
         }
         return null;
@@ -106,5 +103,35 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }return newProject;
+    }
+
+    public Emp findEmpByUsername(String username) {
+        Emp emp = new Emp();
+        String sql = "SELECT * FROM emp WHERE username like (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, username);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                emp.setUsername(rs.getString("username"));
+                emp.setPassword(rs.getString("password"));
+                emp.setJobType(rs.getInt("jobTypeID"));
+            }
+            return emp;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void deleteEmp(String username){
+        String sql = "DELETE FROM EMP WHERE username = ?";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)){
+            pstmt.setString(1, username);
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 }
