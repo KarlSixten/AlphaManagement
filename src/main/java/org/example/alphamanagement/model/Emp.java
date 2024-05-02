@@ -5,7 +5,7 @@ public class Emp {
     private String password;
     private int jobType;
 
-    public Emp(int empID, String username, String password, int jobType) {
+    public Emp(String username, String password, int jobType) {
         this.username = username;
         this.password = password;
         this.jobType = jobType;
