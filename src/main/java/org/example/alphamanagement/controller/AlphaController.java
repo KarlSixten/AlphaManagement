@@ -62,6 +62,6 @@ public class AlphaController {
         }
     }
     public String test(){
-        return "";
+        return "1";
     }
 }
