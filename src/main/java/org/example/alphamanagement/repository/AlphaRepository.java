@@ -101,6 +101,7 @@ public class AlphaRepository {
             if (rs.next()) {
                 emp.setUsername(rs.getString("username"));
                 emp.setPassword(rs.getString("password"));
+                emp.setJobType(rs.getInt("jobTypeID"));
             }
             return emp;
         } catch (SQLException e) {
