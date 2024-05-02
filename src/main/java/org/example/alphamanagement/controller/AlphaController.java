@@ -18,24 +18,20 @@ public class AlphaController {
         this.httpSession = httpSession;
     }
 
-    @GetMapping("")
-    public String createEmp (Model model, @RequestParam(name = "error", required = false) String error){
+    @GetMapping("/create-emp")
+    public String createEmp (Model model) {
         model.addAttribute("emp", new Emp());
-        if (error != null){
-            model.addAttribute("error");
-        }
-            return "";
+        return "create_emp";
     }
 
-    @PostMapping("")
+    @PostMapping("/submit-create-emp")
     public String getSaveNewEmp(@ModelAttribute Emp emp) {
         if (alphaService.createEmp(emp) != null) {
-            return "redirect:/";
+            return "redirect:/create-emp";
         } else {
-            return "redirect:/";
+            return "TEST_create_emp_success";
         }
     }
-
 
     @GetMapping("")
     public String getLogin(Model model){
@@ -60,8 +56,5 @@ public class AlphaController {
         } else {
             return "redirect:/";
         }
-    }
-    public String test(){
-        return "1";
     }
 }
