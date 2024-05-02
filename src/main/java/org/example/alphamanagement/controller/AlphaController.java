@@ -21,8 +21,12 @@ public class AlphaController {
 
     @GetMapping("/create-emp")
     public String createEmp (Model model) {
-        model.addAttribute("emp", new Emp());
-        return "create_emp";
+        if (userIsLoggedIn()) {
+            model.addAttribute("emp", new Emp());
+            return "create_emp";
+        } else {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/submit-create-emp")
@@ -59,7 +63,7 @@ public class AlphaController {
 
     @GetMapping("/home")
     public String getHome() {
-        if (httpSession.getAttribute("empLoggedIn") != null) {
+        if (userIsLoggedIn()) {
             return "front-page";
         } else {
             return "redirect:/";
@@ -83,5 +87,9 @@ public class AlphaController {
     public String deleteEmp(@PathVariable String username){
         alphaService.deleteEmp(username);
         return "";
+    }
+
+    private boolean userIsLoggedIn() {
+        return httpSession.getAttribute("empLoggedIn") != null;
     }
 }
