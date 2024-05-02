@@ -61,4 +61,7 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+    public String test(){
+        return "";
+    }
 }
