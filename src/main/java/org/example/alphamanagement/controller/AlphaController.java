@@ -27,9 +27,9 @@ public class AlphaController {
     @PostMapping("/submit-create-emp")
     public String getSaveNewEmp(@ModelAttribute Emp emp) {
         if (alphaService.createEmp(emp) != null) {
-            return "redirect:/create-emp";
+            return "redirect:/";
         } else {
-            return "TEST_create_emp_success";
+            return "redirect:/create-emp";
         }
     }
 

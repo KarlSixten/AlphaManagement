@@ -23,7 +23,7 @@ public class AlphaRepository {
 
     public Emp createEmp(Emp newEmp) {
         if (createUserID(newEmp.getUsername())!= null) {
-            String sql = "INSERT INTO emp(username, password,jobType) VALUES (?, ?,?);";
+            String sql = "INSERT INTO emp(username, password, jobTypeID) VALUES (?, ?, ?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
