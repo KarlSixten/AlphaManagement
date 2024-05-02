@@ -27,10 +27,16 @@ public class AlphaController {
     @PostMapping("/submit-create-emp")
     public String getSaveNewEmp(@ModelAttribute Emp emp) {
         if (alphaService.createEmp(emp) != null) {
-            return "redirect:/";
+            return "redirect:/user-created-success/" + emp.getUsername();
         } else {
-            return "redirect:/create-emp";
+            return "redirect:/";
         }
+    }
+
+    @GetMapping("/user-created-success/{username}")
+    public String getCreateUserSuccess(@PathVariable("username") String username, Model model) {
+        model.addAttribute("created_user", alphaService.findEmpByUsername(username));
+        return "user_created_success";
     }
 
     @GetMapping("")

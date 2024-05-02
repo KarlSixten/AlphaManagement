@@ -5,10 +5,7 @@ import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Random;
 
 @Repository
@@ -88,6 +85,24 @@ public class AlphaRepository {
             } else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Emp findEmpByUsername(String username) {
+        Emp emp = new Emp();
+        String sql = "SELECT * FROM emp WHERE username like (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, username);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                emp.setUsername(rs.getString("username"));
+                emp.setPassword(rs.getString("password"));
+            }
+            return emp;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

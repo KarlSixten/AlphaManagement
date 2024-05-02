@@ -21,4 +21,8 @@ public class AlphaService {
     public Emp checkValidLogin(Emp empToCheck) {
         return alphaRepository.checkValidLogin(empToCheck);
     }
+
+    public Object findEmpByUsername(String username) {
+        return alphaRepository.findEmpByUsername(username);
+    }
 }
