@@ -28,6 +28,15 @@ public class AlphaController {
     public String submitLogin(@ModelAttribute Emp emp, HttpSession httpSession) {
         if (alphaService.checkValidLogin(emp) != null) {
             httpSession.setAttribute("emp", emp);
+            return "redirect:/home";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/home")
+    public String getHome() {
+        if (httpSession.getAttribute("emp") != null) {
             return "front-page";
         } else {
             return "redirect:/";
