@@ -1,6 +1,7 @@
 package org.example.alphamanagement.repository;
 
 import org.example.alphamanagement.model.Emp;
+import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        if (createUserID(newEmp.getUsername())!= null) {
+        if (createUserID(newEmp.getUsername()) != null) {
             String sql = "INSERT INTO emp(username, password,jobType) VALUES (?, ?,?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
@@ -69,7 +70,7 @@ public class AlphaRepository {
         Random random = new Random();
         int numbers = random.nextInt(10000);
         userID = String.format("%s%04d", userIDLetters, numbers);
-        if (checkUniqueUsername(userID)){
+        if (checkUniqueUsername(userID)) {
             return userID;
         }
         return null;
@@ -91,5 +92,19 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Project createProject(Project newProject) {
+        String SQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            preparedStatement.setString(1, newProject.getProjectName());
+            preparedStatement.setDate(2,java.sql.Date.valueOf(newProject.getStartDate()));
+            preparedStatement.setDate(3,java.sql.Date.valueOf(newProject.getEndDate()));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }return newProject;
     }
 }

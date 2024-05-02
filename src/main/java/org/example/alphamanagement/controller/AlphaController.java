@@ -2,6 +2,7 @@ package org.example.alphamanagement.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.alphamanagement.model.Emp;
+import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.service.AlphaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,5 +57,16 @@ public class AlphaController {
         } else {
             return "redirect:/";
         }
+    }
+    @GetMapping("/projects/new")
+    public String showCreateProjectForm(Model model) {
+        model.addAttribute("project", new Project());
+        return "createProject";
+    }
+
+    @PostMapping("/projects")
+    public String createProject(@ModelAttribute Project project) {
+        alphaService.createProject(project);
+        return "redirect:/projectView";
     }
 }
