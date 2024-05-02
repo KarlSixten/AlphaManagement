@@ -12,6 +12,12 @@ public class AlphaService {
         this.alphaRepository = alphaRepository;
     }
 
+
+
+    public Emp createEmp(Emp emp){
+        return alphaRepository.createEmp(emp);
+    }
+
     public Emp checkValidLogin(Emp empToCheck) {
         return alphaRepository.checkValidLogin(empToCheck);
     }

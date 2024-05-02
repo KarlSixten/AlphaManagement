@@ -19,6 +19,25 @@ public class AlphaController {
     }
 
     @GetMapping("")
+    public String createEmp (Model model, @RequestParam(name = "error", required = false) String error){
+        model.addAttribute("emp", new Emp());
+        if (error != null){
+            model.addAttribute("error");
+        }
+            return "";
+    }
+
+    @PostMapping("")
+    public String getSaveNewEmp(@ModelAttribute Emp emp) {
+        if (alphaService.createEmp(emp) != null) {
+            return "redirect:/";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+
+    @GetMapping("")
     public String getLogin(Model model){
         model.addAttribute("emp", new Emp());
         return "login";
@@ -41,5 +60,8 @@ public class AlphaController {
         } else {
             return "redirect:/";
         }
+    }
+    public String test(){
+        return "1";
     }
 }

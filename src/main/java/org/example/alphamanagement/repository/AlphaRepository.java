@@ -21,14 +21,16 @@ public class AlphaRepository {
     private String password;
 
 
-    public Emp createUser(Emp newEmp) {
-        if (checkUniqueUsername(newEmp)) {
+    public Emp createEmp(Emp newEmp) {
+        if (createUserID(newEmp.getUsername())!= null) {
             String sql = "INSERT INTO emp(username, password,jobType) VALUES (?, ?,?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                newEmp.setUsername(createUserID(newEmp.getUsername()));
                 pstmt.setString(1, newEmp.getUsername());
                 pstmt.setString(2, newEmp.getPassword());
+                pstmt.setInt(3, newEmp.getJobType());
                 pstmt.executeUpdate();
                 return newEmp;
             } catch (SQLException e) {
@@ -40,14 +42,14 @@ public class AlphaRepository {
     }
 
 
-    public boolean checkUniqueUsername(Emp empToCheck) {
+    public boolean checkUniqueUsername(String username) {
         boolean nameIsUnique = false;
 
         String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, empToCheck.getUsername());
+            pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 int count = rs.getInt("COUNT(*)");
@@ -67,8 +69,10 @@ public class AlphaRepository {
         Random random = new Random();
         int numbers = random.nextInt(10000);
         userID = String.format("%s%04d", userIDLetters, numbers);
-
-        return userID;
+        if (checkUniqueUsername(userID)){
+            return userID;
+        }
+        return null;
     }
 
     public Emp checkValidLogin(Emp empToCheck) {
