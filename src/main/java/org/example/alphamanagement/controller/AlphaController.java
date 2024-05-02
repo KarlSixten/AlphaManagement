@@ -28,15 +28,16 @@ public class AlphaController {
     @PostMapping("/submit-create-emp")
     public String getSaveNewEmp(@ModelAttribute Emp emp) {
         if (alphaService.createEmp(emp) != null) {
-            return "redirect:/user-created-success/" + emp.getUsername();
+            httpSession.setAttribute("newlyCreatedEmp", emp);
+            return "redirect:/user-created-success";
         } else {
             return "redirect:/";
         }
     }
 
-    @GetMapping("/user-created-success/{username}")
-    public String getCreateUserSuccess(@PathVariable("username") String username, Model model) {
-        model.addAttribute("created_user", alphaService.findEmpByUsername(username));
+    @GetMapping("/user-created-success")
+    public String getCreateUserSuccess(Model model) {
+        model.addAttribute("createdUser", httpSession.getAttribute("newlyCreatedEmp"));
         return "user_created_success";
     }
 
@@ -49,7 +50,7 @@ public class AlphaController {
     @PostMapping("/submit-login")
     public String submitLogin(@ModelAttribute Emp emp, HttpSession httpSession) {
         if (alphaService.checkValidLogin(emp) != null) {
-            httpSession.setAttribute("emp", emp);
+            httpSession.setAttribute("empLoggedIn", emp);
             return "redirect:/home";
         } else {
             return "redirect:/";
@@ -58,7 +59,7 @@ public class AlphaController {
 
     @GetMapping("/home")
     public String getHome() {
-        if (httpSession.getAttribute("emp") != null) {
+        if (httpSession.getAttribute("empLoggedIn") != null) {
             return "front-page";
         } else {
             return "redirect:/";
@@ -70,6 +71,8 @@ public class AlphaController {
         return "createProject";
     }
 
+    //Denne skal måske postmappe til /projects/new/submit
+    //Dette kan så videre redirecte til siden for det nye projekt eller Home
     @PostMapping("/projects")
     public String createProject(@ModelAttribute Project project) {
         alphaService.createProject(project);
