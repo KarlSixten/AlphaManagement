@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("")
 public class AlphaController {
@@ -81,6 +83,16 @@ public class AlphaController {
     public String createProject(@ModelAttribute Project project) {
         alphaService.createProject(project);
         return "redirect:/projectView";
+    }
+
+    @GetMapping("/find-user")
+    public String showEmployees(Model model, @RequestParam(required = false) String searchString) {
+        if (searchString == null) {
+            searchString = "";
+        }
+        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
+        model.addAttribute("foundEmps", foundEmps);
+        return "find_user";
     }
 
     @PostMapping("")

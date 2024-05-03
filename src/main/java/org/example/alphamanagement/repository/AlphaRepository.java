@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -130,9 +131,37 @@ public class AlphaRepository {
         }
     }
 
-    /*
     public List<Emp> findEmpsContaining(String searchQuery) {
-        String sql = "SELECT * FROM emp WHERE username LIKE = (?)"
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT * FROM emp WHERE username LIKE (?) OR firstName LIKE (?) OR lastName LIKE (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, "%" + searchQuery + "%");
+            psmt.setString(2, "%" + searchQuery + "%");
+            psmt.setString(3, "%" + searchQuery + "%");
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
-     */
+
+    private Emp createEmpFromResultSet(ResultSet resultSet) {
+        Emp emp = new Emp();
+
+        try {
+            emp.setFirstName(resultSet.getString("firstName"));
+            emp.setLastName(resultSet.getString("lastName"));
+            emp.setUsername(resultSet.getString("username"));
+            emp.setPassword(resultSet.getString("password"));
+            emp.setJobType(resultSet.getInt("jobTypeID"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return emp;
+    }
 }
