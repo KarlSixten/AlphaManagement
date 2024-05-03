@@ -72,16 +72,16 @@ public class AlphaRepository {
         return username;
     }
 
-    public Emp checkValidLogin(Emp empToCheck) {
+    public Emp checkValidLogin(String empUsername, String empPassword) {
         String sql = "SELECT * FROM emp WHERE username LIKE (?) AND password LIKE (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, empToCheck.getUsername());
-            pstmt.setString(2, empToCheck.getPassword());
+            pstmt.setString(1, empUsername);
+            pstmt.setString(2, empPassword);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return empToCheck;
+                return createEmpFromResultSet(rs);
             } else {
                 return null;
             }

@@ -21,8 +21,8 @@ public class AlphaService {
         return alphaRepository.createEmp(emp);
     }
 
-    public Emp checkValidLogin(Emp empToCheck) {
-        return alphaRepository.checkValidLogin(empToCheck);
+    public Emp checkValidLogin(String empUsername, String empPassword) {
+        return alphaRepository.checkValidLogin(empUsername, empPassword);
     }
     public Project createProject(Project newProject){
         return alphaRepository.createProject(newProject);

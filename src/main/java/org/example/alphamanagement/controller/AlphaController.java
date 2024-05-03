@@ -49,14 +49,18 @@ public class AlphaController {
 
     @GetMapping("")
     public String getLogin(Model model){
-        model.addAttribute("emp", new Emp());
+        model.addAttribute("empUsername", new String());
+        model.addAttribute("empPassword", new String());
         return "login";
     }
 
     @PostMapping("/submit-login")
-    public String submitLogin(@ModelAttribute Emp emp, HttpSession httpSession) {
-        if (alphaService.checkValidLogin(emp) != null) {
-            httpSession.setAttribute("empLoggedIn", emp);
+    public String submitLogin(@ModelAttribute("empUsername") String empUsername, @ModelAttribute("empPassword") String empPassword, HttpSession httpSession) {
+        Emp empFromLogin = alphaService.checkValidLogin(empUsername, empPassword);
+        if (empFromLogin != null) {
+            httpSession.setAttribute("empLoggedIn", empFromLogin);
+            Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+            System.out.println(empLoggedIn.getJobType());
             return "redirect:/home";
         } else {
             return "redirect:/";
