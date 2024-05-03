@@ -21,30 +21,22 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        String username = createUserID(newEmp.getFirstName(), newEmp.getLastName());
+        String username = createUsername(newEmp.getFirstName(), newEmp.getLastName());
+        String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
 
-
-        if (createUserID(newEmp.getUsername())!= null) {
-            String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
-            Connection connection = ConnectionManager.getConnection(url, user, password);
-
-            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                pstmt.setString(1, newEmp.getFirstName());
-                pstmt.setString(2, newEmp.getLastName());
-                newEmp.setUsername(createUserID(newEmp.getUsername()));
-                pstmt.setString(3, newEmp.getUsername());
-                pstmt.setString(4, newEmp.getPassword());
-                pstmt.setInt(5, newEmp.getJobType());
-                pstmt.executeUpdate();
-                return newEmp;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return null;
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newEmp.getFirstName());
+            pstmt.setString(2, newEmp.getLastName());
+            pstmt.setString(3, newEmp.getUsername());
+            pstmt.setString(4, newEmp.getPassword());
+            pstmt.setInt(5, newEmp.getJobType());
+            pstmt.executeUpdate();
+            return newEmp;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
-
 
     public boolean usernameIsUnique(String username) {
         boolean nameIsUnique = false;
@@ -138,7 +130,9 @@ public class AlphaRepository {
         }
     }
 
+    /*
     public List<Emp> findEmpsContaining(String searchQuery) {
         String sql = "SELECT * FROM emp WHERE username LIKE = (?)"
     }
+     */
 }
