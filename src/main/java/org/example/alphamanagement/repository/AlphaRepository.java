@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Repository
@@ -20,7 +23,7 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        if (createUserID(newEmp.getUsername())!= null) {
+        if (createUserID(newEmp.getUsername()) != null) {
             String sql = "INSERT INTO emp(username, password, jobTypeID) VALUES (?, ?, ?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
@@ -67,7 +70,7 @@ public class AlphaRepository {
         Random random = new Random();
         int numbers = random.nextInt(10000);
         userID = String.format("%s%04d", userIDLetters, numbers);
-        if (checkUniqueUsername(userID)){
+        if (checkUniqueUsername(userID)) {
             return userID;
         }
         return null;
@@ -97,12 +100,13 @@ public class AlphaRepository {
         try {
             PreparedStatement preparedStatement = con.prepareStatement(SQL);
             preparedStatement.setString(1, newProject.getProjectName());
-            preparedStatement.setDate(2,java.sql.Date.valueOf(newProject.getStartDate()));
-            preparedStatement.setDate(3,java.sql.Date.valueOf(newProject.getEndDate()));
+            preparedStatement.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
+            preparedStatement.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }return newProject;
+        }
+        return newProject;
     }
 
     public Emp findEmpByUsername(String username) {
@@ -123,15 +127,35 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
     }
-    public void deleteEmp(String username){
+
+    public void deleteEmp(String username) {
         String sql = "DELETE FROM EMP WHERE username = ?";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)){
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public List<Project> getAllProjects() {
+        List<Project> projects = new ArrayList<>();
+        String SQL = "SELECT projectname, startdate, enddate FROM project";
+        Connection con = ConnectionManager.getConnection(url,user,password);
+        try {
+             PreparedStatement preparedStatement = con.prepareStatement(SQL);
+             ResultSet rs = preparedStatement.executeQuery(); {
+
+            while (rs.next()) {
+                String projectName = rs.getString("projectName");
+                LocalDate startDate = rs.getDate("startDate").toLocalDate();
+                LocalDate endDate = rs.getDate("endDate").toLocalDate();
+                projects.add(new Project(projectName, startDate, endDate));
+            }}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return projects;
     }
 }

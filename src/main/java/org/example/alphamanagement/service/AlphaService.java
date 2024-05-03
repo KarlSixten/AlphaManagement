@@ -5,6 +5,8 @@ import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.AlphaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AlphaService {
     private final AlphaRepository alphaRepository;
@@ -31,6 +33,9 @@ public class AlphaService {
     }
     public void deleteEmp(String username){
         alphaRepository.deleteEmp(username);
+    }
+    public List<Project> getAllProjects(){
+        return alphaRepository.getAllProjects();
     }
 
 }
