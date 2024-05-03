@@ -34,6 +34,9 @@ public class AlphaService {
     public void deleteEmp(String username){
         alphaRepository.deleteEmp(username);
     }
+    public List<Project> getAllProjects(){
+        return alphaRepository.getAllProjects();
+    }
 
     public List<Emp> findByUsernameContaining(String searchString) {
         return alphaRepository.findEmpsContaining(searchString);
