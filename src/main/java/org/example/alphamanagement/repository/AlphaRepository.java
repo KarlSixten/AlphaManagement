@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Random;
 
 @Repository
@@ -20,15 +21,20 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
+        String username = createUserID(newEmp.getFirstName(), newEmp.getLastName());
+
+
         if (createUserID(newEmp.getUsername())!= null) {
-            String sql = "INSERT INTO emp(username, password, jobTypeID) VALUES (?, ?, ?);";
+            String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
             Connection connection = ConnectionManager.getConnection(url, user, password);
 
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, newEmp.getFirstName());
+                pstmt.setString(2, newEmp.getLastName());
                 newEmp.setUsername(createUserID(newEmp.getUsername()));
-                pstmt.setString(1, newEmp.getUsername());
-                pstmt.setString(2, newEmp.getPassword());
-                pstmt.setInt(3, newEmp.getJobType());
+                pstmt.setString(3, newEmp.getUsername());
+                pstmt.setString(4, newEmp.getPassword());
+                pstmt.setInt(5, newEmp.getJobType());
                 pstmt.executeUpdate();
                 return newEmp;
             } catch (SQLException e) {
@@ -40,7 +46,7 @@ public class AlphaRepository {
     }
 
 
-    public boolean checkUniqueUsername(String username) {
+    public boolean usernameIsUnique(String username) {
         boolean nameIsUnique = false;
 
         String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
@@ -59,18 +65,15 @@ public class AlphaRepository {
         return nameIsUnique;
     }
 
-    public String createUserID(String fullName) {
-        String userID;
-        String[] names = fullName.split("\\s+");
-        String userIDLetters = names[0].substring(0, 2).toLowerCase() +
-                names[names.length - 1].substring(0, 2).toLowerCase();
+    private String createUsername(String firstName, String lastName) {
         Random random = new Random();
-        int numbers = random.nextInt(10000);
-        userID = String.format("%s%04d", userIDLetters, numbers);
-        if (checkUniqueUsername(userID)){
-            return userID;
-        }
-        return null;
+        String username = "";
+
+        do {
+            username = firstName.substring(0, 2) + lastName.substring(0, 2) + random.nextInt(10000);
+        } while (!usernameIsUnique(username));
+
+        return username;
     }
 
     public Emp checkValidLogin(Emp empToCheck) {
@@ -133,5 +136,9 @@ public class AlphaRepository {
         catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public List<Emp> findEmpsContaining(String searchQuery) {
+        String sql = "SELECT * FROM emp WHERE username LIKE = (?)"
     }
 }
