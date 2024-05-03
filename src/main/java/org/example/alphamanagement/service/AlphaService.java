@@ -28,7 +28,7 @@ public class AlphaService {
         return alphaRepository.createProject(newProject);
     }
 
-    public Object findEmpByUsername(String username) {
+    public Emp findEmpByUsername(String username) {
         return alphaRepository.findEmpByUsername(username);
     }
     public void deleteEmp(String username){
@@ -38,6 +38,13 @@ public class AlphaService {
         return alphaRepository.getAllProjects();
     }
 
+    public Emp updateEmp(Emp emp, List<String> skills){
+        return alphaRepository.updateEmp(emp, skills);
+    }
+
+    public List<Emp>getAllEmp(){
+        return alphaRepository.getAllEmp();
+    }
     public List<Emp> findByUsernameContaining(String searchString) {
         return alphaRepository.findEmpsContaining(searchString);
     }

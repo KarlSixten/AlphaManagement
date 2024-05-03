@@ -1,10 +1,14 @@
 package org.example.alphamanagement.model;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Emp {
-    private String firstName;
-    private String lastName;
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
     private int jobType;
 
     public Emp(String firstName, String lastName, String username, String password, int jobType) {
@@ -16,22 +20,6 @@ public class Emp {
     }
 
     public Emp() {}
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public String getUsername() {
         return username;
@@ -55,5 +43,21 @@ public class Emp {
 
     public void setJobType(int jobType) {
         this.jobType = jobType;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
