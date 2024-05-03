@@ -38,4 +38,7 @@ public class AlphaService {
         return alphaRepository.getAllProjects();
     }
 
+    public List<Emp> findByUsernameContaining(String searchString) {
+        return alphaRepository.findEmpsContaining(searchString);
+    }
 }

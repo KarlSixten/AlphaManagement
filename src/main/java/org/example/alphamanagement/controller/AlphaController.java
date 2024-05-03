@@ -87,6 +87,16 @@ public class AlphaController {
         return "redirect:/home";
     }
 
+    @GetMapping("/find-user")
+    public String showEmployees(Model model, @RequestParam(required = false) String searchString) {
+        if (searchString == null) {
+            searchString = "";
+        }
+        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
+        model.addAttribute("foundEmps", foundEmps);
+        return "find_user";
+    }
+
     @PostMapping("")
     public String deleteEmp(@PathVariable String username){
         alphaService.deleteEmp(username);

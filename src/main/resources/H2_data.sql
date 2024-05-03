@@ -11,6 +11,8 @@ CREATE TABLE jobType
 CREATE TABLE emp
 (
     empID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    firstName VARCHAR(45) NOT NULL,
+    lastName VARCHAR(45) NOT NULL,
     username VARCHAR(45) NOT NULL,
     password VARCHAR(45) NOT NULL,
     jobTypeID INT NOT NULL,
@@ -89,4 +91,9 @@ INSERT INTO skill (skillName) VALUES ('C#');
 INSERT INTO skill (skillName) VALUES ('C++');
 INSERT INTO skill (skillName) VALUES ('HTML');
 
-INSERT INTO emp (username, password, jobTypeID) VALUES ('test', 'test', 3);
+INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
+
+
+INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Karl', 'Bjarnø', 'kabj0000', 'test', 3);
+
+

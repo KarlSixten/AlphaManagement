@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,27 +25,24 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        if (createUserID(newEmp.getUsername()) != null) {
-            String sql = "INSERT INTO emp(username, password, jobTypeID) VALUES (?, ?, ?);";
-            Connection connection = ConnectionManager.getConnection(url, user, password);
+        String username = createUsername(newEmp.getFirstName(), newEmp.getLastName());
+        String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
 
-            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                newEmp.setUsername(createUserID(newEmp.getUsername()));
-                pstmt.setString(1, newEmp.getUsername());
-                pstmt.setString(2, newEmp.getPassword());
-                pstmt.setInt(3, newEmp.getJobType());
-                pstmt.executeUpdate();
-                return newEmp;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return null;
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newEmp.getFirstName());
+            pstmt.setString(2, newEmp.getLastName());
+            pstmt.setString(3, newEmp.getUsername());
+            pstmt.setString(4, newEmp.getPassword());
+            pstmt.setInt(5, newEmp.getJobType());
+            pstmt.executeUpdate();
+            return newEmp;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-
-    public boolean checkUniqueUsername(String username) {
+    public boolean usernameIsUnique(String username) {
         boolean nameIsUnique = false;
 
         String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
@@ -62,18 +61,15 @@ public class AlphaRepository {
         return nameIsUnique;
     }
 
-    public String createUserID(String fullName) {
-        String userID;
-        String[] names = fullName.split("\\s+");
-        String userIDLetters = names[0].substring(0, 2).toLowerCase() +
-                names[names.length - 1].substring(0, 2).toLowerCase();
+    private String createUsername(String firstName, String lastName) {
         Random random = new Random();
-        int numbers = random.nextInt(10000);
-        userID = String.format("%s%04d", userIDLetters, numbers);
-        if (checkUniqueUsername(userID)) {
-            return userID;
-        }
-        return null;
+        String username = "";
+
+        do {
+            username = firstName.substring(0, 2) + lastName.substring(0, 2) + random.nextInt(10000);
+        } while (!usernameIsUnique(username));
+
+        return username;
     }
 
     public Emp checkValidLogin(Emp empToCheck) {
@@ -157,5 +153,39 @@ public class AlphaRepository {
         }
 
         return projects;
+    }
+
+    public List<Emp> findEmpsContaining(String searchQuery) {
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT * FROM emp WHERE username LIKE (?) OR firstName LIKE (?) OR lastName LIKE (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, "%" + searchQuery + "%");
+            psmt.setString(2, "%" + searchQuery + "%");
+            psmt.setString(3, "%" + searchQuery + "%");
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Emp createEmpFromResultSet(ResultSet resultSet) {
+        Emp emp = new Emp();
+
+        try {
+            emp.setFirstName(resultSet.getString("firstName"));
+            emp.setLastName(resultSet.getString("lastName"));
+            emp.setUsername(resultSet.getString("username"));
+            emp.setPassword(resultSet.getString("password"));
+            emp.setJobType(resultSet.getInt("jobTypeID"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return emp;
     }
 }
