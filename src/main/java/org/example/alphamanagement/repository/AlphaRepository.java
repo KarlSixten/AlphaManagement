@@ -151,7 +151,6 @@ public class AlphaRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return projects;
     }
 
@@ -188,4 +187,62 @@ public class AlphaRepository {
         }
         return emp;
     }
+
+    public Emp updateEmp(Emp emp, List<String> skills) {
+        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobType = ?;";
+        String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
+        String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
+
+        Connection con = ConnectionManager.getConnection(url,user,password);
+        Emp updatedEmp = null;
+
+        try {
+            PreparedStatement updateEmpStatement = con.prepareStatement(updateEmpQuery);
+            PreparedStatement delete = con.prepareStatement(deleteEmpSkillsQuery);
+            PreparedStatement insert = con.prepareStatement(insertEmpSkillsQuery);
+
+            updateEmpStatement.setString(1, emp.getFirstName());
+            updateEmpStatement.setString(2, emp.getLastName());
+            updateEmpStatement.setString(3, emp.getPassword());
+            updateEmpStatement.setInt(4, emp.getJobType());
+            updateEmpStatement.executeUpdate();
+
+            delete.setString(1, emp.getUsername());
+            delete.executeUpdate();
+
+            for (String skill : skills) {
+                insert.setString(1, emp.getUsername());
+                insert.setString(2, skill);
+                insert.executeUpdate();
+            }
+
+            updatedEmp = findEmpByUsername(emp.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return updatedEmp;
+    }
+
+
+    public List<Emp> getAllEmp() {
+        List<Emp> allEmp = new ArrayList<>();
+        String sql = "SELECT * FROM Emp;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                allEmp.add(new Emp(rs.getString("firstname"), rs.getString("lastname"),rs.getString("username"), rs.getString("password"), rs.getInt("jobtype")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return allEmp;
+    }
+
+
+
+
 }

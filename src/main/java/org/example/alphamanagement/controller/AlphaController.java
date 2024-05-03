@@ -107,4 +107,18 @@ public class AlphaController {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
 
+    @GetMapping("")
+    public String updateEmpForm(@RequestParam("username") String username, Model model){
+        Emp emp = alphaService.findEmpByUsername(username);
+        model.addAttribute("emp", emp);
+        return "update-emp-form";
     }
+    @PostMapping("")
+    public String updateEmp(@ModelAttribute Emp emp, @RequestParam("skills") List<String> skills) {
+        alphaService.updateEmp(emp, skills);
+        return "redirect:/home";
+    }
+
+
+
+}

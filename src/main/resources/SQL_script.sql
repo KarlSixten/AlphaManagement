@@ -10,11 +10,10 @@ CREATE TABLE jobType
 
 CREATE TABLE emp
 (
-    empID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(45) NOT NULL PRIMARY KEY,
+    password VARCHAR(45) NOT NULL,
     firstName VARCHAR(45) NOT NULL,
     lastName VARCHAR(45) NOT NULL,
-    username VARCHAR(45) NOT NULL,
-    password VARCHAR(45) NOT NULL,
     jobTypeID INT NOT NULL,
     FOREIGN KEY (jobTypeID) REFERENCES jobType(jobTypeID)
 );
@@ -30,9 +29,9 @@ CREATE TABLE project
 CREATE TABLE project_emp
 (
     projectID INT NOT NULL,
-    empID INT NOT NULL,
+    username VARCHAR(45) NOT NULL,
     FOREIGN KEY (projectID) REFERENCES project(projectID),
-    FOREIGN KEY (empID) REFERENCES emp(empID)
+    FOREIGN KEY (username) REFERENCES emp(username)
 );
 
 CREATE TABLE category
@@ -57,9 +56,9 @@ CREATE TABLE task
 
 CREATE TABLE emp_task
 (
-    empID INT NOT NULL,
+    username varchar(45) NOT NULL,
     taskID INT NOT NULL,
-    FOREIGN KEY (empID) REFERENCES emp(empID),
+    FOREIGN KEY (username) REFERENCES emp(username),
     FOREIGN KEY (taskID) REFERENCES task(taskID)
 );
 
@@ -71,11 +70,12 @@ CREATE TABLE skill
 
 CREATE TABLE emp_skill
 (
-    empID INT NOT NULL,
+    username varchar(45) NOT NULL,
     skillID INT NOT NULL,
-    FOREIGN KEY (empID) REFERENCES emp(empID),
+    FOREIGN KEY (username) REFERENCES emp(username),
     FOREIGN KEY (skillID) REFERENCES skill(skillID)
 );
+
 
 INSERT INTO jobType (jobTypeName) VALUES ('Employee');
 INSERT INTO jobType (jobTypeName) VALUES ('Project Manager');
