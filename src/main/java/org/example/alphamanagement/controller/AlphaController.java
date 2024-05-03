@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("")
 public class AlphaController {
@@ -62,8 +64,10 @@ public class AlphaController {
     }
 
     @GetMapping("/home")
-    public String getHome() {
+    public String getHome(Model model) {
         if (userIsLoggedIn()) {
+            List<Project> projects = alphaService.getAllProjects();
+            model.addAttribute("projects", projects);
             return "front-page";
         } else {
             return "redirect:/";
@@ -80,7 +84,7 @@ public class AlphaController {
     @PostMapping("/projects")
     public String createProject(@ModelAttribute Project project) {
         alphaService.createProject(project);
-        return "redirect:/projectView";
+        return "redirect:/home";
     }
 
     @PostMapping("")
@@ -92,4 +96,5 @@ public class AlphaController {
     private boolean userIsLoggedIn() {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
-}
+
+    }

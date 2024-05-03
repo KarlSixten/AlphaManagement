@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -53,5 +53,36 @@
     </form>
 </div>
 
+</body>
+</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<h1>Projects List</h1>
+
+
+<a href="http://localhost:8080/projects/new" class="btn btn-primary">Create Project</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Project Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="project : ${projects}">
+        <td th:text="${project.projectName}">Project Name</td>
+        <td th:text="${project.startDate}">Start Date</td>
+        <td th:text="${project.endDate}">End Date</td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
