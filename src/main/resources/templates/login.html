@@ -10,15 +10,15 @@
     <div>
         <form action="/submit-login" method="post">
             <div>
-                    <input id="username" type="text" name="name" th:field="*{emp.username}" class="validate" required>
-                    <label for="username">Brugernavn</label>
+                <input id="empUsername" type="text" name="empUsername" class="validate" required>
+                <label for="empUsername">Brugernavn</label>
             </div>
             <div>
-                    <input id="password" type="password" name="password" th:field="*{emp.password}" class="validate" required>
-                    <label for="password">Adgangskode</label>
+                <input id="empPassword" type="password" name="empPassword" class="validate" required>
+                <label for="empPassword">Adgangskode</label>
             </div>
             <div>
-                <button type="submit" name="action">Login</button>
+                <button type="submit">Login</button>
             </div>
         </form>
     </div>
