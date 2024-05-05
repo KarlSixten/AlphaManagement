@@ -48,4 +48,10 @@ public class AlphaService {
     public List<Emp> findByUsernameContaining(String searchString) {
         return alphaRepository.findEmpsContaining(searchString);
     }
+    public Project updateProject(Project project){
+        return alphaRepository.updateProject(project);
+    }
+    public Project findProjectByID(int projectID){
+        return alphaRepository.findProjectByID(projectID);
+    }
 }

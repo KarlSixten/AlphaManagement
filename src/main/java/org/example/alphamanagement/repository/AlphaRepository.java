@@ -241,7 +241,44 @@ public class AlphaRepository {
         }
         return allEmp;
     }
+    public Project updateProject(Project project) {
+        String SQL = "UPDATE project SET projectName = ?, startDate = ?, endDate = ? WHERE projectId = ?;";
+        try (Connection con = ConnectionManager.getConnection(url, user, password);
+             PreparedStatement preparedStatement = con.prepareStatement(SQL)) {
+            preparedStatement.setString(1, project.getProjectName());
+            preparedStatement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
+            preparedStatement.setDate(3, java.sql.Date.valueOf(project.getEndDate()));
+            preparedStatement.setInt(4, project.getProjectID());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return project;
+    }
+    private Project createProjectFromResultSet(ResultSet rs) throws SQLException {
+        Project project = new Project();
+        project.setProjectID(rs.getInt("projectId"));
+        project.setProjectName(rs.getString("projectName"));
+        project.setStartDate(rs.getDate("startDate").toLocalDate());
+        project.setEndDate(rs.getDate("endDate").toLocalDate());
+        return project;
+    }
 
+    public Project findProjectByID(int projectID) {
+        String sql = "SELECT * FROM project WHERE projectId = ?;";
+        try (Connection connection = ConnectionManager.getConnection(url, user, password);
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setLong(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createProjectFromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find project by ID", e);
+        }
+    }
 
 
 

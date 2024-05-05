@@ -81,6 +81,9 @@
         <td th:text="${project.projectName}">Project Name</td>
         <td th:text="${project.startDate}">Start Date</td>
         <td th:text="${project.endDate}">End Date</td>
+        <td th:if="${jobType == 2 or jobType == 3}">
+            <a th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn btn-info">Update</a>
+        </td>
     </tr>
     </tbody>
 </table>

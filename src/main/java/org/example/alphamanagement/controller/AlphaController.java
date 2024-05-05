@@ -96,6 +96,30 @@ public class AlphaController {
            return "redirect:/";
         }
     }
+    @GetMapping("/projects/{projectID}/update")
+    public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            Project project = alphaService.findProjectByID(projectID);  // Assuming this method exists
+            model.addAttribute("project", project);
+            return "update-project";
+        } else {
+            return "redirect:/";
+        }
+    }
+    @PostMapping("/projects/{projectID}/update")
+    public String updateProject(@ModelAttribute Project project, @PathVariable int projectID) {
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            alphaService.updateProject(project);
+            return "redirect:/home";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    private boolean userHasRole(int jobType) {
+        Emp emp = (Emp) httpSession.getAttribute("empLoggedIn");
+        return emp != null && emp.getJobType() == jobType;
+    }
 
     @GetMapping("/find-user")
     public String showEmployees(Model model, @RequestParam(required = false) String searchString) {
