@@ -134,20 +134,23 @@ public class AlphaRepository {
             e.printStackTrace();
         }
     }
+
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
         String SQL = "SELECT projectname, startdate, enddate FROM project";
-        Connection con = ConnectionManager.getConnection(url,user,password);
+        Connection con = ConnectionManager.getConnection(url, user, password);
         try {
-             PreparedStatement preparedStatement = con.prepareStatement(SQL);
-             ResultSet rs = preparedStatement.executeQuery(); {
+            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            ResultSet rs = preparedStatement.executeQuery();
+            {
 
-            while (rs.next()) {
-                String projectName = rs.getString("projectName");
-                LocalDate startDate = rs.getDate("startDate").toLocalDate();
-                LocalDate endDate = rs.getDate("endDate").toLocalDate();
-                projects.add(new Project(projectName, startDate, endDate));
-            }}
+                while (rs.next()) {
+                    String projectName = rs.getString("projectName");
+                    LocalDate startDate = rs.getDate("startDate").toLocalDate();
+                    LocalDate endDate = rs.getDate("endDate").toLocalDate();
+                    projects.add(new Project(projectName, startDate, endDate));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -193,7 +196,7 @@ public class AlphaRepository {
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
 
-        Connection con = ConnectionManager.getConnection(url,user,password);
+        Connection con = ConnectionManager.getConnection(url, user, password);
         Emp updatedEmp = null;
 
         try {
@@ -234,27 +237,31 @@ public class AlphaRepository {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                allEmp.add(new Emp(rs.getString("firstname"), rs.getString("lastname"),rs.getString("username"), rs.getString("password"), rs.getInt("jobtype")));
+                allEmp.add(new Emp(rs.getString("firstname"), rs.getString("lastname"), rs.getString("username"), rs.getString("password"), rs.getInt("jobtype")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return allEmp;
     }
+
     public Project updateProject(Project project) {
         String SQL = "UPDATE project SET projectName = ?, startDate = ?, endDate = ? WHERE projectId = ?;";
-        try (Connection con = ConnectionManager.getConnection(url, user, password);
-             PreparedStatement preparedStatement = con.prepareStatement(SQL)) {
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(SQL);
             preparedStatement.setString(1, project.getProjectName());
             preparedStatement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
             preparedStatement.setDate(3, java.sql.Date.valueOf(project.getEndDate()));
             preparedStatement.setInt(4, project.getProjectID());
             preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return project;
     }
+
     private Project createProjectFromResultSet(ResultSet rs) throws SQLException {
         Project project = new Project();
         project.setProjectID(rs.getInt("projectId"));
@@ -266,8 +273,9 @@ public class AlphaRepository {
 
     public Project findProjectByID(int projectID) {
         String sql = "SELECT * FROM project WHERE projectId = ?;";
-        try (Connection connection = ConnectionManager.getConnection(url, user, password);
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setLong(1, projectID);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -279,7 +287,6 @@ public class AlphaRepository {
             throw new RuntimeException("Failed to find project by ID", e);
         }
     }
-
 
 
 }
