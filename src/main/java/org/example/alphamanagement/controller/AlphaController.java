@@ -83,12 +83,16 @@ public class AlphaController {
         return "createProject";
     }
 
-    //Denne skal måske postmappe til /projects/new/submit
-    //Dette kan så videre redirecte til siden for det nye projekt eller Home
-    @PostMapping("/projects")
+
+    @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
-        alphaService.createProject(project);
-        return "redirect:/home";
+        if (userIsLoggedIn()){
+            alphaService.createProject(project);
+            return "redirect:/home";
+        }
+       else {
+           return "redirect:/";
+        }
     }
 
     @GetMapping("/find-user")
