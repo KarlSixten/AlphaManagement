@@ -98,8 +98,8 @@ public class AlphaController {
     }
     @GetMapping("/projects/{projectID}/update")
     public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
+        Project project = alphaService.findProjectByID(projectID);
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
-            Project project = alphaService.findProjectByID(projectID);
             model.addAttribute("project", project);
             return "update-project";
         } else {

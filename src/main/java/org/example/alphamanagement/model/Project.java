@@ -9,7 +9,8 @@ public class Project {
     private LocalDate endDate;
     private int projectID;
 
-     public Project(String projectName, LocalDate startDate, LocalDate endDate) {
+
+    public Project(String projectName, LocalDate startDate, LocalDate endDate) {
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
