@@ -27,6 +27,7 @@ CREATE TABLE project
     endDate DATE NOT NULL
 );
 
+
 CREATE TABLE project_emp
 (
     projectID INT NOT NULL,
