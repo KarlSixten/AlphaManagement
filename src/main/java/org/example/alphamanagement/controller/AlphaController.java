@@ -70,6 +70,8 @@ public class AlphaController {
     @GetMapping("/home")
     public String getHome(Model model) {
         if (userIsLoggedIn()) {
+            Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
+            model.addAttribute("jobType", loggedInEmp.getJobType());
             List<Project> projects = alphaService.getAllProjects();
             model.addAttribute("projects", projects);
             return "front-page";
