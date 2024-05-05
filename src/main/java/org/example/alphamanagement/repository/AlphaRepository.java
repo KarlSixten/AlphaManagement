@@ -25,7 +25,7 @@ public class AlphaRepository {
 
 
     public Emp createEmp(Emp newEmp) {
-        String username = createUsername(newEmp.getFirstName(), newEmp.getLastName());
+        newEmp.setUsername(createUsername(newEmp.getFirstName(), newEmp.getLastName()));
         String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
