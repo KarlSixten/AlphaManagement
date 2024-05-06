@@ -54,4 +54,7 @@ public class AlphaService {
     public Project findProjectByID(int projectID){
         return alphaRepository.findProjectByID(projectID);
     }
+    public void deleteProject(int projectID) {
+        alphaRepository.deleteProject(projectID);
+    }
 }

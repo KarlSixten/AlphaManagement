@@ -116,6 +116,16 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+    @GetMapping("/projects/{projectID}/delete")
+    public String deleteProject(@PathVariable int projectID) {
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            alphaService.deleteProject(projectID);
+            return "redirect:/home";
+        } else {
+            return "redirect:/";
+        }
+    }
+
 
     private boolean userHasRole(int jobType) {
         Emp emp = (Emp) httpSession.getAttribute("empLoggedIn");

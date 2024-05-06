@@ -183,6 +183,7 @@ public class AlphaRepository {
         }
         return updatedEmp;
     }
+   
 
     public List<Emp> getAllEmp() {
         List<Emp> allEmp = new ArrayList<>();
@@ -216,6 +217,18 @@ public class AlphaRepository {
         }
         return project;
     }
+    public void deleteProject(int projectID) {
+        String sql = "DELETE FROM project WHERE projectId = ?";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try {
+             PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, projectID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete project", e);
+        }
+    }
+
 
     public Project findProjectByID(int projectID) {
         String sql = "SELECT * FROM project WHERE projectId = ?;";
