@@ -263,6 +263,7 @@ public class AlphaRepository {
             preparedStatement.setString(1, project.getProjectName());
             preparedStatement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
             preparedStatement.setDate(3, java.sql.Date.valueOf(project.getEndDate()));
+            preparedStatement.setInt(4, project.getProjectID());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
