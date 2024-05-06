@@ -11,7 +11,10 @@
 </form>
 
 <ul>
-    <li th:each="emp : ${foundEmps}" th:text="${emp.username}"></li>
+    <li th:each="emp : ${foundEmps}">
+        <span th:text="${emp.username}"></span>
+        <a th:href="@{'/' + ${emp.username} + '/update-emp'}">Update</a>
+    </li>
 </ul>
 </body>
 </html>
