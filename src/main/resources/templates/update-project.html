@@ -8,7 +8,8 @@
 <body>
 <div class="container">
     <h1>Update Project</h1>
-    <form th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}" method="post">
+    <form method="post" th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}">
+        <input type="hidden" th:field="*{projectID}" />
         <div class="form-group">
             <label for="projectName">Project Name:</label>
             <input type="text" id="projectName" name="projectName" th:field="*{projectName}" required>

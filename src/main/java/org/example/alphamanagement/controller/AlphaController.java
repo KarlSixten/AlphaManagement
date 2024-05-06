@@ -107,7 +107,8 @@ public class AlphaController {
         }
     }
     @PostMapping("/projects/{projectID}/update")
-    public String updateProject(@ModelAttribute Project project, @PathVariable int projectID) {
+    public String updateProject(@ModelAttribute("project") Project project, @PathVariable int projectID) {
+        project.setProjectID(projectID);
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             alphaService.updateProject(project);
             return "redirect:/home";
