@@ -66,7 +66,7 @@
 <h1>Projects List</h1>
 
 
-<a href="http://localhost:8080/projects/new" class="btn btn-primary">Create Project</a>
+<a th:if="${jobType == 2 or jobType == 3}" href="http://localhost:8080/projects/new" class="btn btn-primary">Create Project</a>
 
 <table>
     <thead>
@@ -81,6 +81,9 @@
         <td th:text="${project.projectName}">Project Name</td>
         <td th:text="${project.startDate}">Start Date</td>
         <td th:text="${project.endDate}">End Date</td>
+        <td th:if="${jobType == 2 or jobType == 3}">
+            <a th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn btn-info">Update</a>
+        </td>
     </tr>
     </tbody>
 </table>

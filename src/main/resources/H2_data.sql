@@ -27,6 +27,7 @@ CREATE TABLE project
     endDate DATE NOT NULL
 );
 
+
 CREATE TABLE project_emp
 (
     projectID INT NOT NULL,
@@ -92,8 +93,6 @@ INSERT INTO skill (skillName) VALUES ('C++');
 INSERT INTO skill (skillName) VALUES ('HTML');
 
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
-
-
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Karl', 'Bjarnø', 'kabj0000', 'test', 3);
 
 

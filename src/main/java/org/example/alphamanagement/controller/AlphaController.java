@@ -70,6 +70,8 @@ public class AlphaController {
     @GetMapping("/home")
     public String getHome(Model model) {
         if (userIsLoggedIn()) {
+            Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
+            model.addAttribute("jobType", loggedInEmp.getJobType());
             List<Project> projects = alphaService.getAllProjects();
             model.addAttribute("projects", projects);
             return "front-page";
@@ -83,12 +85,40 @@ public class AlphaController {
         return "createProject";
     }
 
-    //Denne skal måske postmappe til /projects/new/submit
-    //Dette kan så videre redirecte til siden for det nye projekt eller Home
-    @PostMapping("/projects")
+
+    @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
-        alphaService.createProject(project);
-        return "redirect:/home";
+        if (userIsLoggedIn()){
+            alphaService.createProject(project);
+            return "redirect:/home";
+        }
+       else {
+           return "redirect:/";
+        }
+    }
+    @GetMapping("/projects/{projectID}/update")
+    public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
+        Project project = alphaService.findProjectByID(projectID);
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            model.addAttribute("project", project);
+            return "update-project";
+        } else {
+            return "redirect:/";
+        }
+    }
+    @PostMapping("/projects/{projectID}/update")
+    public String updateProject(@ModelAttribute Project project, @PathVariable int projectID) {
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            alphaService.updateProject(project);
+            return "redirect:/home";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    private boolean userHasRole(int jobType) {
+        Emp emp = (Emp) httpSession.getAttribute("empLoggedIn");
+        return emp != null && emp.getJobType() == jobType;
     }
 
     @GetMapping("/find-user")

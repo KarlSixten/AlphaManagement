@@ -7,12 +7,15 @@ public class Project {
     private String projectName;
     private LocalDate startDate;
     private LocalDate endDate;
+    private int projectID;
+
 
     public Project(String projectName, LocalDate startDate, LocalDate endDate) {
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
 
     public Project() {
     }
@@ -39,5 +42,13 @@ public class Project {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public int getProjectID() {
+        return projectID;
+    }
+
+    public void setProjectID(int projectID) {
+        this.projectID = projectID;
     }
 }
