@@ -145,7 +145,7 @@ public class AlphaRepository {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String SQL = "SELECT projectname, startdate, enddate FROM project";
+        String SQL = "SELECT * FROM project";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
             PreparedStatement preparedStatement = con.prepareStatement(SQL);
@@ -153,10 +153,12 @@ public class AlphaRepository {
             {
 
                 while (rs.next()) {
+                    Project project = new Project();
+                    project.setProjectID(rs.getInt("projectID"));
                     String projectName = rs.getString("projectName");
                     LocalDate startDate = rs.getDate("startDate").toLocalDate();
                     LocalDate endDate = rs.getDate("endDate").toLocalDate();
-                    projects.add(new Project(projectName, startDate, endDate));
+                    projects.add(project);
                 }
             }
         } catch (SQLException e) {
@@ -261,7 +263,6 @@ public class AlphaRepository {
             preparedStatement.setString(1, project.getProjectName());
             preparedStatement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
             preparedStatement.setDate(3, java.sql.Date.valueOf(project.getEndDate()));
-            preparedStatement.setInt(4, project.getProjectID());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
