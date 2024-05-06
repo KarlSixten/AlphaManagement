@@ -205,8 +205,6 @@ public class AlphaRepository {
             delete.setString(1, emp.getUsername());
             delete.executeUpdate();
 
-
-            //DENNE HER INDSÆTTER ALLE SKILLS TIL EN MEDARBEJDER, DET SKAL DEN IKKE
             for (String skill : empSkills) {
                 insert.setString(1, emp.getUsername());
                 insert.setString(2, skill);
