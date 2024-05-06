@@ -94,5 +94,10 @@ INSERT INTO skill (skillName) VALUES ('HTML');
 
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Karl', 'Bjarnø', 'kabj0000', 'test', 3);
+INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('user', 'user', 'user', 'user', 1);
 
+
+INSERT INTO project(projectName, startDate, endDate) VALUES ('Testprojekt', '2024-09-08', '2024-10-08');
+INSERT INTO project(projectName, startDate, endDate) VALUES ('Hesteprojekt', '2024-09-08', '2024-10-08');
+INSERT INTO project(projectName, startDate, endDate) VALUES ('Festeprojekt', '2024-09-08', '2024-10-08');
 
