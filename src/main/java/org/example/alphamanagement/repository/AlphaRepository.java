@@ -171,7 +171,7 @@ public class AlphaRepository {
 
     public List<String> getEmpSkillList(String username) {
         List<String> empSkillList =  new ArrayList<>();
-        String sql = "SELECT * FROM emp_skill JOIN skill WHERE emp_skill.skillID = skill.skillID HAVING username LIKE (?);";
+        String sql = "SELECT username, skillName FROM emp_skill LEFT JOIN skill ON emp_skill.skillID = skill.skillID WHERE username LIKE (?);";
 
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -189,7 +189,7 @@ public class AlphaRepository {
 
 
     public Emp updateEmp(Emp emp) {
-        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobType = ?;";
+        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
 
@@ -210,6 +210,8 @@ public class AlphaRepository {
             delete.setString(1, emp.getUsername());
             delete.executeUpdate();
 
+
+            //DENNE HER INDSÆTTER ALLE SKILLS TIL EN MEDARBEJDER, DET SKAL DEN IKKE
             for (String skill : getSkillsList()) {
                 insert.setString(1, emp.getUsername());
                 insert.setString(2, skill);
