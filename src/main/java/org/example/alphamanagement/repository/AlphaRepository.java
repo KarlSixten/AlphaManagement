@@ -42,36 +42,6 @@ public class AlphaRepository {
         }
     }
 
-    private boolean usernameIsUnique(String username) {
-        boolean nameIsUnique = false;
-
-        String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                int count = rs.getInt("COUNT(*)");
-                nameIsUnique = (count == 0);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return nameIsUnique;
-    }
-
-    private String createUsername(String firstName, String lastName) {
-        Random random = new Random();
-        String username = "";
-
-        do {
-            username = firstName.substring(0, 2) + lastName.substring(0, 2) + random.nextInt(10000);
-        } while (!usernameIsUnique(username));
-
-        return username;
-    }
-
     public Emp checkValidLogin(String empUsername, String empPassword) {
         String sql = "SELECT * FROM emp WHERE username LIKE (?) AND password LIKE (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -145,24 +115,16 @@ public class AlphaRepository {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String SQL = "SELECT * FROM project";
-        Connection con = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement preparedStatement = con.prepareStatement(SQL);
-            ResultSet rs = preparedStatement.executeQuery();
-            {
+        String sql = "SELECT * FROM project";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
 
-                while (rs.next()) {
-                    Project project = new Project();
-                    project.setProjectID(rs.getInt("projectID"));
-                    String projectName = rs.getString("projectName");
-                    LocalDate startDate = rs.getDate("startDate").toLocalDate();
-                    LocalDate endDate = rs.getDate("endDate").toLocalDate();
-                    projects.add(project);
-                }
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                projects.add(createProjectFromResultSet(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return projects;
     }
@@ -184,21 +146,6 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Emp createEmpFromResultSet(ResultSet resultSet) {
-        Emp emp = new Emp();
-
-        try {
-            emp.setFirstName(resultSet.getString("firstName"));
-            emp.setLastName(resultSet.getString("lastName"));
-            emp.setUsername(resultSet.getString("username"));
-            emp.setPassword(resultSet.getString("password"));
-            emp.setJobType(resultSet.getInt("jobTypeID"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return emp;
     }
 
     public Emp updateEmp(Emp emp, List<String> skills) {
@@ -234,10 +181,8 @@ public class AlphaRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return updatedEmp;
     }
-
 
     public List<Emp> getAllEmp() {
         List<Emp> allEmp = new ArrayList<>();
@@ -272,15 +217,6 @@ public class AlphaRepository {
         return project;
     }
 
-    private Project createProjectFromResultSet(ResultSet rs) throws SQLException {
-        Project project = new Project();
-        project.setProjectID(rs.getInt("projectId"));
-        project.setProjectName(rs.getString("projectName"));
-        project.setStartDate(rs.getDate("startDate").toLocalDate());
-        project.setEndDate(rs.getDate("endDate").toLocalDate());
-        return project;
-    }
-
     public Project findProjectByID(int projectID) {
         String sql = "SELECT * FROM project WHERE projectId = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -298,5 +234,66 @@ public class AlphaRepository {
         }
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
+    //---------------------------------------------------------------------------------------------------------------
 
+    private Emp createEmpFromResultSet(ResultSet resultSet) {
+        Emp emp = new Emp();
+
+        try {
+            emp.setFirstName(resultSet.getString("firstName"));
+            emp.setLastName(resultSet.getString("lastName"));
+            emp.setUsername(resultSet.getString("username"));
+            emp.setPassword(resultSet.getString("password"));
+            emp.setJobType(resultSet.getInt("jobTypeID"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return emp;
+    }
+
+    private String createUsername(String firstName, String lastName) {
+        Random random = new Random();
+        String username = "";
+
+        do {
+            username = firstName.substring(0, 2) + lastName.substring(0, 2) + random.nextInt(10000);
+        } while (!usernameIsUnique(username));
+
+        return username;
+    }
+
+    private boolean usernameIsUnique(String username) {
+        boolean nameIsUnique = false;
+
+        String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt("COUNT(*)");
+                nameIsUnique = (count == 0);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return nameIsUnique;
+    }
+
+    private Project createProjectFromResultSet(ResultSet rs) throws SQLException {
+        Project project = new Project();
+
+        try {
+            project.setProjectID(rs.getInt("projectId"));
+            project.setProjectName(rs.getString("projectName"));
+            project.setStartDate(rs.getDate("startDate").toLocalDate());
+            project.setEndDate(rs.getDate("endDate").toLocalDate());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return project;
+    }
 }
