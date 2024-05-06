@@ -336,7 +336,7 @@ public class AlphaRepository {
         return nameIsUnique;
     }
 
-    private Project createProjectFromResultSet(ResultSet rs) throws SQLException {
+    private Project createProjectFromResultSet(ResultSet rs) {
         Project project = new Project();
 
         try {
