@@ -23,7 +23,9 @@ CREATE TABLE project
     projectID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     projectName VARCHAR(45) NOT NULL,
     startDate DATE NOT NULL,
-    endDate DATE NOT NULL
+    endDate DATE NOT NULL,
+    parentProjectID INT,
+    FOREIGN KEY (parentProjectID) REFERENCES project(projectID)
 );
 
 CREATE TABLE project_emp
