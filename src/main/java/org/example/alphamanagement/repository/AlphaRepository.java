@@ -90,9 +90,7 @@ public class AlphaRepository {
             psmt.setString(1, username);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()) {
-                emp.setUsername(rs.getString("username"));
-                emp.setPassword(rs.getString("password"));
-                emp.setJobType(rs.getInt("jobTypeID"));
+                emp = createEmpFromResultSet(rs);
             }
             return emp;
         } catch (SQLException e) {
@@ -185,7 +183,7 @@ public class AlphaRepository {
     }
 
 
-    public Emp updateEmp(Emp emp) {
+    public Emp updateEmp(Emp emp, List<String> empSkills) {
         String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
@@ -209,7 +207,7 @@ public class AlphaRepository {
 
 
             //DENNE HER INDSÆTTER ALLE SKILLS TIL EN MEDARBEJDER, DET SKAL DEN IKKE
-            for (String skill : getSkillsList()) {
+            for (String skill : empSkills) {
                 insert.setString(1, emp.getUsername());
                 insert.setString(2, skill);
                 insert.executeUpdate();

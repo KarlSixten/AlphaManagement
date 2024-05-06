@@ -158,17 +158,14 @@ public class AlphaController {
         List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
         List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
         model.addAttribute("emp", emp);
-
-        //DENNE SKAL OPDATERES I HTML
         model.addAttribute("empSkills", empSkills);
-
         model.addAttribute("allSkills", allSkills);
         return "update-emp";
     }
 
     @PostMapping("/updateEmp")
-    public String updateEmp(@ModelAttribute Emp emp) {
-        alphaService.updateEmp(emp);
+    public String updateEmp(@ModelAttribute Emp emp, @RequestParam List<String> empSkills) {
+        alphaService.updateEmp(emp, empSkills);
         return "redirect:/find-user";
     }
 
