@@ -158,7 +158,10 @@ public class AlphaController {
         List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
         List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
         model.addAttribute("emp", emp);
+
+        //DENNE SKAL OPDATERES I HTML
         model.addAttribute("empSkills", empSkills);
+
         model.addAttribute("allSkills", allSkills);
         return "update-emp";
     }
