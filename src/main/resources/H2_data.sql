@@ -23,7 +23,9 @@ CREATE TABLE project
     projectID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     projectName VARCHAR(45) NOT NULL,
     startDate DATE NOT NULL,
-    endDate DATE NOT NULL
+    endDate DATE NOT NULL,
+    parentProjectID INT,
+    FOREIGN KEY (parentProjectID) REFERENCES project(projectID)
 );
 
 CREATE TABLE project_emp
@@ -97,7 +99,7 @@ INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Ka
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('user', 'user', 'user', 'user', 1);
 
 
-INSERT INTO project(projectName, startDate, endDate) VALUES ('Testprojekt', '2024-09-08', '2024-10-08');
-INSERT INTO project(projectName, startDate, endDate) VALUES ('Hesteprojekt', '2024-09-08', '2024-10-08');
+INSERT INTO project(projectName, startDate, endDate) VALUES ('Testprojekt', '2024-09-10', '2024-10-08');
+INSERT INTO project(projectName, startDate, endDate) VALUES ('Hesteprojekt', '2024-09-09', '2024-10-08');
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Festeprojekt', '2024-09-08', '2024-10-08');
 
