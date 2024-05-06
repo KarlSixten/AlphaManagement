@@ -94,11 +94,19 @@ public class AlphaRepository {
         String SQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(SQL);
+            PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, newProject.getProjectName());
             preparedStatement.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
             preparedStatement.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
             preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedProjectID = generatedKeys.getInt(1);
+                newProject.setProjectID(generatedProjectID);
+            } else {
+                throw new SQLException("Creating project failed, no ID obtained.");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
