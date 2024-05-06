@@ -14,7 +14,6 @@ The Alpha Management System is a robust application developed using Spring Boot,
 - **Thymeleaf**: Server-side Java template engine used for web interfaces.
 - **Bootstrap**: Framework for designing responsive and mobile-first websites.
 - **MySQL**: Database used for persistent storage.
-- **Spring Security**: Framework that provides authentication, authorization, and protection against common exploits.
 
 ## Installation
 
