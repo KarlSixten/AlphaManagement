@@ -1,6 +1,6 @@
 package org.example.alphamanagement.repository;
 
-import ch.qos.logback.core.model.conditional.ElseModel;
+
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.util.ConnectionManager;
@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -116,7 +113,7 @@ public class AlphaRepository {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT * FROM project";
+        String sql = "SELECT * FROM project ORDER BY startDate ASC";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (Statement stmt = connection.createStatement();

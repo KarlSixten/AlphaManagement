@@ -88,7 +88,7 @@ public class AlphaController {
 
     @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
-        if (userIsLoggedIn()){
+        if (userIsLoggedIn()&& (userHasRole(2) || userHasRole(3))){
             alphaService.createProject(project);
             return "redirect:/home";
         }
@@ -113,7 +113,7 @@ public class AlphaController {
             alphaService.updateProject(project);
             return "redirect:/home";
         } else {
-            return "redirect:/";
+            return "redirect:/home";
         }
     }
     @GetMapping("/projects/{projectID}/delete")
