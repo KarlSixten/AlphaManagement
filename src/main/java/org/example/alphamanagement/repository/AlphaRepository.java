@@ -234,7 +234,7 @@ public class AlphaRepository {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                allEmp.add(new Emp(rs.getString("firstname"), rs.getString("lastname"),rs.getString("username"), rs.getString("password"), rs.getInt("jobtype")));
+                allEmp.add(createEmpFromResultSet(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
