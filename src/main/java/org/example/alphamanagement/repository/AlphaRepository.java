@@ -348,4 +348,22 @@ public class AlphaRepository {
         }
         return project;
     }
+    public Project createSubProject(Project parentProject, Project newProject) {
+        newProject.setParentProject(parentProject);
+        String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
+
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setString(1, newProject.getProjectName());
+            pstmt.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
+            pstmt.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
+            pstmt.setInt(4, parentProject.getProjectID());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newProject;
+    }
 }
