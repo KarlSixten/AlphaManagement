@@ -1,5 +1,6 @@
 package org.example.alphamanagement.repository;
 
+import ch.qos.logback.core.model.conditional.ElseModel;
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.util.ConnectionManager;
@@ -148,7 +149,46 @@ public class AlphaRepository {
         }
     }
 
-    public Emp updateEmp(Emp emp, List<String> skills) {
+    public List<String> getSkillsList() {
+        List<String> skillsList = new ArrayList<>();
+        String SQL = "SELECT SKILLNAME FROM SKILL;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            while(rs.next()) {
+                String skillName = rs.getString("skillName");
+                skillsList.add(skillName);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return skillsList;
+    }
+
+    public List<String> getEmpSkillList(String username) {
+        List<String> empSkillList =  new ArrayList<>();
+        String sql = "SELECT * FROM emp_skill JOIN skill WHERE emp_skill.skillID = skill.skillID HAVING username LIKE (?);";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                empSkillList.add(rs.getString("skillName"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return empSkillList;
+    }
+
+
+    public Emp updateEmp(Emp emp) {
         String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobType = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
@@ -170,7 +210,7 @@ public class AlphaRepository {
             delete.setString(1, emp.getUsername());
             delete.executeUpdate();
 
-            for (String skill : skills) {
+            for (String skill : getSkillsList()) {
                 insert.setString(1, emp.getUsername());
                 insert.setString(2, skill);
                 insert.executeUpdate();
