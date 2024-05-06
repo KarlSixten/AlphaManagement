@@ -42,7 +42,7 @@ public class AlphaRepository {
         }
     }
 
-    public boolean usernameIsUnique(String username) {
+    private boolean usernameIsUnique(String username) {
         boolean nameIsUnique = false;
 
         String sql = "SELECT COUNT(*) FROM emp WHERE username like (?);";
