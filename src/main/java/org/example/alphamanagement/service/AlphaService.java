@@ -38,8 +38,8 @@ public class AlphaService {
         return alphaRepository.getAllProjects();
     }
 
-    public Emp updateEmp(Emp emp, List<String> skills){
-        return alphaRepository.updateEmp(emp, skills);
+    public Emp updateEmp(Emp emp){
+        return alphaRepository.updateEmp(emp);
     }
 
     public List<Emp>getAllEmp(){
@@ -57,4 +57,11 @@ public class AlphaService {
     public void deleteProject(int projectID) {
         alphaRepository.deleteProject(projectID);
     }
-}
+    public List<String> getSkillsList(){
+        return alphaRepository.getSkillsList();
+    }
+    public List<String> getEmpSkillList(String username) {
+        return alphaRepository.getEmpSkillList(username);
+    }
+
+    }

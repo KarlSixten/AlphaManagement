@@ -152,16 +152,21 @@ public class AlphaController {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
 
-    @GetMapping("bla bla33")
-    public String updateEmpForm(@RequestParam("username") String username, Model model){
+    @GetMapping("{username}/update-emp")
+    public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
+        List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
+        List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
         model.addAttribute("emp", emp);
-        return "update-emp-form";
+        model.addAttribute("empSkills", empSkills);
+        model.addAttribute("allSkills", allSkills);
+        return "update-emp";
     }
-    @PostMapping("bla blaa bllaa")
-    public String updateEmp(@ModelAttribute Emp emp, @RequestParam("skills") List<String> skills) {
-        alphaService.updateEmp(emp, skills);
-        return "redirect:/home";
+
+    @PostMapping("/updateEmp")
+    public String updateEmp(@ModelAttribute Emp emp) {
+        alphaService.updateEmp(emp);
+        return "redirect:/find-user";
     }
 
 
