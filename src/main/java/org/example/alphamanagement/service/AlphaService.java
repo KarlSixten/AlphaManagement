@@ -5,6 +5,7 @@ import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.repository.AlphaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -63,5 +64,9 @@ public class AlphaService {
     public List<String> getEmpSkillList(String username) {
         return alphaRepository.getEmpSkillList(username);
     }
-
+    public Project createSubProject(int parentProjectID, Project newProject){
+        return alphaRepository.createSubProject(parentProjectID,newProject);}
+    public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
+       return alphaRepository.getAllSubProjectsOfProject(projectID);
+    }
     }

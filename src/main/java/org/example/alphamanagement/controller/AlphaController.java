@@ -169,6 +169,28 @@ public class AlphaController {
         return "redirect:/find-user";
     }
 
+    @GetMapping("projects/{projectID}/create-subproject")
+    public String showCreateSubproject(@PathVariable("projectID") int parentProjectID, Model model){
+        model.addAttribute("parentProjectID", parentProjectID);
+        model.addAttribute("subProject", new Project());
+        return "create_subProject";
+    }
+
+    @PostMapping("projects/{projectID}/create-subproject")
+    public String createSubProject(@PathVariable("projectID") int parentProjectID, @ModelAttribute Project subProject){
+        alphaService.createSubProject(parentProjectID, subProject);
+        return "redirect:/projects/" + parentProjectID + "/subprojects"; // Redirect to the specific subproject view
+    }
+
+
+    @GetMapping("projects/{projectID}/subprojects")
+    public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model){
+        Project parentProject = alphaService.findProjectByID(parentProjectID);
+        model.addAttribute("parentProjectID", parentProjectID);
+        model.addAttribute("parentProjectName", parentProject.getProjectName());
+        model.addAttribute("subProjects", alphaService.getAllSubProjectsOfProject(parentProjectID));
+        return "subProject-view-page";
+    }
 
 
 }

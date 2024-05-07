@@ -286,6 +286,44 @@ public class AlphaRepository {
         }
     }
 
+    public Project createSubProject(int parentProjectID, Project newProject) {
+        newProject.setParentProjectID(parentProjectID);
+        String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
+
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setString(1, newProject.getProjectName());
+            pstmt.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
+            pstmt.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
+            pstmt.setInt(4, parentProjectID);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newProject;
+    }
+
+    public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
+        ArrayList<Project> subProjects = new ArrayList<>();
+        String SQL = "SELECT * from project where parentProjectID = ?;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            Project currentProject;
+            while (rs.next()){
+                currentProject = createProjectFromResultSet(rs);
+                currentProject.setParentProjectID(projectID);
+                subProjects.add(currentProject);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return subProjects;
+    }
+
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
@@ -348,22 +386,5 @@ public class AlphaRepository {
         }
         return project;
     }
-    public Project createSubProject(Project parentProject, Project newProject) {
-        newProject.setParentProject(parentProject);
-        String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
 
-        Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
-            pstmt.setString(1, newProject.getProjectName());
-            pstmt.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
-            pstmt.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
-            pstmt.setInt(4, parentProject.getProjectID());
-            pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return newProject;
-    }
 }
