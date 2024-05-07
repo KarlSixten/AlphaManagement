@@ -153,7 +153,7 @@ public class AlphaController {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
 
-    @GetMapping("{username}/update-emp")
+    @GetMapping("find-user/{username}/update-emp")
     public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
         List<String> empSkills = alphaService.getEmpSkillList(username);
