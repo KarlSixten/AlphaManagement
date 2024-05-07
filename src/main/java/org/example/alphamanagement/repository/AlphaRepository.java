@@ -90,9 +90,7 @@ public class AlphaRepository {
             psmt.setString(1, username);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()) {
-                emp.setUsername(rs.getString("username"));
-                emp.setPassword(rs.getString("password"));
-                emp.setJobType(rs.getInt("jobTypeID"));
+                emp = createEmpFromResultSet(rs);
             }
             return emp;
         } catch (SQLException e) {
@@ -101,15 +99,32 @@ public class AlphaRepository {
     }
 
     public void deleteEmp(String username) {
-        String sql = "DELETE FROM EMP WHERE username = ?";
+        String deleteFromEmp = "DELETE FROM EMP WHERE username = ?";
+        String deleteFromProject_Emp = "DELETE FROM PROJECT_EMP WHERE username = ?";
+        String deleteFromEmp_Task = "DELETE FROM EMP_TASK WHERE username =?";
+        String deleteFromEmp_Skill = "DELETE FROM EMP_SKILL WHERE username =?";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
+        try {
+            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
+            PreparedStatement deleteFromProject_EmpPstmt = connection.prepareStatement(deleteFromProject_Emp);
+            PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
+            PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
+
+
+            deleteFromProject_EmpPstmt.setString(1,username);
+            deleteFromProject_EmpPstmt.executeUpdate();
+            deleteFromEmp_TaskPstmt.setString(1,username);
+            deleteFromEmp_TaskPstmt.executeUpdate();
+            deleteFromEmp_SkillPstmt.setString(1,username);
+            deleteFromEmp_SkillPstmt.executeUpdate();
+            deleteFromEmpPstmt.setString(1, username);
+            deleteFromEmpPstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
@@ -185,7 +200,7 @@ public class AlphaRepository {
     }
 
 
-    public Emp updateEmp(Emp emp) {
+    public Emp updateEmp(Emp emp, List<String> empSkills) {
         String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
@@ -207,9 +222,7 @@ public class AlphaRepository {
             delete.setString(1, emp.getUsername());
             delete.executeUpdate();
 
-
-            //DENNE HER INDSÆTTER ALLE SKILLS TIL EN MEDARBEJDER, DET SKAL DEN IKKE
-            for (String skill : getSkillsList()) {
+            for (String skill : empSkills) {
                 insert.setString(1, emp.getUsername());
                 insert.setString(2, skill);
                 insert.executeUpdate();

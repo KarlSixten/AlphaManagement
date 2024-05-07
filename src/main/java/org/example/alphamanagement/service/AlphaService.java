@@ -39,8 +39,8 @@ public class AlphaService {
         return alphaRepository.getAllProjects();
     }
 
-    public Emp updateEmp(Emp emp){
-        return alphaRepository.updateEmp(emp);
+    public Emp updateEmp(Emp emp, List<String> empSkills){
+        return alphaRepository.updateEmp(emp, empSkills);
     }
 
     public List<Emp>getAllEmp(){
