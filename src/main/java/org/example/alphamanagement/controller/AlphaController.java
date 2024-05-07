@@ -155,8 +155,8 @@ public class AlphaController {
     @GetMapping("{username}/update-emp")
     public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
-        List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
-        List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
+        List<String> empSkills = alphaService.getEmpSkillList(username);
+        List<String> allSkills = alphaService.getSkillsList();
         model.addAttribute("emp", emp);
         model.addAttribute("empSkills", empSkills);
         model.addAttribute("allSkills", allSkills);
