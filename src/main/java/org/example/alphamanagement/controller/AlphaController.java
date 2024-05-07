@@ -116,6 +116,8 @@ public class AlphaController {
             return "redirect:/home";
         }
     }
+
+
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
@@ -169,4 +171,26 @@ public class AlphaController {
         alphaService.updateEmp(emp, empSkills);
         return "redirect:/find-user";
     }
+
+    @PostMapping("/{projectID}/addEmpToProject")
+    public String addEmpToProject(@PathVariable("projectID") int projectID,
+                                  @RequestParam("username") String username){
+        alphaService.addEmpToProject(username, projectID);
+        return "redirect:/front-page";
+    }
+
+    @GetMapping("/{projectID}/add/{username}")
+    public String showAddEmpToProjectForm(@PathVariable("username") String username,
+                                          @PathVariable("projectID") int projectID,
+                                          Model model) {
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            // Assuming you need to pass projectID to the view
+            model.addAttribute("projectID", projectID);
+            return "addEmpToProject";
+        } else {
+            return "redirect:/front-page";
+        }
+    }
+
+
 }

@@ -63,5 +63,8 @@ public class AlphaService {
     public List<String> getEmpSkillList(String username) {
         return alphaRepository.getEmpSkillList(username);
     }
+    public void addEmpToProject(String username, int projectID){
+        alphaRepository.addEmpToProject(username, projectID);
+    }
 
     }

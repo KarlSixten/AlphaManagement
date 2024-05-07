@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee to Project</title>
+</head>
+<body>
+<h1>Add Employee to Project</h1>
+<form action="/{projectID}/addEmpToProject" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <input type="hidden" id="projectID" name="projectID" value="{projectID}">
+    <button type="submit">Add Employee</button>
+</form>
+</body>
+</html>

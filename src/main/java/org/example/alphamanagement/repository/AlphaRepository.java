@@ -299,6 +299,18 @@ public class AlphaRepository {
         }
     }
 
+
+    public void addEmpToProject(String username, int projectID){
+        String sql = "INSERT INTO PROJECT_EMP (USERNAME, PROJECT_ID) VALUES (?, ?)";
+        try (Connection connection = ConnectionManager.getConnection(url, user, password);
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, projectID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
@@ -361,4 +373,6 @@ public class AlphaRepository {
         }
         return project;
     }
+
+
 }
