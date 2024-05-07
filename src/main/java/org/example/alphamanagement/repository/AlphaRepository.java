@@ -329,7 +329,6 @@ public class AlphaRepository {
             Project currentProject;
             while (rs.next()){
                 currentProject = createProjectFromResultSet(rs);
-                currentProject.setParentProjectID(projectID);
                 subProjects.add(currentProject);
             }
         } catch (SQLException e) {
@@ -395,6 +394,7 @@ public class AlphaRepository {
             project.setProjectName(rs.getString("projectName"));
             project.setStartDate(rs.getDate("startDate").toLocalDate());
             project.setEndDate(rs.getDate("endDate").toLocalDate());
+            project.setParentProjectID(rs.getInt("parentProjectID"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
