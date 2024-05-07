@@ -8,6 +8,7 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
     private int projectID;
+    private int parentProjectID;
 
 
     public Project(String projectName, LocalDate startDate, LocalDate endDate) {
@@ -18,6 +19,14 @@ public class Project {
 
 
     public Project() {
+    }
+
+    public int getParentProjectID() {
+        return parentProjectID;
+    }
+
+    public void setParentProjectID(int parentProjectID) {
+        this.parentProjectID = parentProjectID;
     }
 
     public String getProjectName() {

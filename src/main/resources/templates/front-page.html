@@ -78,7 +78,9 @@
     </thead>
     <tbody>
     <tr th:each="project : ${projects}">
-        <td th:text="${project.projectName}">Project Name</td>
+        <td>
+            <a th:href="@{'/projects/' + ${project.projectID} + '/subprojects'}" th:text="${project.projectName}">Project Name</a>
+        </td>
         <td th:text="${project.startDate}">Start Date</td>
         <td th:text="${project.endDate}">End Date</td>
         <td th:if="${jobType == 2 or jobType == 3}">
