@@ -23,7 +23,7 @@ public class AlphaController {
     }
 
     @GetMapping("/create-emp")
-    public String createEmp (Model model) {
+    public String createEmp(Model model) {
         if (userIsLoggedIn()) {
             model.addAttribute("emp", new Emp());
             return "create_emp";
@@ -49,7 +49,7 @@ public class AlphaController {
     }
 
     @GetMapping("")
-    public String getLogin(Model model){
+    public String getLogin(Model model) {
         model.addAttribute("empUsername", new String());
         model.addAttribute("empPassword", new String());
         return "login";
@@ -80,6 +80,7 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+
     @GetMapping("/projects/new")
     public String showCreateProjectForm(Model model) {
         model.addAttribute("project", new Project());
@@ -89,14 +90,14 @@ public class AlphaController {
 
     @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
-        if (userIsLoggedIn()&& (userHasRole(2) || userHasRole(3))){
+        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             alphaService.createProject(project);
             return "redirect:/home";
-        }
-       else {
-           return "redirect:/";
+        } else {
+            return "redirect:/";
         }
     }
+
     @GetMapping("/projects/{projectID}/update")
     public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
         Project project = alphaService.findProjectByID(projectID);
@@ -107,17 +108,15 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+
     @PostMapping("/projects/{projectID}/update")
     public String updateProject(@ModelAttribute("project") Project project, @PathVariable int projectID) {
         project.setProjectID(projectID);
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             alphaService.updateProject(project);
-            Project updatedProject = alphaService.findProjectByID(project.getProjectID());
-            if (updatedProject.getParentProjectID()>0) {
+            if (project.getParentProjectID() > 0) {
                 return "redirect:/projects/" + project.getParentProjectID() + "/subprojects";
-            }
-            else {
-                System.out.println(project.getParentProjectID());
+            } else {
                 return "redirect:/home";
             }
         } else {
@@ -128,8 +127,16 @@ public class AlphaController {
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
+            Project project = alphaService.findProjectByID(projectID);
+            if (project == null) {
+                return "redirect:/";
+            }
             alphaService.deleteProject(projectID);
-            return "redirect:/home";
+            if (project.getParentProjectID() > 0) {
+                return "redirect:/projects/" + project.getParentProjectID() + "/subprojects";
+            } else {
+                return "redirect:/home";
+            }
         } else {
             return "redirect:/";
         }
@@ -152,7 +159,7 @@ public class AlphaController {
     }
 
     @PostMapping("find-user/{username}/delete-emp")
-    public String deleteEmp(@PathVariable("username") String username){
+    public String deleteEmp(@PathVariable("username") String username) {
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
     }
@@ -183,21 +190,21 @@ public class AlphaController {
     }
 
     @GetMapping("projects/{projectID}/create-subproject")
-    public String showCreateSubproject(@PathVariable("projectID") int parentProjectID, Model model){
+    public String showCreateSubproject(@PathVariable("projectID") int parentProjectID, Model model) {
         model.addAttribute("parentProjectID", parentProjectID);
         model.addAttribute("subProject", new Project());
         return "create_subProject";
     }
 
     @PostMapping("projects/{projectID}/create-subproject")
-    public String createSubProject(@PathVariable("projectID") int parentProjectID, @ModelAttribute Project subProject){
+    public String createSubProject(@PathVariable("projectID") int parentProjectID, @ModelAttribute Project subProject) {
         alphaService.createSubProject(parentProjectID, subProject);
         return "redirect:/projects/" + parentProjectID + "/subprojects"; // Redirect to the specific subproject view
     }
 
 
     @GetMapping("projects/{projectID}/subprojects")
-    public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model){
+    public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model) {
         Project parentProject = alphaService.findProjectByID(parentProjectID);
         model.addAttribute("parentProjectID", parentProjectID);
         model.addAttribute("parentProjectName", parentProject.getProjectName());
