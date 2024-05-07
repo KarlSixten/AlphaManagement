@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -142,8 +143,8 @@ public class AlphaController {
         return "find_user";
     }
 
-    @PostMapping("/{username}/delete-emp")
-    public String deleteEmp(@PathVariable String username){
+    @PostMapping("find-user/{username}/delete-emp")
+    public String deleteEmp(@PathVariable("username") String username){
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
     }
@@ -153,11 +154,11 @@ public class AlphaController {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
 
-    @GetMapping("{username}/update-emp")
+    @GetMapping("find-user/{username}/update-emp")
     public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
-        List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
-        List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
+        List<String> empSkills = alphaService.getEmpSkillList(username);
+        List<String> allSkills = alphaService.getSkillsList();
         model.addAttribute("emp", emp);
         model.addAttribute("empSkills", empSkills);
         model.addAttribute("allSkills", allSkills);
@@ -165,8 +166,12 @@ public class AlphaController {
     }
 
     @PostMapping("/updateEmp")
-    public String updateEmp(@ModelAttribute Emp emp, @RequestParam List<String> empSkills) {
-        alphaService.updateEmp(emp, empSkills);
+    public String updateEmp(@ModelAttribute Emp emp, @RequestParam(required = false, defaultValue = "") List<String> empSkills) {
+        if (empSkills.isEmpty()) {
+            alphaService.updateEmp(emp, new ArrayList<>());
+        } else {
+            alphaService.updateEmp(emp, empSkills);
+        }
         return "redirect:/find-user";
     }
 

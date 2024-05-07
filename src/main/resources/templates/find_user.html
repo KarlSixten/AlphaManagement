@@ -13,10 +13,10 @@
 <ul>
     <li th:each="emp : ${foundEmps}">
         <span th:text="${emp.username}"></span>
-        <form th:action="@{'/' + ${emp.username} + '/delete-emp'}" method="post">
+        <form th:action="@{'find-user/' + ${emp.username} + '/delete-emp'}" method="post">
             <button type="submit">Delete</button>
         </form>
-        <a th:href="@{'/' + ${emp.username} + '/update-emp'}">Update</a>
+        <a th:href="@{'find-user/' + ${emp.username} + '/update-emp'}">Update</a>
     </li>
 </ul>
 </body>

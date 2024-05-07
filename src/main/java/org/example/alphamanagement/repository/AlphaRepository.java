@@ -201,7 +201,7 @@ public class AlphaRepository {
 
 
     public Emp updateEmp(Emp emp, List<String> empSkills) {
-        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ?;";
+        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ? WHERE username = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
 
@@ -217,6 +217,7 @@ public class AlphaRepository {
             updateEmpStatement.setString(2, emp.getLastName());
             updateEmpStatement.setString(3, emp.getPassword());
             updateEmpStatement.setInt(4, emp.getJobType());
+            updateEmpStatement.setString(5, emp.getUsername());
             updateEmpStatement.executeUpdate();
 
             delete.setString(1, emp.getUsername());
