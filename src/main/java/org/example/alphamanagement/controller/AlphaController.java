@@ -149,11 +149,6 @@ public class AlphaController {
         return "redirect:/find-user";
     }
 
-
-    private boolean userIsLoggedIn() {
-        return httpSession.getAttribute("empLoggedIn") != null;
-    }
-
     @GetMapping("find-user/{username}/update-emp")
     public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
@@ -198,5 +193,21 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
+    //---------------------------------------------------------------------------------------------------------------
 
+    private boolean userIsLoggedIn() {
+        return httpSession.getAttribute("empLoggedIn") != null;
+    }
+
+    private boolean userIsProjectManager() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 2;
+    }
+
+    private boolean userIsSystemAdmin() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 3;
+    }
 }
