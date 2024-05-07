@@ -128,7 +128,7 @@ public class AlphaRepository {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT * FROM project ORDER BY startDate ASC";
+        String sql = "SELECT * FROM project WHERE parentProjectID IS NULL ORDER BY startDate ASC";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (Statement stmt = connection.createStatement();
