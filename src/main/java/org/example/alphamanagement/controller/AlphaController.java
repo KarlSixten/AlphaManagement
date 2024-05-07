@@ -172,25 +172,27 @@ public class AlphaController {
         return "redirect:/find-user";
     }
 
-    @PostMapping("/{projectID}/addEmpToProject")
-    public String addEmpToProject(@PathVariable("projectID") int projectID,
-                                  @RequestParam("username") String username){
-        alphaService.addEmpToProject(username, projectID);
-        return "redirect:/front-page";
-    }
 
-    @GetMapping("/{projectID}/add/{username}")
-    public String showAddEmpToProjectForm(@PathVariable("username") String username,
-                                          @PathVariable("projectID") int projectID,
-                                          Model model) {
-        if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
-            // Assuming you need to pass projectID to the view
-            model.addAttribute("projectID", projectID);
-            return "addEmpToProject";
-        } else {
-            return "redirect:/front-page";
+
+
+
+
+
+    @GetMapping("/{projectID}/add")
+    public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
+        if (searchString == null) {
+            searchString = "";
         }
+        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
+        model.addAttribute("foundEmps", foundEmps);
+        model.addAttribute("projectID", projectID);
+        return "addEmpToProject";
     }
 
-
+    @PostMapping("/{projectID}/add/{username}")
+    public String addEmpToProject(@PathVariable("projectID") int projectID,
+                                  @PathVariable("username") String username){
+        alphaService.addEmpToProject(username, projectID);
+        return "redirect:/home";
+    }
 }
