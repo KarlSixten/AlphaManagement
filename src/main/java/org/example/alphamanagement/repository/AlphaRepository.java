@@ -274,7 +274,7 @@ public class AlphaRepository {
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setLong(1, projectID);
+            pstmt.setInt(1, projectID);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return createProjectFromResultSet(rs);
