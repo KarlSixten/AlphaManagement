@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -111,11 +112,19 @@ public class AlphaController {
         project.setProjectID(projectID);
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             alphaService.updateProject(project);
-            return "redirect:/home";
+            Project updatedProject = alphaService.findProjectByID(project.getProjectID());
+            if (updatedProject.getParentProjectID()>0) {
+                return "redirect:/projects/" + project.getParentProjectID() + "/subprojects";
+            }
+            else {
+                System.out.println(project.getParentProjectID());
+                return "redirect:/home";
+            }
         } else {
             return "redirect:/home";
         }
     }
+
 
 
     @GetMapping("/projects/{projectID}/delete")
@@ -144,22 +153,17 @@ public class AlphaController {
         return "find_user";
     }
 
-    @PostMapping("/{username}/delete-emp")
-    public String deleteEmp(@PathVariable String username){
+    @PostMapping("find-user/{username}/delete-emp")
+    public String deleteEmp(@PathVariable("username") String username){
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
     }
 
-
-    private boolean userIsLoggedIn() {
-        return httpSession.getAttribute("empLoggedIn") != null;
-    }
-
-    @GetMapping("{username}/update-emp")
+    @GetMapping("find-user/{username}/update-emp")
     public String updateEmpForm(@PathVariable("username") String username, Model model) {
         Emp emp = alphaService.findEmpByUsername(username);
-        List<String> empSkills = alphaService.getEmpSkillList(username); // Hent de færdigheder, som medarbejderen allerede har
-        List<String> allSkills = alphaService.getSkillsList(); // Hent alle tilgængelige færdigheder
+        List<String> empSkills = alphaService.getEmpSkillList(username);
+        List<String> allSkills = alphaService.getSkillsList();
         model.addAttribute("emp", emp);
         model.addAttribute("empSkills", empSkills);
         model.addAttribute("allSkills", allSkills);
@@ -167,9 +171,54 @@ public class AlphaController {
     }
 
     @PostMapping("/updateEmp")
-    public String updateEmp(@ModelAttribute Emp emp, @RequestParam List<String> empSkills) {
-        alphaService.updateEmp(emp, empSkills);
+    public String updateEmp(@ModelAttribute Emp emp, @RequestParam(required = false, defaultValue = "") List<String> empSkills) {
+        if (empSkills.isEmpty()) {
+            alphaService.updateEmp(emp, new ArrayList<>());
+        } else {
+            alphaService.updateEmp(emp, empSkills);
+        }
         return "redirect:/find-user";
+    }
+
+    @GetMapping("projects/{projectID}/create-subproject")
+    public String showCreateSubproject(@PathVariable("projectID") int parentProjectID, Model model){
+        model.addAttribute("parentProjectID", parentProjectID);
+        model.addAttribute("subProject", new Project());
+        return "create_subProject";
+    }
+
+    @PostMapping("projects/{projectID}/create-subproject")
+    public String createSubProject(@PathVariable("projectID") int parentProjectID, @ModelAttribute Project subProject){
+        alphaService.createSubProject(parentProjectID, subProject);
+        return "redirect:/projects/" + parentProjectID + "/subprojects"; // Redirect to the specific subproject view
+    }
+
+
+    @GetMapping("projects/{projectID}/subprojects")
+    public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model){
+        Project parentProject = alphaService.findProjectByID(parentProjectID);
+        model.addAttribute("parentProjectID", parentProjectID);
+        model.addAttribute("parentProjectName", parentProject.getProjectName());
+        model.addAttribute("subProjects", alphaService.getAllSubProjectsOfProject(parentProjectID));
+        return "subProject-view-page";
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
+    //---------------------------------------------------------------------------------------------------------------
+
+    private boolean userIsLoggedIn() {
+        return httpSession.getAttribute("empLoggedIn") != null;
+    }
+
+    private boolean userIsProjectManager() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 2;
+    }
+
+    private boolean userIsSystemAdmin() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 3;
     }
 
 

@@ -128,7 +128,7 @@ public class AlphaRepository {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT * FROM project ORDER BY startDate ASC";
+        String sql = "SELECT * FROM project WHERE parentProjectID IS NULL ORDER BY startDate ASC";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (Statement stmt = connection.createStatement();
@@ -201,7 +201,7 @@ public class AlphaRepository {
 
 
     public Emp updateEmp(Emp emp, List<String> empSkills) {
-        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ?;";
+        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ? WHERE username = ?;";
         String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
         String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
 
@@ -217,6 +217,7 @@ public class AlphaRepository {
             updateEmpStatement.setString(2, emp.getLastName());
             updateEmpStatement.setString(3, emp.getPassword());
             updateEmpStatement.setInt(4, emp.getJobType());
+            updateEmpStatement.setString(5, emp.getUsername());
             updateEmpStatement.executeUpdate();
 
             delete.setString(1, emp.getUsername());
@@ -287,7 +288,7 @@ public class AlphaRepository {
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setLong(1, projectID);
+            pstmt.setInt(1, projectID);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return createProjectFromResultSet(rs);
@@ -312,6 +313,43 @@ public class AlphaRepository {
             e.printStackTrace();
         }
     }
+    public Project createSubProject(int parentProjectID, Project newProject) {
+        newProject.setParentProjectID(parentProjectID);
+        String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
+
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setString(1, newProject.getProjectName());
+            pstmt.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
+            pstmt.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
+            pstmt.setInt(4, parentProjectID);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newProject;
+    }
+
+    public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
+        ArrayList<Project> subProjects = new ArrayList<>();
+        String SQL = "SELECT * from project where parentProjectID = ?;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            Project currentProject;
+            while (rs.next()){
+                currentProject = createProjectFromResultSet(rs);
+                subProjects.add(currentProject);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return subProjects;
+    }
+
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
@@ -369,11 +407,13 @@ public class AlphaRepository {
             project.setProjectName(rs.getString("projectName"));
             project.setStartDate(rs.getDate("startDate").toLocalDate());
             project.setEndDate(rs.getDate("endDate").toLocalDate());
+            project.setParentProjectID(rs.getInt("parentProjectID"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return project;
     }
+
 
 
 }
