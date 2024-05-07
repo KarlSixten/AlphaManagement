@@ -104,10 +104,12 @@ public class AlphaRepository {
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();

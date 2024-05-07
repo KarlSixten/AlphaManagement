@@ -142,11 +142,12 @@ public class AlphaController {
         return "find_user";
     }
 
-    @PostMapping("")
+    @PostMapping("/{username}/delete-emp")
     public String deleteEmp(@PathVariable String username){
         alphaService.deleteEmp(username);
-        return "";
+        return "redirect:/find-user";
     }
+
 
     private boolean userIsLoggedIn() {
         return httpSession.getAttribute("empLoggedIn") != null;
@@ -168,7 +169,4 @@ public class AlphaController {
         alphaService.updateEmp(emp, empSkills);
         return "redirect:/find-user";
     }
-
-
-
 }
