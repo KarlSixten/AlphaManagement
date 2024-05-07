@@ -142,8 +142,8 @@ public class AlphaController {
         return "find_user";
     }
 
-    @PostMapping("/{username}/delete-emp")
-    public String deleteEmp(@PathVariable String username){
+    @PostMapping("find-user/{username}/delete-emp")
+    public String deleteEmp(@PathVariable("username") String username){
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
     }
