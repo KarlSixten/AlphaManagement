@@ -112,11 +112,19 @@ public class AlphaController {
         project.setProjectID(projectID);
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             alphaService.updateProject(project);
-            return "redirect:/home";
+            Project updatedProject = alphaService.findProjectByID(project.getProjectID());
+            if (updatedProject.getParentProjectID()>0) {
+                return "redirect:/projects/" + project.getParentProjectID() + "/subprojects";
+            }
+            else {
+                System.out.println(project.getParentProjectID());
+                return "redirect:/home";
+            }
         } else {
             return "redirect:/home";
         }
     }
+
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
@@ -148,7 +156,6 @@ public class AlphaController {
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
     }
-
 
     private boolean userIsLoggedIn() {
         return httpSession.getAttribute("empLoggedIn") != null;

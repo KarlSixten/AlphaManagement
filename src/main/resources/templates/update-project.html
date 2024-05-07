@@ -1,31 +1,33 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Update Project</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-<div class="container">
-    <h1>Update Project</h1>
-    <form method="post" th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}">
-        <input type="hidden" th:field="*{projectID}" />
-        <div class="form-group">
-            <label for="projectName">Project Name:</label>
-            <input type="text" id="projectName" name="projectName" th:field="*{projectName}" required>
-        </div>
-        <div class="form-group">
-            <label for="startDate">Start Date:</label>
-            <input type="date" id="startDate" name="startDate" th:field="*{startDate}" required>
-        </div>
-        <div class="form-group">
-            <label for="endDate">End Date:</label>
-            <input type="date" id="endDate" name="endDate" th:field="*{endDate}" required>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Update Project</button>
-        </div>
-    </form>
-</div>
-</body>
-</html>
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Update Project</title>
+        <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+    <div class="container">
+        <h1 th:text="'Update ' + ${project.projectName}">Update Project</h1>
+        <form method="post" th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}">
+            <input type="hidden" th:field="*{projectID}" />
+            <input type="hidden" th:field="*{parentProjectID}" />
+
+            <div class="form-group">
+                <label for="projectName">Project Name:</label>
+                <input type="text" id="projectName" name="projectName" th:field="*{projectName}" required>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" th:field="*{startDate}" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate" th:field="*{endDate}" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update Project</button>
+            </div>
+        </form>
+    </div>
+    </body>
+    </html>
