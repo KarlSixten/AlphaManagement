@@ -300,6 +300,19 @@ public class AlphaRepository {
         }
     }
 
+
+    public void addEmpToProject(String username, int projectID){
+        String sql = "INSERT INTO PROJECT_EMP (USERNAME, PROJECTID) VALUES (?, ?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, projectID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public Project createSubProject(int parentProjectID, Project newProject) {
         newProject.setParentProjectID(parentProjectID);
         String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
@@ -400,5 +413,7 @@ public class AlphaRepository {
         }
         return project;
     }
+
+
 
 }

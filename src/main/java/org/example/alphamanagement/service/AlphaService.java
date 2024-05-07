@@ -69,4 +69,8 @@ public class AlphaService {
     public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
        return alphaRepository.getAllSubProjectsOfProject(projectID);
     }
+    public void addEmpToProject(String username, int projectID){
+        alphaRepository.addEmpToProject(username, projectID);
+    }
+
     }

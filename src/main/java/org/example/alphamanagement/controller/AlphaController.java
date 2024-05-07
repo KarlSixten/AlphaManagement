@@ -125,6 +125,8 @@ public class AlphaController {
         }
     }
 
+
+
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
@@ -155,10 +157,6 @@ public class AlphaController {
     public String deleteEmp(@PathVariable("username") String username){
         alphaService.deleteEmp(username);
         return "redirect:/find-user";
-    }
-
-    private boolean userIsLoggedIn() {
-        return httpSession.getAttribute("empLoggedIn") != null;
     }
 
     @GetMapping("find-user/{username}/update-emp")
@@ -205,5 +203,45 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
+    //---------------------------------------------------------------------------------------------------------------
 
+    private boolean userIsLoggedIn() {
+        return httpSession.getAttribute("empLoggedIn") != null;
+    }
+
+    private boolean userIsProjectManager() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 2;
+    }
+
+    private boolean userIsSystemAdmin() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 3;
+    }
+
+
+
+
+
+
+
+    @GetMapping("/{projectID}/add")
+    public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
+        if (searchString == null) {
+            searchString = "";
+        }
+        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
+        model.addAttribute("foundEmps", foundEmps);
+        model.addAttribute("projectID", projectID);
+        return "addEmpToProject";
+    }
+
+    @PostMapping("/{projectID}/add/{username}")
+    public String addEmpToProject(@PathVariable("projectID") int projectID,
+                                  @PathVariable("username") String username){
+        alphaService.addEmpToProject(username, projectID);
+        return "redirect:/home";
+    }
 }
