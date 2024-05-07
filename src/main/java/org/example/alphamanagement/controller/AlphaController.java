@@ -203,30 +203,6 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
-    //---------------------------------------------------------------------------------------------------------------
-    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
-    //---------------------------------------------------------------------------------------------------------------
-
-    private boolean userIsLoggedIn() {
-        return httpSession.getAttribute("empLoggedIn") != null;
-    }
-
-    private boolean userIsProjectManager() {
-        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
-        return empLoggedIn.getJobType() == 2;
-    }
-
-    private boolean userIsSystemAdmin() {
-        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
-        return empLoggedIn.getJobType() == 3;
-    }
-
-
-
-
-
-
-
     @GetMapping("/{projectID}/add")
     public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
         if (searchString == null) {
@@ -243,5 +219,23 @@ public class AlphaController {
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
         return "redirect:/home";
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
+    //---------------------------------------------------------------------------------------------------------------
+
+    private boolean userIsLoggedIn() {
+        return httpSession.getAttribute("empLoggedIn") != null;
+    }
+
+    private boolean userIsProjectManager() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 2;
+    }
+
+    private boolean userIsSystemAdmin() {
+        Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
+        return empLoggedIn.getJobType() == 3;
     }
 }
