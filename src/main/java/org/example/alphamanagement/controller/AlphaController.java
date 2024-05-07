@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -165,8 +166,12 @@ public class AlphaController {
     }
 
     @PostMapping("/updateEmp")
-    public String updateEmp(@ModelAttribute Emp emp, @RequestParam List<String> empSkills) {
-        alphaService.updateEmp(emp, empSkills);
+    public String updateEmp(@ModelAttribute Emp emp, @RequestParam(required = false, defaultValue = "") List<String> empSkills) {
+        if (empSkills.isEmpty()) {
+            alphaService.updateEmp(emp, new ArrayList<>());
+        } else {
+            alphaService.updateEmp(emp, empSkills);
+        }
         return "redirect:/find-user";
     }
 }
