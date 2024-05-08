@@ -94,12 +94,17 @@ INSERT INTO skill (skillName) VALUES ('C++');
 INSERT INTO skill (skillName) VALUES ('HTML');
 
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
-INSERT INTO emp_skill (username,skillID) values ('test',2);
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Karl', 'Bjarnø', 'kabj0000', 'test', 3);
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('user', 'user', 'user', 'user', 1);
 
+INSERT INTO emp_skill (username,skillID) values ('test',2);
 
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Testprojekt', '2024-09-10', '2024-10-08');
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Hesteprojekt', '2024-09-09', '2024-10-08');
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Festeprojekt', '2024-09-08', '2024-10-08');
 
+INSERT INTO project_emp (projectID, username) VALUES (1, 'test');
+INSERT INTO project_emp (projectID, username) VALUES (2, 'test');
+INSERT INTO project_emp (projectID, username) VALUES (3, 'test');
+
+INSERT INTO project_emp (projectID, username) VALUES (2, 'kabj0000');

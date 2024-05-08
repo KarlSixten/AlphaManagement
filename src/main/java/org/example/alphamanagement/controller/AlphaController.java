@@ -214,22 +214,32 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
-    @GetMapping("/{projectID}/add")
+    @GetMapping("/projects/{projectID}/update-emps")
     public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
         if (searchString == null) {
             searchString = "";
         }
-        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
-        model.addAttribute("foundEmps", foundEmps);
+        List<Emp> empsOnProject = alphaService.getEmpsOnProject(projectID);
+        List<Emp> empsToAdd = alphaService.findByUsernameContainingNotOnProject(searchString, projectID);
+
+        model.addAttribute("empsOnProject", empsOnProject);
+        model.addAttribute("empsToAdd", empsToAdd);
         model.addAttribute("projectID", projectID);
-        return "addEmpToProject";
+        return "update_project_emps";
     }
 
-    @PostMapping("/{projectID}/add/{username}")
+    @PostMapping("/projects/{projectID}/update-emps/add/{username}")
     public String addEmpToProject(@PathVariable("projectID") int projectID,
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
-        return "redirect:/home";
+        return "redirect:/projects/" + projectID + "/update-emps";
+    }
+
+    @PostMapping("/projects/{projectID}/update-emps/remove/{username}")
+    public String removeEmpfromProject(@PathVariable("projectID") int projectID,
+                                       @PathVariable("username") String username){
+        alphaService.removeEmpFromProject(projectID, username);
+        return "redirect:/projects/" + projectID + "/update-emps";
     }
     @GetMapping("/tasks/new/{ProjectID}")
     public String showCreateTaskForm(@PathVariable("ProjectID") int projectID, Model model) {
@@ -264,7 +274,7 @@ public class AlphaController {
         Task task = alphaService.findTaskByProjectID(projectID);
         model.addAttribute("projectID", projectID);
         model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
-        return "viewTask";
+        return "viewAllTasks";
     }
 
 

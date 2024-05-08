@@ -82,6 +82,9 @@ public class AlphaService {
     public Task createTask(Task newTask, int projectID){
         return alphaRepository.createTask(newTask, projectID);
     }
+    public List<Emp> getEmpsOnProject(int projectID) {
+        return alphaRepository.getEmpsOnProject(projectID);
+    }
     public void deleteTask(int taskID){
         alphaRepository.deleteTask(taskID);
     }
@@ -99,4 +102,11 @@ public class AlphaService {
         return alphaRepository.findTaskByProjectID(projectID);
     }
 
+    public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
+        return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
+    }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        alphaRepository.removeEmpFromProject(projectID, username);
+    }
 }
