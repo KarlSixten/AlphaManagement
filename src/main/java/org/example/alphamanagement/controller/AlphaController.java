@@ -274,7 +274,7 @@ public class AlphaController {
         Task task = alphaService.findTaskByProjectID(projectID);
         model.addAttribute("projectID", projectID);
         model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
-        return "viewTask";
+        return "viewAllTasks";
     }
 
 
