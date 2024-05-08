@@ -27,21 +27,24 @@ public class AlphaController {
     public String createEmp(Model model) {
         if (userIsLoggedIn()) {
             model.addAttribute("emp", new Emp());
+            model.addAttribute("skillsList", alphaService.getSkillsList()); // Add the skills list to the model
             return "create_emp";
         } else {
             return "redirect:/";
         }
     }
 
+
     @PostMapping("/submit-create-emp")
-    public String getSaveNewEmp(@ModelAttribute Emp emp) {
-        if (alphaService.createEmp(emp) != null) {
+    public String getSaveNewEmp(@ModelAttribute Emp emp, @RequestParam(value = "skills", required = false) ArrayList<String> skills) {
+        if (alphaService.createEmpWithSkills(emp, skills) != null) {
             httpSession.setAttribute("newlyCreatedEmp", emp);
             return "redirect:/user-created-success";
         } else {
             return "redirect:/";
         }
     }
+
 
     @GetMapping("/user-created-success")
     public String getCreateUserSuccess(Model model) {

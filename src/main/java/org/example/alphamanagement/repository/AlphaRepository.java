@@ -21,8 +21,7 @@ public class AlphaRepository {
     @Value("${spring.datasource.password}")
     private String password;
 
-
-    public Emp createEmp(Emp newEmp) {
+    public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills) {
         newEmp.setUsername(createUsername(newEmp.getFirstName(), newEmp.getLastName()));
         String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -34,6 +33,9 @@ public class AlphaRepository {
             pstmt.setString(4, newEmp.getPassword());
             pstmt.setInt(5, newEmp.getJobType());
             pstmt.executeUpdate();
+            if (skills != null) {
+                saveSkills(newEmp.getUsername(), skills);
+            }
             return newEmp;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -370,7 +372,7 @@ public Task createTask(Task newTask){
             int generatedTaskID = generatedKeys.getInt(1);
             newTask.setTaskID(generatedTaskID);
         }
-        
+
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }return newTask;
@@ -532,6 +534,22 @@ public Task createTask(Task newTask){
             throw new RuntimeException(e);
         }
         return project;
+    }
+
+    private void saveSkills(String username, ArrayList<String> skills){
+        String sql = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(sql)){
+            for (String skill : skills) {
+                pstmt.setString(1,username);
+                pstmt.setString(2, skill);
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     private Task createTaskFromResultSet(ResultSet rs){
