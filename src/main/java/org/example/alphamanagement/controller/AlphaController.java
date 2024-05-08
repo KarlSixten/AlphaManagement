@@ -237,6 +237,7 @@ public class AlphaController {
             List<Project> subProjects = alphaService.getAllSubProjectsOfProject(projectID);
             model.addAttribute("subProjects", subProjects);
             model.addAttribute("categories", alphaService.getAllCategories());
+            model.addAttribute("projectID", projectID);
             return "createTask";
         }
 
