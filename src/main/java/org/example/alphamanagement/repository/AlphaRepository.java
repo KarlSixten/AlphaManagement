@@ -502,16 +502,15 @@ public Task createTask(Task newTask){
 
 
 
-    public ArrayList<Task> getAllTaskOfSubProject(int parrentProjectID){
+    public ArrayList<Task> getAllTaskOfSubProject(int projectID) {
         ArrayList<Task> tasks = new ArrayList<>();
-        String SQL = "SELECT * from TASK where parentProjectID = ?;";
+        String SQL = "SELECT * FROM TASK WHERE ProjectID = ?;";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
-            pstmt.setInt(1, parrentProjectID);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setInt(1, projectID);
             ResultSet rs = pstmt.executeQuery();
-            Task currentTask;
-            while (rs.next()){
-                currentTask = createTaskFromResultSet(rs);
+            while (rs.next()) {
+                Task currentTask = createTaskFromResultSet(rs);
                 tasks.add(currentTask);
             }
         } catch (SQLException e) {
@@ -519,6 +518,7 @@ public Task createTask(Task newTask){
         }
         return tasks;
     }
+
 
 
 
