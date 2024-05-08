@@ -3,6 +3,7 @@ package org.example.alphamanagement.repository;
 
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
+import org.example.alphamanagement.model.Task;
 import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -349,6 +350,75 @@ public class AlphaRepository {
         }
         return subProjects;
     }
+
+
+public Task createTask(Task newTask){
+    String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
+    Connection con = ConnectionManager.getConnection(url, user, password);
+    try {
+        PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, newTask.getTaskName());
+        preparedStatement.setInt(2, newTask.getProjectID());
+        preparedStatement.setInt(3, newTask.getCategoryID());
+        preparedStatement.setString(4, newTask.getDescription());
+        preparedStatement.setInt(5, newTask.getEstimate());
+        preparedStatement.setDate(6, Date.valueOf(newTask.getStartDate()));
+        preparedStatement.setDate(7, Date.valueOf(newTask.getEndDate()));
+        preparedStatement.executeUpdate();
+
+        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+        if (generatedKeys.next()){
+            int generatedTaskID = generatedKeys.getInt(1);
+            newTask.setTaskID(generatedTaskID);
+        }
+        
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }return newTask;
+}
+
+
+
+
+
+
+public void deleteTask(int taskID){
+    String SQL = "DELETE FROM TASK WHERE TASKID = ?";
+    Connection connection = ConnectionManager.getConnection(url,user,password);
+    try {
+        PreparedStatement pstmt = connection.prepareStatement(SQL);
+        pstmt.setInt(1,taskID);
+        pstmt.executeUpdate();
+    } catch (SQLException e){
+        e.printStackTrace();
+    }
+}
+
+
+
+
+    public ArrayList<Task> getAllTaskOfSubProject(int parrentProjectID){
+        ArrayList<Task> tasks = new ArrayList<>();
+        String SQL = "SELECT * from TASK where parentProjectID = ?;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
+            pstmt.setInt(1, parrentProjectID);
+            ResultSet rs = pstmt.executeQuery();
+            Task currentTask;
+            while (rs.next()){
+                currentTask = createProjectFromResultSet(rs);
+                tasks.add(currentTask);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+
+
+
+
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
