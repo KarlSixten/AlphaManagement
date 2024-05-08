@@ -17,60 +17,72 @@ public class AlphaService {
     }
 
 
-
-    public Emp createEmp(Emp emp){
-        return alphaRepository.createEmp(emp);
-    }
-
     public Emp checkValidLogin(String empUsername, String empPassword) {
         return alphaRepository.checkValidLogin(empUsername, empPassword);
     }
-    public Project createProject(Project newProject){
+
+    public Project createProject(Project newProject) {
         return alphaRepository.createProject(newProject);
     }
 
     public Emp findEmpByUsername(String username) {
         return alphaRepository.findEmpByUsername(username);
     }
-    public void deleteEmp(String username){
+
+    public void deleteEmp(String username) {
         alphaRepository.deleteEmp(username);
     }
-    public List<Project> getAllProjects(){
+
+    public List<Project> getAllProjects() {
         return alphaRepository.getAllProjects();
     }
 
-    public Emp updateEmp(Emp emp, List<String> empSkills){
+    public Emp updateEmp(Emp emp, List<String> empSkills) {
         return alphaRepository.updateEmp(emp, empSkills);
     }
 
-    public List<Emp>getAllEmp(){
+    public List<Emp> getAllEmp() {
         return alphaRepository.getAllEmp();
     }
+
     public List<Emp> findByUsernameContaining(String searchString) {
         return alphaRepository.findEmpsContaining(searchString);
     }
-    public Project updateProject(Project project){
+
+    public Project updateProject(Project project) {
         return alphaRepository.updateProject(project);
     }
-    public Project findProjectByID(int projectID){
+
+    public Project findProjectByID(int projectID) {
         return alphaRepository.findProjectByID(projectID);
     }
+
     public void deleteProject(int projectID) {
         alphaRepository.deleteProject(projectID);
     }
-    public List<String> getSkillsList(){
+
+    public List<String> getSkillsList() {
         return alphaRepository.getSkillsList();
     }
+
     public List<String> getEmpSkillList(String username) {
         return alphaRepository.getEmpSkillList(username);
     }
-    public Project createSubProject(int parentProjectID, Project newProject){
-        return alphaRepository.createSubProject(parentProjectID,newProject);}
-    public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
-       return alphaRepository.getAllSubProjectsOfProject(projectID);
+
+    public Project createSubProject(int parentProjectID, Project newProject) {
+        return alphaRepository.createSubProject(parentProjectID, newProject);
     }
-    public void addEmpToProject(String username, int projectID){
+
+    public ArrayList<Project> getAllSubProjectsOfProject(int projectID) {
+        return alphaRepository.getAllSubProjectsOfProject(projectID);
+    }
+
+    public void addEmpToProject(String username, int projectID) {
         alphaRepository.addEmpToProject(username, projectID);
     }
 
+    public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills){
+        return alphaRepository.createEmpWithSkills(newEmp, skills);
     }
+
+}

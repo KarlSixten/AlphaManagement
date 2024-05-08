@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opret Emp</title>
+    <title>Create Emp</title>
 </head>
 <body>
-<h2>Opret ny Emp</h2>
+<h2>Create new Emp</h2>
 <form action="/submit-create-emp" method="POST">
-    <label>Fornavn:</label><br>
+    <label>First Name:</label><br>
     <input type="text" name="firstName" required><br><br>
 
-    <label>Efternavn:</label><br>
+    <label>Last Name:</label><br>
     <input type="text" name="lastName" required><br><br>
 
-    <label>Adgangskode:</label><br>
+    <label>Password:</label><br>
     <input type="password" name="password" required><br><br>
 
-    <label>Jobtype:</label><br>
+    <label>Job Type:</label><br>
     <input type="checkbox" name="jobType[]" value="3">
-    <label>Systemadministrator</label><br>
+    <label>System Administrator</label><br>
     <input type="checkbox" name="jobType[]" value="1">
-    <label>Medarbejder</label><br>
+    <label>Employee</label><br>
     <input type="checkbox" name="jobType[]" value="2">
-    <label>Projektleder</label><br><br>
+    <label>Project Manager</label><br><br>
 
-    <input type="submit" value="Opret Emp">
+    <label>Skills:</label><br>
+    <!-- Use Thymeleaf to loop through the skillsList and create checkboxes -->
+    <th:block th:each="skill : ${skillsList}">
+        <input type="checkbox" name="skills[]" th:value="${skill}">
+        <label th:text="${skill}"></label><br>
+    </th:block>
+
+    <input type="submit" value="Create Emp">
 </form>
 </body>
 </html>
