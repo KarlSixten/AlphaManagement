@@ -353,10 +353,11 @@ public class AlphaRepository {
     }
 
 
-public Task createTask(Task newTask){
+public Task createTask(Task newTask, int projectID){
     String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
     Connection con = ConnectionManager.getConnection(url, user, password);
     try {
+        newTask.setProjectID(projectID);
         PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
         preparedStatement.setString(1, newTask.getTaskName());
         preparedStatement.setInt(2, newTask.getProjectID());
