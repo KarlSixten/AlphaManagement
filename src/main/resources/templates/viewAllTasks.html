@@ -1,40 +1,36 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Tasks for Project [[${projectID}]]</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container">
-    <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tasks for Project [[${projectID}]]</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+    <div class="container">
+        <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
+        <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Create New Task</a>
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Estimate</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <!-- Add more table headers as needed -->
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="task : ${tasks}">
-            <td th:text="${task.taskID}">ID</td>
-            <td th:text="${task.taskName}">Name</td>
-            <td th:text="${task.description}">Description</td>
-            <td th:text="${task.estimate}">Estimate</td>
-            <td th:text="${task.startDate}">Start Date</td>
-            <td th:text="${task.endDate}">End Date</td>
-            <!-- Add more table cells as needed -->
-        </tr>
-        </tbody>
-    </table>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Estimate</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.taskName}">Name</td>
+                <td th:text="${task.description}">Description</td>
+                <td th:text="${task.estimate}">Estimate</td>
+                <td th:text="${task.startDate}">Start Date</td>
+                <td th:text="${task.endDate}">End Date</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <!-- You can add links or buttons here for other actions if needed -->
-</div>
-</body>
-</html>
+    </div>
+    </body>
+    </html>

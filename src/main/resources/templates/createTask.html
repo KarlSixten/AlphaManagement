@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Task</title>
-    <!-- Add any required CSS files here -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="container">
-    <!-- Assuming the parentProjectID is needed and passed correctly to this form -->
     <form th:action="@{'/tasks/new/submit/' + ${projectID}}" th:object="${task}" method="post">
         <div class="form-group">
             <label for="taskName">Task Name:</label>

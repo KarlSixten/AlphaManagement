@@ -64,8 +64,6 @@ public class AlphaController {
         Emp empFromLogin = alphaService.checkValidLogin(empUsername, empPassword);
         if (empFromLogin != null) {
             httpSession.setAttribute("empLoggedIn", empFromLogin);
-            Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
-            System.out.println(empLoggedIn.getJobType());
             return "redirect:/home";
         } else {
             return "redirect:/";
