@@ -80,4 +80,8 @@ public class AlphaService {
     public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
         return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
     }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        alphaRepository.removeEmpFromProject(projectID, username);
+    }
 }

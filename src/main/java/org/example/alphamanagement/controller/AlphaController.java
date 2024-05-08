@@ -210,7 +210,7 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
-    @GetMapping("/projects/{projectID}/add")
+    @GetMapping("/projects/{projectID}/update-emps")
     public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
         if (searchString == null) {
             searchString = "";
@@ -221,14 +221,21 @@ public class AlphaController {
         model.addAttribute("empsOnProject", empsOnProject);
         model.addAttribute("empsToAdd", empsToAdd);
         model.addAttribute("projectID", projectID);
-        return "addEmpToProject";
+        return "update_project_emps";
     }
 
-    @PostMapping("/projects/{projectID}/add/{username}")
+    @PostMapping("/projects/{projectID}/update-emps/add/{username}")
     public String addEmpToProject(@PathVariable("projectID") int projectID,
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
-        return "redirect:/projects/" + projectID + "/add";
+        return "redirect:/projects/" + projectID + "/update-emps";
+    }
+
+    @PostMapping("/projects/{projectID}/update-emps/remove/{username}")
+    public String removeEmpfromProject(@PathVariable("projectID") int projectID,
+                                       @PathVariable("username") String username){
+        alphaService.removeEmpFromProject(projectID, username);
+        return "redirect:/projects/" + projectID + "/update-emps";
     }
 
     //---------------------------------------------------------------------------------------------------------------

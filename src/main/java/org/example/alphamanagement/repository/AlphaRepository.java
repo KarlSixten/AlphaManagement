@@ -335,6 +335,20 @@ public class AlphaRepository {
             e.printStackTrace();
         }
     }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        String sql = "DELETE FROM project_emp WHERE projectID = (?) AND username = (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Project createSubProject(int parentProjectID, Project newProject) {
         newProject.setParentProjectID(parentProjectID);
         String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";

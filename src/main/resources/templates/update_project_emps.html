@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Add Employee to Project</h1>
-<form th:action="@{'/projects/' + ${projectID} + '/add'}" method="get">
+<form th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
     <input type="text" name="searchString" placeholder="Search for employees...">
     <button type="submit">Search</button>
 </form>
@@ -16,7 +16,7 @@
     <ul>
         <li th:each="emp : ${empsToAdd}">
             <span th:text="${emp.username}"></span>
-            <form th:action="@{'/projects/' + ${projectID} + '/add/' + ${emp.username}}" method="post">
+            <form th:action="@{'/projects/' + ${projectID} + '/update-emps/add/' + ${emp.username}}" method="post">
                 <button type="submit">Add to Project</button>
             </form>
         </li>
@@ -28,6 +28,9 @@
     <ul>
         <li th:each="emp : ${empsOnProject}">
             <span th:text="${emp.username}"></span>
+            <form th:action="@{'/projects/' + ${projectID} + '/update-emps/remove/' + ${emp.username}}" method="post">
+                <button type="submit">Remove from project</button>
+            </form>
         </li>
     </ul>
 </div>
