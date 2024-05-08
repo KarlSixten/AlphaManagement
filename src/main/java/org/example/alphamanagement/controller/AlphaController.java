@@ -256,7 +256,7 @@ public class AlphaController {
     public String createTask(@ModelAttribute("task") Task task, @PathVariable("ProjectID") int projectID){
         if (userIsLoggedIn()){
             Task savedTask = alphaService.createTask(task, projectID);
-            return "redirect:/tasks/view/" + savedTask.getTaskID();
+            return "redirect:/all-task/view/" + projectID;
         } else {
             return "redirect:/";
         }
