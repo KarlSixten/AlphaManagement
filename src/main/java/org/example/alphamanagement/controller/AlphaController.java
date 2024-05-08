@@ -198,7 +198,7 @@ public class AlphaController {
     @PostMapping("projects/{projectID}/create-subproject")
     public String createSubProject(@PathVariable("projectID") int parentProjectID, @ModelAttribute Project subProject) {
         alphaService.createSubProject(parentProjectID, subProject);
-        return "redirect:/projects/" + parentProjectID + "/subprojects"; // Redirect to the specific subproject view
+        return "redirect:/projects/" + parentProjectID + "/subprojects";
     }
 
 
@@ -239,15 +239,36 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+    @PostMapping("/tasks/new/submit")
+    public String createTask(@ModelAttribute("task") Task task){
+        if (userIsLoggedIn()){
+            Task savedTask = alphaService.createTask(task);
+            return "redirect:/tasks/view/" + savedTask.getTaskID();
+        } else {
+            return "redirect:/";
+        }
+    }
+    @GetMapping("tasks/view/{taskId}")
+    public String viewTask(@PathVariable("taskId") int taskId, Model model){
+       Task task = alphaService.findTaskById(taskId);
+       model.addAttribute("task", task);
+       return "viewTask";
+    }
 
 
+    @GetMapping("all-task/view/{projectID}")
+    public String getAllTaskOfSubProject(@PathVariable("projectID") int projectID, Model model){
+        Task task = alphaService.findTaskByProjectID(projectID);
+        model.addAttribute("projectID", projectID);
+        model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
+        return "viewTask";
+    }
 
 
-    @PostMapping("213")
-    public String deleteTask(){
-
-
-        return "";
+    @PostMapping("/delete-task")
+    public String deleteTask(@RequestParam("taskID") int taskID){
+        alphaService.deleteTask(taskID);
+        return "redirect:/tasks/view";
     }
 
     //---------------------------------------------------------------------------------------------------------------

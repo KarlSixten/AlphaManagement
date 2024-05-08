@@ -100,6 +100,11 @@ public class AlphaService {
     public List<Map<String, Object>> getAllCategories() {
         return alphaRepository.getAllCategories();
     }
-
+    public Task findTaskById(int taskId){
+        return alphaRepository.findTaskByTaskId(taskId);
+    }
+    public Task findTaskByProjectID(int projectID){
+        return alphaRepository.findTaskByProjectID(projectID);
+    }
 
 }

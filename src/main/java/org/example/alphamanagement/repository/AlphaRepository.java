@@ -394,11 +394,45 @@ public Task createTask(Task newTask){
         }
         return categories;
     }
+    public Task findTaskByTaskId(int taskId) {
+        String sql = "SELECT * FROM task WHERE taskID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, taskId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createTaskFromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find task by ID", e);
+        }
+    }
+    public Task findTaskByProjectID(int projectID) {
+        String sql = "SELECT * FROM task WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createTaskFromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find task by ID", e);
+        }
+    }
 
 
 
 
-public void deleteTask(int taskID){
+
+
+    public void deleteTask(int taskID){
     String SQL = "DELETE FROM TASK WHERE TASKID = ?";
     Connection connection = ConnectionManager.getConnection(url,user,password);
     try {
