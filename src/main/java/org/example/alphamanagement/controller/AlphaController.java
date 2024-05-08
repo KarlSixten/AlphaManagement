@@ -3,6 +3,7 @@ package org.example.alphamanagement.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
+import org.example.alphamanagement.model.Task;
 import org.example.alphamanagement.service.AlphaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -226,6 +227,27 @@ public class AlphaController {
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
         return "redirect:/home";
+    }
+    @GetMapping ("/tasks/new")
+    public String showCreateTaskForm(Model model){
+        if (userIsLoggedIn()){
+            model.addAttribute("task", new Task());
+            model.addAttribute("projects", alphaService.getAllProjects());
+            model.addAttribute("categories", alphaService.getAllCategories());
+            return "createTask";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+
+
+
+    @PostMapping("213")
+    public String deleteTask(){
+
+
+        return "";
     }
 
     //---------------------------------------------------------------------------------------------------------------

@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.sql.Date;
+import java.util.*;
 
 @Repository
 public class AlphaRepository {
@@ -378,6 +377,23 @@ public Task createTask(Task newTask){
 }
 
 
+    public List<Map<String, Object>> getAllCategories() {
+        List<Map<String, Object>> categories = new ArrayList<>();
+        String SQL = "SELECT categoryID, categoryName FROM category;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> category = new HashMap<>();
+                category.put("categoryID", rs.getInt("categoryID"));
+                category.put("categoryName", rs.getString("categoryName"));
+                categories.add(category);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load categories", e);
+        }
+        return categories;
+    }
 
 
 
