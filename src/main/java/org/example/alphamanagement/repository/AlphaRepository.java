@@ -3,14 +3,14 @@ package org.example.alphamanagement.repository;
 
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
+import org.example.alphamanagement.model.Task;
 import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.sql.Date;
+import java.util.*;
 
 @Repository
 public class AlphaRepository {
@@ -25,6 +25,7 @@ public class AlphaRepository {
         newEmp.setUsername(createUsername(newEmp.getFirstName(), newEmp.getLastName()));
         String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
+
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, newEmp.getFirstName());
             pstmt.setString(2, newEmp.getLastName());
@@ -40,8 +41,6 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
     }
-
-
 
     public Emp checkValidLogin(String empUsername, String empPassword) {
         String sql = "SELECT * FROM emp WHERE username LIKE (?) AND password LIKE (?);";
@@ -353,6 +352,126 @@ public class AlphaRepository {
         return subProjects;
     }
 
+
+public Task createTask(Task newTask){
+    String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
+    Connection con = ConnectionManager.getConnection(url, user, password);
+    try {
+        PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
+        preparedStatement.setString(1, newTask.getTaskName());
+        preparedStatement.setInt(2, newTask.getProjectID());
+        preparedStatement.setInt(3, newTask.getCategoryID());
+        preparedStatement.setString(4, newTask.getDescription());
+        preparedStatement.setInt(5, newTask.getEstimate());
+        preparedStatement.setDate(6, Date.valueOf(newTask.getStartDate()));
+        preparedStatement.setDate(7, Date.valueOf(newTask.getEndDate()));
+        preparedStatement.executeUpdate();
+
+        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+        if (generatedKeys.next()){
+            int generatedTaskID = generatedKeys.getInt(1);
+            newTask.setTaskID(generatedTaskID);
+        }
+
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }return newTask;
+}
+
+
+    public List<Map<String, Object>> getAllCategories() {
+        List<Map<String, Object>> categories = new ArrayList<>();
+        String SQL = "SELECT categoryID, categoryName FROM category;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> category = new HashMap<>();
+                category.put("categoryID", rs.getInt("categoryID"));
+                category.put("categoryName", rs.getString("categoryName"));
+                categories.add(category);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load categories", e);
+        }
+        return categories;
+    }
+    public Task findTaskByTaskId(int taskId) {
+        String sql = "SELECT * FROM task WHERE taskID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, taskId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createTaskFromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find task by ID", e);
+        }
+    }
+    public Task findTaskByProjectID(int projectID) {
+        String sql = "SELECT * FROM task WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return createTaskFromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to find task by ID", e);
+        }
+    }
+
+
+
+
+
+
+    public void deleteTask(int taskID){
+    String SQL = "DELETE FROM TASK WHERE TASKID = ?";
+    Connection connection = ConnectionManager.getConnection(url,user,password);
+    try {
+        PreparedStatement pstmt = connection.prepareStatement(SQL);
+        pstmt.setInt(1,taskID);
+        pstmt.executeUpdate();
+    } catch (SQLException e){
+        e.printStackTrace();
+    }
+}
+
+
+
+
+    public ArrayList<Task> getAllTaskOfSubProject(int parrentProjectID){
+        ArrayList<Task> tasks = new ArrayList<>();
+        String SQL = "SELECT * from TASK where parentProjectID = ?;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
+            pstmt.setInt(1, parrentProjectID);
+            ResultSet rs = pstmt.executeQuery();
+            Task currentTask;
+            while (rs.next()){
+                currentTask = createTaskFromResultSet(rs);
+                tasks.add(currentTask);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+
+
+
+
+
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
@@ -430,6 +549,25 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
 
+
+    }
+
+    private Task createTaskFromResultSet(ResultSet rs){
+        Task task = new Task();
+
+       try {
+            task.setTaskID(rs.getInt("taskID"));
+            task.setTaskName(rs.getString("taskName"));
+            task.setProjectID(rs.getInt("projectID"));
+            task.setCategoryID(rs.getInt("categoryID"));
+            task.setDescription(rs.getString("description"));
+            task.setEstimate(rs.getInt("estimate"));
+            task.setStartDate(rs.getDate("startDate").toLocalDate());
+            task.setEndDate(rs.getDate("endDate").toLocalDate());
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+        return task;
 
     }
 
