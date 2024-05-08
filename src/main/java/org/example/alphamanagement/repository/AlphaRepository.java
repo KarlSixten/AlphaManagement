@@ -456,7 +456,7 @@ public Task createTask(Task newTask){
             ResultSet rs = pstmt.executeQuery();
             Task currentTask;
             while (rs.next()){
-                currentTask = createProjectFromResultSet(rs);
+                currentTask = createTaskFromResultSet(rs);
                 tasks.add(currentTask);
             }
         } catch (SQLException e) {
@@ -532,6 +532,25 @@ public Task createTask(Task newTask){
             throw new RuntimeException(e);
         }
         return project;
+    }
+
+    private Task createTaskFromResultSet(ResultSet rs){
+        Task task = new Task();
+
+       try {
+            task.setTaskID(rs.getInt("taskID"));
+            task.setTaskName(rs.getString("taskName"));
+            task.setProjectID(rs.getInt("projectID"));
+            task.setCategoryID(rs.getInt("categoryID"));
+            task.setDescription(rs.getString("description"));
+            task.setEstimate(rs.getInt("estimate"));
+            task.setStartDate(rs.getDate("startDate").toLocalDate());
+            task.setEndDate(rs.getDate("endDate").toLocalDate());
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+        return task;
+
     }
 
 
