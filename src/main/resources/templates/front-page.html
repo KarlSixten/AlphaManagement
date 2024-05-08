@@ -89,6 +89,9 @@
         <td th:if="${jobType == 2 or jobType == 3}">
             <a th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this project?');">Delete</a>
         </td>
+        <td th:if="${jobType == 2 or jobType == 3}">
+            <a th:href="@{'/projects/' + ${project.projectID} + '/add'}">Opdater emps</a>
+        </td>
 
     </tr>
     </tbody>

@@ -17,7 +17,7 @@
     <ul>
         <li th:each="emp : ${foundEmps}">
             <span th:text="${emp.username}"></span>
-            <form th:action="@{'/' + ${projectID} + '/add/' + ${emp.username}}" method="post">
+            <form th:action="@{'/projects/' + ${projectID} + '/add/' + ${emp.username}}" method="post">
                 <button type="submit">Add to Project</button>
             </form>
         </li>

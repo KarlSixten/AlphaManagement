@@ -210,7 +210,7 @@ public class AlphaController {
         return "subProject-view-page";
     }
 
-    @GetMapping("/{projectID}/add")
+    @GetMapping("/projects/{projectID}/add")
     public String showAddEmpToProjectForm(@PathVariable("projectID") int projectID, @RequestParam(required = false) String searchString, Model model) {
         if (searchString == null) {
             searchString = "";
@@ -221,7 +221,7 @@ public class AlphaController {
         return "addEmpToProject";
     }
 
-    @PostMapping("/{projectID}/add/{username}")
+    @PostMapping("/projects/{projectID}/add/{username}")
     public String addEmpToProject(@PathVariable("projectID") int projectID,
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
