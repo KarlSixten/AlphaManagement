@@ -79,8 +79,10 @@ public class AlphaService {
 
     public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills){
         return alphaRepository.createEmpWithSkills(newEmp, skills);}
-    public Task createTask(Task newTask){
+
+    public Task createTask(Task newTask) {
         return alphaRepository.createTask(newTask);
+    }
     public List<Emp> getEmpsOnProject(int projectID) {
         return alphaRepository.getEmpsOnProject(projectID);
     }
@@ -100,8 +102,6 @@ public class AlphaService {
     public Task findTaskByProjectID(int projectID){
         return alphaRepository.findTaskByProjectID(projectID);
     }
-
-}
 
     public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
         return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
