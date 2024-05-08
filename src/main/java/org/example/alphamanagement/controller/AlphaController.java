@@ -241,21 +241,21 @@ public class AlphaController {
         alphaService.removeEmpFromProject(projectID, username);
         return "redirect:/projects/" + projectID + "/update-emps";
     }
-    @GetMapping ("/tasks/new")
-    public String showCreateTaskForm(Model model){
-        if (userIsLoggedIn()){
-            model.addAttribute("task", new Task());
-            model.addAttribute("projects", alphaService.getAllProjects());
+    @GetMapping("/tasks/new/{ProjectID}")
+    public String showCreateTaskForm(@PathVariable("ProjectID") int projectID, Model model) {
+        model.addAttribute("task", new Task());
+            List<Project> subProjects = alphaService.getAllSubProjectsOfProject(projectID);
+            model.addAttribute("subProjects", subProjects);
             model.addAttribute("categories", alphaService.getAllCategories());
+            model.addAttribute("projectID", projectID);
             return "createTask";
-        } else {
-            return "redirect:/";
         }
-    }
-    @PostMapping("/tasks/new/submit")
-    public String createTask(@ModelAttribute("task") Task task){
+
+
+    @PostMapping("/tasks/new/submit/{ProjectID}")
+    public String createTask(@ModelAttribute("task") Task task, @PathVariable("ProjectID") int projectID){
         if (userIsLoggedIn()){
-            Task savedTask = alphaService.createTask(task);
+            Task savedTask = alphaService.createTask(task, projectID);
             return "redirect:/tasks/view/" + savedTask.getTaskID();
         } else {
             return "redirect:/";

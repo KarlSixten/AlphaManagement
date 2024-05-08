@@ -79,9 +79,8 @@ public class AlphaService {
 
     public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills){
         return alphaRepository.createEmpWithSkills(newEmp, skills);}
-
-    public Task createTask(Task newTask) {
-        return alphaRepository.createTask(newTask);
+    public Task createTask(Task newTask, int projectID){
+        return alphaRepository.createTask(newTask, projectID);
     }
     public List<Emp> getEmpsOnProject(int projectID) {
         return alphaRepository.getEmpsOnProject(projectID);
