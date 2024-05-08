@@ -215,8 +215,11 @@ public class AlphaController {
         if (searchString == null) {
             searchString = "";
         }
-        List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
-        model.addAttribute("foundEmps", foundEmps);
+        List<Emp> empsOnProject = alphaService.getEmpsOnProject(projectID);
+        List<Emp> empsToAdd = alphaService.findByUsernameContainingNotOnProject(searchString, projectID);
+
+        model.addAttribute("empsOnProject", empsOnProject);
+        model.addAttribute("empsToAdd", empsToAdd);
         model.addAttribute("projectID", projectID);
         return "addEmpToProject";
     }
@@ -225,7 +228,7 @@ public class AlphaController {
     public String addEmpToProject(@PathVariable("projectID") int projectID,
                                   @PathVariable("username") String username){
         alphaService.addEmpToProject(username, projectID);
-        return "redirect:/home";
+        return "redirect:/projects/" + projectID + "/add";
     }
 
     //---------------------------------------------------------------------------------------------------------------

@@ -7,19 +7,27 @@
 </head>
 <body>
 <h1>Add Employee to Project</h1>
-<form th:action="@{'/' + ${projectID} + '/add'}" method="get">
+<form th:action="@{'/projects/' + ${projectID} + '/add'}" method="get">
     <input type="text" name="searchString" placeholder="Search for employees...">
     <button type="submit">Search</button>
 </form>
 
-<!-- Check if foundEmps is not empty and render search results -->
-<div th:if="${not #lists.isEmpty(foundEmps)}">
+<div>
     <ul>
-        <li th:each="emp : ${foundEmps}">
+        <li th:each="emp : ${empsToAdd}">
             <span th:text="${emp.username}"></span>
             <form th:action="@{'/projects/' + ${projectID} + '/add/' + ${emp.username}}" method="post">
                 <button type="submit">Add to Project</button>
             </form>
+        </li>
+    </ul>
+</div>
+
+<h1>Emps on project currently</h1>
+<div>
+    <ul>
+        <li th:each="emp : ${empsOnProject}">
+            <span th:text="${emp.username}"></span>
         </li>
     </ul>
 </div>

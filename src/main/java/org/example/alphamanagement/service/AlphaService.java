@@ -73,4 +73,11 @@ public class AlphaService {
         alphaRepository.addEmpToProject(username, projectID);
     }
 
+    public List<Emp> getEmpsOnProject(int projectID) {
+        return alphaRepository.getEmpsOnProject(projectID);
     }
+
+    public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
+        return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
+    }
+}
