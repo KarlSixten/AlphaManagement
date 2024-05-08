@@ -19,9 +19,7 @@ public class AlphaService {
     }
 
 
-    public Emp createEmp(Emp emp) {
-        return alphaRepository.createEmp(emp);
-    }
+
 
     public Emp checkValidLogin(String empUsername, String empPassword) {
         return alphaRepository.checkValidLogin(empUsername, empPassword);
@@ -80,7 +78,7 @@ public class AlphaService {
     }
 
     public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills){
-        return alphaRepository.createEmpWithSkills(newEmp, skills);
+        return alphaRepository.createEmpWithSkills(newEmp, skills);}
     public Task createTask(Task newTask){
         return alphaRepository.createTask(newTask);
     }
