@@ -163,6 +163,28 @@ public class AlphaRepository {
         }
     }
 
+    public List<Emp> findEmpsConatiningNotOnProject(String searchQuery, int projectID) {
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT emp.* FROM emp LEFT JOIN project_emp ON emp.username = project_emp.username AND project_emp.projectID = (?) WHERE project_emp.username IS NULL AND (emp.username LIKE (?) OR emp.firstName LIKE (?) OR emp.lastName LIKE (?));";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            pstmt.setString(2, "%" + searchQuery + "%");
+            pstmt.setString(3, "%" + searchQuery + "%");
+            pstmt.setString(4, "%" + searchQuery + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
     public List<String> getSkillsList() {
         List<String> skillsList = new ArrayList<>();
         String SQL = "SELECT SKILLNAME FROM SKILL;";
@@ -315,6 +337,20 @@ public class AlphaRepository {
             e.printStackTrace();
         }
     }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        String sql = "DELETE FROM project_emp WHERE projectID = (?) AND username = (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Project createSubProject(int parentProjectID, Project newProject) {
         newProject.setParentProjectID(parentProjectID);
         String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
@@ -350,6 +386,23 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
         return subProjects;
+    }
+
+    public List<Emp> getEmpsOnProject(int projectID) {
+        List<Emp> empList = new ArrayList<>();
+        String sql = "SELECT emp.username, emp.password, emp.firstName, emp.lastName, emp.jobTypeID FROM emp JOIN project_emp ON emp.username = project_emp.username WHERE projectID = (?) ORDER BY projectID;";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                empList.add(createEmpFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return empList;
     }
 
 
