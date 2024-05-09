@@ -52,6 +52,8 @@ CREATE TABLE task
     estimate INT,
     startDate DATE NOT NULL,
     endDate DATE NOT NULL,
+    hoursDone INT DEFAULT 0,
+    isDone BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (projectID) REFERENCES project(projectID),
     FOREIGN KEY (categoryID) REFERENCES category(categoryID)
 );
@@ -103,8 +105,13 @@ INSERT INTO project(projectName, startDate, endDate) VALUES ('Testprojekt', '202
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Hesteprojekt', '2024-09-09', '2024-10-08');
 INSERT INTO project(projectName, startDate, endDate) VALUES ('Festeprojekt', '2024-09-08', '2024-10-08');
 
+INSERT INTO project(projectName, startDate, endDate, parentProjectID) VALUES ('Sprint 1', '2024-09-08', '2024-09-18', 3);
+INSERT INTO task(taskName, projectID, categoryID, description, estimate, startDate, endDate) VALUES ('TASK 1', 4, 1, 'DETTE ER EN TASK', 4, '2024-09-08', '2024-10-08');
+INSERT INTO task(taskName, projectID, categoryID, description, estimate, startDate, endDate) VALUES ('TASK 2', 4, 1, 'DETTE ER EN TASK', 7, '2024-09-08', '2024-10-08');
+
 INSERT INTO project_emp (projectID, username) VALUES (1, 'test');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'test');
 INSERT INTO project_emp (projectID, username) VALUES (3, 'test');
 
 INSERT INTO project_emp (projectID, username) VALUES (2, 'kabj0000');
+

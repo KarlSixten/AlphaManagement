@@ -259,10 +259,11 @@ public class AlphaController {
             return "redirect:/";
         }
     }
-    @GetMapping("tasks/view/{taskId}")
-    public String viewTask(@PathVariable("taskId") int taskId, Model model){
+    @GetMapping("tasks/view/{projectID}/{taskId}")
+    public String viewTask(@PathVariable("taskId") int taskId,@PathVariable("projectID") int projectID, Model model){
        Task task = alphaService.findTaskById(taskId);
        model.addAttribute("task", task);
+       model.addAttribute("projectID", projectID);
        return "viewTask";
     }
 

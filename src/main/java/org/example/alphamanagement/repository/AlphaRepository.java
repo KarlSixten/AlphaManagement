@@ -530,7 +530,17 @@ public Task createTask(Task newTask, int projectID){
         return sumOfEstimates;
     }
 
-
+    public void toggleIsDone(boolean isDone, int taskID){
+        String sql = "UPDATE TASK SET isDone = ? WHERE taskID = ?;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(sql)){
+            pstmt.setBoolean(1, !isDone);
+            pstmt.setInt(2,taskID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
@@ -628,6 +638,7 @@ public Task createTask(Task newTask, int projectID){
             task.setEstimate(rs.getInt("estimate"));
             task.setStartDate(rs.getDate("startDate").toLocalDate());
             task.setEndDate(rs.getDate("endDate").toLocalDate());
+            task.setDone(rs.getBoolean("isDone"));
         } catch (SQLException e){
             throw new RuntimeException(e);
         }
