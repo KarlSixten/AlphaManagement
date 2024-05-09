@@ -112,4 +112,7 @@ public class AlphaService {
     public int sumOfEstimates(int projectID){
         return alphaRepository.sumOfEstimates(projectID);
     }
+    public void toggleIsDone(boolean isDone, int taskID){
+        alphaRepository.toggleIsDone(isDone,taskID);
+    }
 }

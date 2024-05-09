@@ -282,6 +282,11 @@ public class AlphaController {
         alphaService.deleteTask(taskID);
         return "redirect:/tasks/view";
     }
+    @PostMapping("tasks/view/{projectID}/{taskID}")
+    public String toggleIsDone(@PathVariable ("projectID") int projectID, @PathVariable("taskID") int taskID){
+        alphaService.toggleIsDone(alphaService.findTaskById(taskID).isDone(), taskID);
+        return "redirect:/tasks/view/" + projectID + "/" + taskID;
+    }
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER

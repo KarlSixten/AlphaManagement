@@ -13,8 +13,12 @@
         <p th:text="'Start Date: ' + ${task.startDate}"></p>
         <p th:text="'End Date: ' + ${task.endDate}"></p>
         <p th:text="'Estimated Hours: ' + ${task.estimate}"></p>
+        <p th:text="'Project is done: ' + ${task.isDone()}"></p>
     </div>
     <a th:href="@{/tasks/edit/{id}(id=${task.taskID})}" >Edit Task</a>
+    <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID}}" method="post">
+        <button type="submit">Toggle Done</button>
+    </form>
 </div>
 </body>
 </html>

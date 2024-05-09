@@ -16,22 +16,19 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Estimate</th>
-                <th>Start Date</th>
-                <th>End Date</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="task : ${tasks}">
-                <td th:text="${task.taskName}">Name</td>
-                <td th:text="${task.description}">Description</td>
+            <tr th:each="task : ${tasks}"><td>
+                <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Name</a>
+            </td>
                 <td th:text="${task.estimate}">Estimate</td>
-                <td th:text="${task.startDate}">Start Date</td>
                 <td th:text="${task.endDate}">End Date</td>
 
             </tr>
             </tbody>
         </table>
-<p th:text="${totalEstimate} + ' timer'" ></p>
+<p th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer'" ></p>
     </div>
     </body>
     </html>

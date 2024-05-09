@@ -66,8 +66,8 @@ public class AlphaRepository {
         try {
             PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, newProject.getProjectName());
-            preparedStatement.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
-            preparedStatement.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
+            preparedStatement.setDate(2, Date.valueOf(newProject.getStartDate()));
+            preparedStatement.setDate(3, Date.valueOf(newProject.getEndDate()));
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -284,8 +284,8 @@ public class AlphaRepository {
         try {
             PreparedStatement preparedStatement = con.prepareStatement(SQL);
             preparedStatement.setString(1, project.getProjectName());
-            preparedStatement.setDate(2, java.sql.Date.valueOf(project.getStartDate()));
-            preparedStatement.setDate(3, java.sql.Date.valueOf(project.getEndDate()));
+            preparedStatement.setDate(2, Date.valueOf(project.getStartDate()));
+            preparedStatement.setDate(3, Date.valueOf(project.getEndDate()));
             preparedStatement.setInt(4, project.getProjectID());
             preparedStatement.executeUpdate();
 
@@ -358,8 +358,8 @@ public class AlphaRepository {
         Connection con = ConnectionManager.getConnection(url, user, password);
         try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
             pstmt.setString(1, newProject.getProjectName());
-            pstmt.setDate(2, java.sql.Date.valueOf(newProject.getStartDate()));
-            pstmt.setDate(3, java.sql.Date.valueOf(newProject.getEndDate()));
+            pstmt.setDate(2, Date.valueOf(newProject.getStartDate()));
+            pstmt.setDate(3, Date.valueOf(newProject.getEndDate()));
             pstmt.setInt(4, parentProjectID);
             pstmt.executeUpdate();
 

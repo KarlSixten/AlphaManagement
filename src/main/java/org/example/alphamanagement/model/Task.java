@@ -23,6 +23,21 @@ public class Task {
         this.endDate = endDate;
     }
 
+    public int getHoursDone() {
+        return hoursDone;
+    }
+
+    public void setHoursDone(int hoursDone) {
+        this.hoursDone = hoursDone;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
+    }
 
     public Task(){
 
