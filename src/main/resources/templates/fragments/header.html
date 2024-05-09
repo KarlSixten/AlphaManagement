@@ -10,9 +10,18 @@
         <a href="/home">
             <img class="logo" src="img/AlphaManagementLogo.png">
         </a>
-        <button class="logout">
-            <a href="/logout">Log ud</a>
-        </button>
+        <div th:if="${session.empLoggedIn != null and session.empLoggedIn.jobType == 3}">
+            <button class="editUsers">
+                <a href="/find-user">Rediger bruger(e)</a>
+            </button>
+        </div>
+
+        <div th:if="${session.empLoggedIn != null}">
+            <button class="logout">
+                <a href="/logout">Log ud</a>
+            </button>
+        </div>
+
     </header>
 </div>
 </body>
