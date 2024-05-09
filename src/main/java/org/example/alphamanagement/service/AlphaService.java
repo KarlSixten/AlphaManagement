@@ -112,4 +112,7 @@ public class AlphaService {
     public int sumOfEstimates(int projectID){
         return alphaRepository.sumOfEstimates(projectID);
     }
+    public Task updateTask(Task task){
+        return alphaRepository.updateTask(task);
+    }
 }

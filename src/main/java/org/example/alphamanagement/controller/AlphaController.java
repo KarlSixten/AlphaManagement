@@ -284,6 +284,29 @@ public class AlphaController {
     }
 
 
+    @GetMapping("/projects/{projectID}/{taskID}/update")
+    public String showUpdateTaskForm(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, Model model){
+        Task task = alphaService.findTaskById(taskID);
+        model.addAttribute("projectID", projectID);
+        model.addAttribute("taskID", taskID);
+        model.addAttribute("task", task);
+        return "update-task";
+    }
+
+
+    @PostMapping("/projects/{projectID}/{taskID}/update")
+    public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
+        task.setTaskID(taskID);
+        alphaService.updateTask(task);
+        return "redirect:/all-task/view/" + projectID;
+    }
+
+
+
+
+
+
+
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
