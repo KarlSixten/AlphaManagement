@@ -109,4 +109,7 @@ public class AlphaService {
     public void removeEmpFromProject(int projectID, String username) {
         alphaRepository.removeEmpFromProject(projectID, username);
     }
+    public int sumOfEstimates(int projectID){
+        return alphaRepository.sumOfEstimates(projectID);
+    }
 }

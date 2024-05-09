@@ -520,6 +520,16 @@ public Task createTask(Task newTask, int projectID){
         return tasks;
     }
 
+    public int sumOfEstimates(int projectID){
+        ArrayList<Task> tasks = getAllTaskOfSubProject(projectID);
+        int sumOfEstimates = 0;
+        for (Task task : tasks) {
+            sumOfEstimates += task.getEstimate();
+        }
+
+        return sumOfEstimates;
+    }
+
 
 
 

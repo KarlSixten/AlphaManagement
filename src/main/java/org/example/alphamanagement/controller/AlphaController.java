@@ -272,6 +272,7 @@ public class AlphaController {
         Task task = alphaService.findTaskByProjectID(projectID);
         model.addAttribute("projectID", projectID);
         model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
+        model.addAttribute("totalEstimate", alphaService.sumOfEstimates(projectID));
         return "viewAllTasks";
     }
 

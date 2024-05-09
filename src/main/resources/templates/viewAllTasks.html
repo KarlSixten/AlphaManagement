@@ -27,10 +27,11 @@
                 <td th:text="${task.estimate}">Estimate</td>
                 <td th:text="${task.startDate}">Start Date</td>
                 <td th:text="${task.endDate}">End Date</td>
+
             </tr>
             </tbody>
         </table>
-
+<p th:text="${totalEstimate} + ' timer'" ></p>
     </div>
     </body>
     </html>
