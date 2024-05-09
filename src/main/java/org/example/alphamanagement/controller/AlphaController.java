@@ -278,10 +278,11 @@ public class AlphaController {
 
 
     @PostMapping("/delete-task")
-    public String deleteTask(@RequestParam("taskID") int taskID){
+    public String deleteTask(@RequestParam("taskID") int taskID, @RequestParam("projectID") int projectID){
         alphaService.deleteTask(taskID);
-        return "redirect:/tasks/view";
+        return "redirect:/all-task/view/" + projectID;
     }
+
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER

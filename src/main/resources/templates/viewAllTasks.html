@@ -1,14 +1,14 @@
-    <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Tasks for Project [[${projectID}]]</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    </head>
-    <body>
-    <div class="container">
-        <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
-        <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Create New Task</a>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks for Project [[${projectID}]]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
+    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Create New Task</a>
 
         <table class="table table-bordered">
             <thead>
@@ -27,7 +27,14 @@
                 <td th:text="${task.estimate}">Estimate</td>
                 <td th:text="${task.startDate}">Start Date</td>
                 <td th:text="${task.endDate}">End Date</td>
+                <td>
+                    <form th:action="@{'/delete-task'}" method="post">
+                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
+                        <input type="hidden" name="projectID" th:value="${projectID}" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                    </form>
 
+                </td>
             </tr>
             </tbody>
         </table>
