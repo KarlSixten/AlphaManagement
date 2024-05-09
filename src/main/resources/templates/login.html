@@ -3,7 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
+<style>
+    .header {
+        width: 100%;
+        background: #333333;
+    }
+
+    .logo {
+        width: 25%;
+        padding: 10px;
+    }
+
+    .logout {
+        position: fixed;
+        right: 10px;
+        top: 10px;
+    }
+</style>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body>
 <div>
     <h4>LOGIN</h4>
