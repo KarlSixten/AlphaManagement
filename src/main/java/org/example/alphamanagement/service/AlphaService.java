@@ -115,4 +115,7 @@ public class AlphaService {
     public void toggleIsDone(boolean isDone, int taskID){
         alphaRepository.toggleIsDone(isDone,taskID);
     }
+    public Task updateTask(Task task){
+        return alphaRepository.updateTask(task);
+    }
 }

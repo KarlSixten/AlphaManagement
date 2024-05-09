@@ -279,15 +279,39 @@ public class AlphaController {
 
 
     @PostMapping("/delete-task")
-    public String deleteTask(@RequestParam("taskID") int taskID){
+    public String deleteTask(@RequestParam("taskID") int taskID, @RequestParam("projectID") int projectID){
         alphaService.deleteTask(taskID);
-        return "redirect:/tasks/view";
+        return "redirect:/all-task/view/" + projectID;
     }
     @PostMapping("tasks/view/{projectID}/{taskID}")
     public String toggleIsDone(@PathVariable ("projectID") int projectID, @PathVariable("taskID") int taskID){
         alphaService.toggleIsDone(alphaService.findTaskById(taskID).isDone(), taskID);
         return "redirect:/tasks/view/" + projectID + "/" + taskID;
     }
+
+
+    @GetMapping("/projects/{projectID}/{taskID}/update")
+    public String showUpdateTaskForm(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, Model model){
+        Task task = alphaService.findTaskById(taskID);
+        model.addAttribute("projectID", projectID);
+        model.addAttribute("taskID", taskID);
+        model.addAttribute("task", task);
+        return "update-task";
+    }
+
+
+    @PostMapping("/projects/{projectID}/{taskID}/update")
+    public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
+        task.setTaskID(taskID);
+        alphaService.updateTask(task);
+        return "redirect:/all-task/view/" + projectID;
+    }
+
+
+
+
+
+
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER

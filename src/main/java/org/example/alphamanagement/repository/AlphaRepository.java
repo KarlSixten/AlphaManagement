@@ -543,6 +543,26 @@ public Task createTask(Task newTask, int projectID){
     }
 
 
+    public Task updateTask(Task task){
+        String SQL = "UPDATE TASK SET taskName = ?, categoryID = ?, description = ? , estimate = ?, startDate = ?, endDate = ? WHERE taskID =?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, task.getTaskName());
+            preparedStatement.setInt(2,task.getCategoryID());
+            preparedStatement.setString(3,task.getDescription());
+            preparedStatement.setInt(4,task.getEstimate());
+            preparedStatement.setDate(5 , java.sql.Date.valueOf(task.getStartDate()));
+            preparedStatement.setDate(6 , java.sql.Date.valueOf(task.getEndDate()));
+            preparedStatement.setInt(7,task.getTaskID());
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new RuntimeException("ups");
+        }
+        return task;
+    }
+
 
 
 
