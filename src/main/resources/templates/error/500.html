@@ -2,7 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Error</title></head>
+    <title>Error</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/headerStyles.css">
+</head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body><h3>Der er tilsyneladende sket en fejl - kontakt systemadministrator</h3></body>
 <iframe src="https://giphy.com/embed/6zXo5MAkNJwKQ" width="480" height="258" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
 <a href="/home">Hjem</a>

@@ -70,6 +70,12 @@ public class AlphaController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout() {
+        httpSession.invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/home")
     public String getHome(Model model) {
         if (userIsLoggedIn()) {
@@ -201,7 +207,6 @@ public class AlphaController {
         alphaService.createSubProject(parentProjectID, subProject);
         return "redirect:/projects/" + parentProjectID + "/subprojects";
     }
-
 
     @GetMapping("projects/{projectID}/subprojects")
     public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model) {
