@@ -1,0 +1,21 @@
+.header {
+    height: 60px;
+}
+
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+.btn {
+    margin: 0 auto;
+    display: block;
+    background: rgb(214, 108, 69);
+    color: black;
+    border: black;
+    width: auto;
+
+}
+.btn:hover {
+    background: rgb(234, 51, 109);
+}

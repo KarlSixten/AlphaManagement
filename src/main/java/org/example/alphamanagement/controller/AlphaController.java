@@ -78,6 +78,12 @@ public class AlphaController {
 
     @GetMapping("/home")
     public String getHome(Model model) {
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////       UDELUKKENDE TIL AT TESTE STYLING ////////////////////////////////////////
+        httpSession.setAttribute("empLoggedIn", alphaService.findEmpByUsername("test"));
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
         if (userIsLoggedIn()) {
             Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
             model.addAttribute("jobType", loggedInEmp.getJobType());
@@ -132,7 +138,9 @@ public class AlphaController {
         }
     }
 
-
+    //TODO
+    //Delete project virker ikke (pr 10/5), det er højest sandsynligt fordi projektets reference
+    //også skal slettes det sted vi har oversigt over subprojects
 
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {

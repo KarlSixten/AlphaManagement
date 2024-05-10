@@ -3,31 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Projects List</title>
-    <link rel="stylesheet" href="stylesheet.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
+    <link rel="stylesheet" href="/frontPageStyles.css">
 </head>
 
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<h1>Projects List</h1>
+<h1 class="myProjectsTitle">Mine projekter</h1>
 
-<a th:if="${jobType == 2 or jobType == 3}" href="/projects/new" class="se-task-knap">Create Project</a>
+<a class="btn createProject" th:if="${jobType == 2 or jobType == 3}" href="/projects/new" >+Opret projekt</a>
 
 <div id="projekt-container">
     <div class="projekt" th:each="project : ${projects}">
         <a th:href="@{'/projects/' + ${project.projectID} + '/subprojects'}" class="project-link">
-            <h2 th:text="${project.projectName}">Project Name</h2>
-            <p class="projektleder" th:text="'Start Date: ' + ${project.startDate}">Start Date</p>
-            <p th:text="'End Date: ' + ${project.endDate}">End Date</p>
+            <h2 class="projectTitle" th:text="${project.projectName}">Project Name</h2>
+            <p class="projectStartDate" th:text="'Start Dato: ' + ${project.startDate}">Start Date</p>
+            <p class="projectEndDate" th:text="'Slut dato: ' + ${project.endDate}">End Date</p>
             <div class="button-group">
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="se-task-knap">Update</a>
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="se-task-knap" onclick="return confirm('Are you sure you want to delete this project?');">Delete</a>
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update-emps'}" class="se-task-knap">Employees</a>
+                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn projectBtn">Opdater</a>
+                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="btn projectBtn" th:onclick="return confirm('Er du sikker på at du vil slette dette projekt?')">Slet</a>
+                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update-emps'}" class="btn projectBtn">Medarbejdere</a>
             </div>
         </a>
     </div>
+</div>
+<h1 class="myTasksTitle">Mine tasks</h1>
+<div id="task-container">
+
 </div>
 </body>
 </html>
