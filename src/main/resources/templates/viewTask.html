@@ -19,12 +19,23 @@
         <p th:text="'Start Date: ' + ${task.startDate}"></p>
         <p th:text="'End Date: ' + ${task.endDate}"></p>
         <p th:text="'Estimated Hours: ' + ${task.estimate}"></p>
+        <p th:text="'Hours of progress on task: ' + ${task.getHoursDone()}">
+        <p th:text="'Input how many hours of work you put on this task today:'">
+        <form th:action="'/projects/' + ${task.projectID} + '/' + ${task.taskID} + '/progressmade'" method="post">
+            <input type="number" name="hoursDone" />
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Hvis arbejde lavet er højere en estimatet vil tasken blive markeret som done. Ændrer estimatet hvis det ikke passer til. Tryk ok hvis du vil fortsætte');">Submit</button>
+        </form>
         <p th:text="'Project is done: ' + ${task.isDone()}"></p>
+
     </div>
     <a th:href="@{/tasks/edit/{id}(id=${task.taskID})}" >Edit Task</a>
     <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID}}" method="post">
         <button type="submit">Toggle Done</button>
     </form>
+    <div class="container">
+        <a th:href="@{'/all-task/view/' + ${projectID}}" class="btn btn-primary">Go Back</a>
+    </div>
+
 </div>
 </body>
 </html>

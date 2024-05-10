@@ -279,6 +279,8 @@ public class AlphaController {
         model.addAttribute("projectID", projectID);
         model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
         model.addAttribute("totalEstimate", alphaService.sumOfEstimates(projectID));
+        model.addAttribute("workProgressPercentage", alphaService.getWorkProgressPercentage(projectID));
+        model.addAttribute("workRemainingHours", alphaService.getRemaningHoursOfWork(projectID));
         return "viewAllTasks";
     }
 
@@ -304,15 +306,15 @@ public class AlphaController {
         model.addAttribute("categories", alphaService.getAllCategories());
         return "update-task";
     }
-/*   @GetMapping("/tasks/new/{ProjectID}")
-    public String showCreateTaskForm(@PathVariable("ProjectID") int projectID, Model model) {
-        model.addAttribute("task", new Task());
-            List<Project> subProjects = alphaService.getAllSubProjectsOfProject(projectID);
-            model.addAttribute("subProjects", subProjects);
-            model.addAttribute("categories", alphaService.getAllCategories());
-            model.addAttribute("projectID", projectID);
-            return "createTask";
-        }*/
+
+    @PostMapping("/projects/{projectID}/{taskID}/progressmade")
+    public String hoursDoneInput(@PathVariable("projectID") int projectID,
+                                 @PathVariable("taskID") int taskID,
+                                 @ModelAttribute("hoursDone") int hoursDone){
+        alphaService.updatehoursDone(hoursDone, taskID);
+        return "redirect:/tasks/view/" + projectID + "/" + taskID;
+    }
+
 
     @PostMapping("/projects/{projectID}/{taskID}/update")
     public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
@@ -320,9 +322,6 @@ public class AlphaController {
         alphaService.updateTask(task);
         return "redirect:/all-task/view/" + projectID;
     }
-
-
-
 
 
 

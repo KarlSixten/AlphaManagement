@@ -124,11 +124,11 @@ public class AlphaRepository {
             PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
 
 
-            deleteFromProject_EmpPstmt.setString(1,username);
+            deleteFromProject_EmpPstmt.setString(1, username);
             deleteFromProject_EmpPstmt.executeUpdate();
-            deleteFromEmp_TaskPstmt.setString(1,username);
+            deleteFromEmp_TaskPstmt.setString(1, username);
             deleteFromEmp_TaskPstmt.executeUpdate();
-            deleteFromEmp_SkillPstmt.setString(1,username);
+            deleteFromEmp_SkillPstmt.setString(1, username);
             deleteFromEmp_SkillPstmt.executeUpdate();
             deleteFromEmpPstmt.setString(1, username);
             deleteFromEmpPstmt.executeUpdate();
@@ -221,7 +221,7 @@ public class AlphaRepository {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(SQL);
 
-            while(rs.next()) {
+            while (rs.next()) {
                 String skillName = rs.getString("skillName");
                 skillsList.add(skillName);
             }
@@ -233,7 +233,7 @@ public class AlphaRepository {
     }
 
     public List<String> getEmpSkillList(String username) {
-        List<String> empSkillList =  new ArrayList<>();
+        List<String> empSkillList = new ArrayList<>();
         String sql = "SELECT username, skillName FROM emp_skill LEFT JOIN skill ON emp_skill.skillID = skill.skillID WHERE username LIKE (?);";
 
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -287,7 +287,7 @@ public class AlphaRepository {
         }
         return updatedEmp;
     }
-   
+
 
     public List<Emp> getAllEmp() {
         List<Emp> allEmp = new ArrayList<>();
@@ -321,11 +321,12 @@ public class AlphaRepository {
         }
         return project;
     }
+
     public void deleteProject(int projectID) {
         String sql = "DELETE FROM project WHERE projectId = ?";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
-             PreparedStatement pstmt = con.prepareStatement(sql);
+            PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, projectID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -352,7 +353,7 @@ public class AlphaRepository {
     }
 
 
-    public void addEmpToProject(String username, int projectID){
+    public void addEmpToProject(String username, int projectID) {
         String sql = "INSERT INTO PROJECT_EMP (USERNAME, PROJECTID) VALUES (?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
@@ -397,15 +398,15 @@ public class AlphaRepository {
         return newProject;
     }
 
-    public ArrayList<Project> getAllSubProjectsOfProject(int projectID){
+    public ArrayList<Project> getAllSubProjectsOfProject(int projectID) {
         ArrayList<Project> subProjects = new ArrayList<>();
         String SQL = "SELECT * from project where parentProjectID = ?;";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(SQL)){
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
             pstmt.setInt(1, projectID);
             ResultSet rs = pstmt.executeQuery();
             Project currentProject;
-            while (rs.next()){
+            while (rs.next()) {
                 currentProject = createProjectFromResultSet(rs);
                 subProjects.add(currentProject);
             }
@@ -433,31 +434,32 @@ public class AlphaRepository {
     }
 
 
-public Task createTask(Task newTask, int projectID){
-    String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
-    Connection con = ConnectionManager.getConnection(url, user, password);
-    try {
-        newTask.setProjectID(projectID);
-        PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, newTask.getTaskName());
-        preparedStatement.setInt(2, newTask.getProjectID());
-        preparedStatement.setInt(3, newTask.getCategoryID());
-        preparedStatement.setString(4, newTask.getDescription());
-        preparedStatement.setInt(5, newTask.getEstimate());
-        preparedStatement.setDate(6, Date.valueOf(newTask.getStartDate()));
-        preparedStatement.setDate(7, Date.valueOf(newTask.getEndDate()));
-        preparedStatement.executeUpdate();
+    public Task createTask(Task newTask, int projectID) {
+        String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try {
+            newTask.setProjectID(projectID);
+            PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, newTask.getTaskName());
+            preparedStatement.setInt(2, newTask.getProjectID());
+            preparedStatement.setInt(3, newTask.getCategoryID());
+            preparedStatement.setString(4, newTask.getDescription());
+            preparedStatement.setInt(5, newTask.getEstimate());
+            preparedStatement.setDate(6, Date.valueOf(newTask.getStartDate()));
+            preparedStatement.setDate(7, Date.valueOf(newTask.getEndDate()));
+            preparedStatement.executeUpdate();
 
-        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-        if (generatedKeys.next()){
-            int generatedTaskID = generatedKeys.getInt(1);
-            newTask.setTaskID(generatedTaskID);
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedTaskID = generatedKeys.getInt(1);
+                newTask.setTaskID(generatedTaskID);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
-    }return newTask;
-}
+        return newTask;
+    }
 
 
     public List<Map<String, Object>> getAllCategories() {
@@ -477,6 +479,7 @@ public Task createTask(Task newTask, int projectID){
         }
         return categories;
     }
+
     public Task findTaskByTaskId(int taskId) {
         String sql = "SELECT * FROM task WHERE taskID = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -493,6 +496,7 @@ public Task createTask(Task newTask, int projectID){
             throw new RuntimeException("Failed to find task by ID", e);
         }
     }
+
     public Task findTaskByProjectID(int projectID) {
         String sql = "SELECT * FROM task WHERE projectID = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -511,23 +515,17 @@ public Task createTask(Task newTask, int projectID){
     }
 
 
-
-
-
-
-    public void deleteTask(int taskID){
-    String SQL = "DELETE FROM TASK WHERE TASKID = ?";
-    Connection connection = ConnectionManager.getConnection(url,user,password);
-    try {
-        PreparedStatement pstmt = connection.prepareStatement(SQL);
-        pstmt.setInt(1,taskID);
-        pstmt.executeUpdate();
-    } catch (SQLException e){
-        e.printStackTrace();
+    public void deleteTask(int taskID) {
+        String SQL = "DELETE FROM TASK WHERE TASKID = ?";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(SQL);
+            pstmt.setInt(1, taskID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-}
-
-
 
 
     public ArrayList<Task> getAllTaskOfSubProject(int projectID) {
@@ -547,7 +545,7 @@ public Task createTask(Task newTask, int projectID){
         return tasks;
     }
 
-    public int sumOfEstimates(int projectID){
+    public int sumOfEstimates(int projectID) {
         ArrayList<Task> tasks = getAllTaskOfSubProject(projectID);
         int sumOfEstimates = 0;
         for (Task task : tasks) {
@@ -557,12 +555,12 @@ public Task createTask(Task newTask, int projectID){
         return sumOfEstimates;
     }
 
-    public void toggleIsDone(boolean isDone, int taskID){
+    public void toggleIsDone(boolean isDone, int taskID) {
         String sql = "UPDATE TASK SET isDone = ? WHERE taskID = ?;";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(sql)){
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setBoolean(1, !isDone);
-            pstmt.setInt(2,taskID);
+            pstmt.setInt(2, taskID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -570,18 +568,18 @@ public Task createTask(Task newTask, int projectID){
     }
 
 
-    public Task updateTask(Task task){
+    public Task updateTask(Task task) {
         String SQL = "UPDATE TASK SET taskName = ?, categoryID = ?, description = ? , estimate = ?, startDate = ?, endDate = ? WHERE taskID =?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(SQL);
             preparedStatement.setString(1, task.getTaskName());
-            preparedStatement.setInt(2,task.getCategoryID());
-            preparedStatement.setString(3,task.getDescription());
-            preparedStatement.setInt(4,task.getEstimate());
-            preparedStatement.setDate(5 , java.sql.Date.valueOf(task.getStartDate()));
-            preparedStatement.setDate(6 , java.sql.Date.valueOf(task.getEndDate()));
-            preparedStatement.setInt(7,task.getTaskID());
+            preparedStatement.setInt(2, task.getCategoryID());
+            preparedStatement.setString(3, task.getDescription());
+            preparedStatement.setInt(4, task.getEstimate());
+            preparedStatement.setDate(5, java.sql.Date.valueOf(task.getStartDate()));
+            preparedStatement.setDate(6, java.sql.Date.valueOf(task.getEndDate()));
+            preparedStatement.setInt(7, task.getTaskID());
             preparedStatement.executeUpdate();
         }
         catch (SQLException e){
@@ -591,6 +589,65 @@ public Task createTask(Task newTask, int projectID){
         return task;
     }
 
+    public double updatehoursDone(double hoursDoneToday, int taskID) {
+        hoursDoneToday += findTaskByTaskId(taskID).getHoursDone();
+        String SQL;
+        if (hoursDoneToday >= findTaskByTaskId(taskID).getEstimate()) {
+            SQL = "update task set hoursDone = ?, isDone = true where TaskID = ?";
+        } else {
+            SQL = "update task set hoursDone = ? where TaskID = ?;";
+        }
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
+            pstmt.setDouble(1, hoursDoneToday);
+            pstmt.setInt(2, taskID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return hoursDoneToday;
+    }
+
+    public int getWorkProgressPercentage(int projectID) {
+        ArrayList<Task> tasksInProject = getAllTaskOfSubProject(projectID);
+        int sumOfEstimates = 0;
+        double sumOfHoursDone = 0;
+
+        for (Task task : tasksInProject) {
+            sumOfEstimates += task.getEstimate();
+            if (task.getEstimate()>= task.getHoursDone()) {
+                sumOfHoursDone += task.getHoursDone();
+            } else {
+                sumOfHoursDone += task.getEstimate();
+            }
+        }
+        if (sumOfEstimates != 0) {
+            double percentage = (sumOfHoursDone / sumOfEstimates) * 100;
+            return (int)Math.min(percentage, 100);
+        } else {
+
+            return 0;
+        }
+    }
+
+    public int getRemaningHoursOfWork(int projectID){
+        ArrayList<Task> tasksInProject = getAllTaskOfSubProject(projectID);
+        int sumOfEstimates = 0;
+        double sumOfHoursDone = 0;
+        for (Task task : tasksInProject) {
+            sumOfEstimates += task.getEstimate();
+            if (task.getEstimate()>= task.getHoursDone()) {
+                sumOfHoursDone += task.getHoursDone();
+            } else {
+                sumOfHoursDone += task.getEstimate();
+            }
+        }
+
+        return sumOfEstimates - (int)sumOfHoursDone;
+
+
+    }
 
 
 
@@ -658,12 +715,12 @@ public Task createTask(Task newTask, int projectID){
         return project;
     }
 
-    private void saveSkills(String username, ArrayList<String> skills){
+    private void saveSkills(String username, ArrayList<String> skills) {
         String sql = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(sql)){
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             for (String skill : skills) {
-                pstmt.setString(1,username);
+                pstmt.setString(1, username);
                 pstmt.setString(2, skill);
                 pstmt.executeUpdate();
             }
@@ -674,10 +731,10 @@ public Task createTask(Task newTask, int projectID){
 
     }
 
-    private Task createTaskFromResultSet(ResultSet rs){
+    private Task createTaskFromResultSet(ResultSet rs) {
         Task task = new Task();
 
-       try {
+        try {
             task.setTaskID(rs.getInt("taskID"));
             task.setTaskName(rs.getString("taskName"));
             task.setProjectID(rs.getInt("projectID"));
@@ -687,13 +744,13 @@ public Task createTask(Task newTask, int projectID){
             task.setStartDate(rs.getDate("startDate").toLocalDate());
             task.setEndDate(rs.getDate("endDate").toLocalDate());
             task.setDone(rs.getBoolean("isDone"));
-        } catch (SQLException e){
+            task.setHoursDone(rs.getDouble("hoursDone"));
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return task;
 
     }
-
 
 
 }

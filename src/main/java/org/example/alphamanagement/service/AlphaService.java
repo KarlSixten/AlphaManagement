@@ -118,6 +118,18 @@ public class AlphaService {
     public Task updateTask(Task task){
         return alphaRepository.updateTask(task);
     }
+    public double updatehoursDone(int hoursDoneToday, int taskID){
+        return alphaRepository.updatehoursDone(hoursDoneToday,taskID);
+    }
+
+    public double getWorkProgressPercentage(int projectID){
+        return alphaRepository.getWorkProgressPercentage(projectID);
+
+    }
+
+    public int getRemaningHoursOfWork(int projectID){
+        return alphaRepository.getRemaningHoursOfWork(projectID);
+    }
 
     public List<Project> getProjectsForEmp(String username) {
         return alphaRepository.getProjectsForEmp(username);
