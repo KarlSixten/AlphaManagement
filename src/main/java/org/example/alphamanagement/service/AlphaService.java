@@ -24,8 +24,8 @@ public class AlphaService {
     public Emp checkValidLogin(String empUsername, String empPassword) {
         return alphaRepository.checkValidLogin(empUsername, empPassword);
     }
-    public Project createProject(Project newProject){
-        return alphaRepository.createProject(newProject);
+    public Project createProject(Project newProject, Emp projectCreatorEmp){
+        return alphaRepository.createProject(newProject, projectCreatorEmp);
     }
 
     public Emp findEmpByUsername(String username) {
@@ -117,5 +117,9 @@ public class AlphaService {
     }
     public Task updateTask(Task task){
         return alphaRepository.updateTask(task);
+    }
+
+    public List<Project> getProjectsForEmp(String username) {
+        return alphaRepository.getProjectsForEmp(username);
     }
 }
