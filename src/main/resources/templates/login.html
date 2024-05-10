@@ -5,28 +5,68 @@
     <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/headerStyles.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .center-align {
+            text-align: center;
+        }
+        .input-field {
+            margin-bottom: 15px;
+        }
+        .login-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgb(214, 108, 69);
+            margin-top: 25%;
+        }
+        .btn {
+            width: 50%;
+            margin: 0 auto;
+            display: block;
+            background: rgb(214, 108, 69);
+            color: black;
+            border: black;
+
+        }
+        .btn:hover {
+            background: rgb(234, 51, 109);
+        }
+
+    </style>
 </head>
+<body>
 
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
-<body>
-<div>
-    <h4>LOGIN</h4>
-    <div>
-        <form action="/submit-login" method="post">
-            <div>
-                <input id="empUsername" type="text" name="empUsername" class="validate" required>
-                <label for="empUsername">Brugernavn</label>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="login-box">
+                <h4 class="center-align">LOGIN</h4>
+                <form action="/submit-login" method="post">
+                    <div class="form-group">
+                        <label for="empUsername">Brugernavn</label>
+                        <input id="empUsername" type="text" name="empUsername" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="empPassword">Adgangskode</label>
+                        <input id="empPassword" type="password" name="empPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit" name="action">Login</button>
+                    </div>
+                </form>
             </div>
-            <div>
-                <input id="empPassword" type="password" name="empPassword" class="validate" required>
-                <label for="empPassword">Adgangskode</label>
-            </div>
-            <div>
-                <button type="submit">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
 </body>
-</html>
+</html>>
