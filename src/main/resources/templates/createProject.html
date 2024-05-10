@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Project</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/headerStyles.css">
 </head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body>
 <h1>Create a New Project</h1>
 <form action="#" th:action="@{/projects/new/submit}" th:object="${project}" method="post">
@@ -21,8 +26,6 @@
 
     <button type="submit">Create Project</button>
 </form>
-
-<div th:if="${message}" th:text="${message}"></div>
 
 <a href="/home">Tilbage</a>
 

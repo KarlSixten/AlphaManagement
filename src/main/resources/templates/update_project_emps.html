@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Employee to Project</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/headerStyles.css">
 </head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body>
 <h1>Add Employee to Project</h1>
 <form th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
