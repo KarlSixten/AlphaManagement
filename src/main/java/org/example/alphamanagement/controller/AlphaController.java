@@ -301,9 +301,18 @@ public class AlphaController {
         model.addAttribute("projectID", projectID);
         model.addAttribute("taskID", taskID);
         model.addAttribute("task", task);
+        model.addAttribute("categories", alphaService.getAllCategories());
         return "update-task";
     }
-
+/*   @GetMapping("/tasks/new/{ProjectID}")
+    public String showCreateTaskForm(@PathVariable("ProjectID") int projectID, Model model) {
+        model.addAttribute("task", new Task());
+            List<Project> subProjects = alphaService.getAllSubProjectsOfProject(projectID);
+            model.addAttribute("subProjects", subProjects);
+            model.addAttribute("categories", alphaService.getAllCategories());
+            model.addAttribute("projectID", projectID);
+            return "createTask";
+        }*/
 
     @PostMapping("/projects/{projectID}/{taskID}/update")
     public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
