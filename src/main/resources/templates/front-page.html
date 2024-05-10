@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Projects List</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="/headerStyles.css">
 </head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body>
 <h1>Projects List</h1>
 
-<a th:if="${jobType == 2 or jobType == 3}" href="http://localhost:8080/projects/new" class="se-task-knap">Create Project</a>
+<a th:if="${jobType == 2 or jobType == 3}" href="/projects/new" class="se-task-knap">Create Project</a>
 
 <div id="projekt-container">
     <div class="projekt" th:each="project : ${projects}">
