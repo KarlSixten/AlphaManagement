@@ -1,0 +1,35 @@
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+.container {
+    margin-top: 20px;
+}
+.center-align {
+    text-align: center;
+}
+.input-field {
+    margin-bottom: 15px;
+}
+.login-box {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 25%;
+}
+.login-box:hover {
+    box-shadow: 0 0 10px rgb(234, 51, 109);
+}
+
+.btn {
+    width: 50%;
+    margin: 0 auto;
+    display: block;
+    background: rgb(214, 108, 69);
+    color: black;
+    border: black;
+
+}
+.btn:hover {
+    background: rgb(234, 51, 109);
+}
