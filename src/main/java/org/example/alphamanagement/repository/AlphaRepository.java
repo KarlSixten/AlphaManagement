@@ -558,6 +558,7 @@ public Task createTask(Task newTask, int projectID){
             preparedStatement.executeUpdate();
         }
         catch (SQLException e){
+            e.printStackTrace();
             throw new RuntimeException("ups");
         }
         return task;
