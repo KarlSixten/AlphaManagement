@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks for Project [[${projectID}]]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
+    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Create New Task</a>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Estimate</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}"><td>
+                <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Name</a>
+            </td>
+                <td th:text="${task.estimate}">Estimate</td>
+                <td th:text="${task.endDate}">End Date</td>
+                <td>
+                    <form th:action="@{'/delete-task'}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
+                        <input type="hidden" name="projectID" th:value="${projectID}" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                    </form>
+                    <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
+                        <input type="hidden" name="projectID" th:value="${projectID}" />
+                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+<p th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer'" ></p>
+    </div>
+    </body>
+    </html>

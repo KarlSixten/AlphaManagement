@@ -64,8 +64,6 @@ public class AlphaController {
         Emp empFromLogin = alphaService.checkValidLogin(empUsername, empPassword);
         if (empFromLogin != null) {
             httpSession.setAttribute("empLoggedIn", empFromLogin);
-            Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
-            System.out.println(empLoggedIn.getJobType());
             return "redirect:/home";
         } else {
             return "redirect:/";
@@ -246,30 +244,31 @@ public class AlphaController {
         alphaService.removeEmpFromProject(projectID, username);
         return "redirect:/projects/" + projectID + "/update-emps";
     }
-    @GetMapping ("/tasks/new")
-    public String showCreateTaskForm(Model model){
-        if (userIsLoggedIn()){
-            model.addAttribute("task", new Task());
-            model.addAttribute("projects", alphaService.getAllProjects());
+    @GetMapping("/tasks/new/{ProjectID}")
+    public String showCreateTaskForm(@PathVariable("ProjectID") int projectID, Model model) {
+        model.addAttribute("task", new Task());
+            List<Project> subProjects = alphaService.getAllSubProjectsOfProject(projectID);
+            model.addAttribute("subProjects", subProjects);
             model.addAttribute("categories", alphaService.getAllCategories());
+            model.addAttribute("projectID", projectID);
             return "createTask";
-        } else {
-            return "redirect:/";
         }
-    }
-    @PostMapping("/tasks/new/submit")
-    public String createTask(@ModelAttribute("task") Task task){
+
+
+    @PostMapping("/tasks/new/submit/{ProjectID}")
+    public String createTask(@ModelAttribute("task") Task task, @PathVariable("ProjectID") int projectID){
         if (userIsLoggedIn()){
-            Task savedTask = alphaService.createTask(task);
-            return "redirect:/tasks/view/" + savedTask.getTaskID();
+            Task savedTask = alphaService.createTask(task, projectID);
+            return "redirect:/all-task/view/" + projectID;
         } else {
             return "redirect:/";
         }
     }
-    @GetMapping("tasks/view/{taskId}")
-    public String viewTask(@PathVariable("taskId") int taskId, Model model){
+    @GetMapping("tasks/view/{projectID}/{taskId}")
+    public String viewTask(@PathVariable("taskId") int taskId,@PathVariable("projectID") int projectID, Model model){
        Task task = alphaService.findTaskById(taskId);
        model.addAttribute("task", task);
+       model.addAttribute("projectID", projectID);
        return "viewTask";
     }
 
@@ -279,15 +278,45 @@ public class AlphaController {
         Task task = alphaService.findTaskByProjectID(projectID);
         model.addAttribute("projectID", projectID);
         model.addAttribute("tasks", alphaService.getAllTaskOfSubProject(projectID));
-        return "viewTask";
+        model.addAttribute("totalEstimate", alphaService.sumOfEstimates(projectID));
+        return "viewAllTasks";
     }
 
 
     @PostMapping("/delete-task")
-    public String deleteTask(@RequestParam("taskID") int taskID){
+    public String deleteTask(@RequestParam("taskID") int taskID, @RequestParam("projectID") int projectID){
         alphaService.deleteTask(taskID);
-        return "redirect:/tasks/view";
+        return "redirect:/all-task/view/" + projectID;
     }
+    @PostMapping("tasks/view/{projectID}/{taskID}")
+    public String toggleIsDone(@PathVariable ("projectID") int projectID, @PathVariable("taskID") int taskID){
+        alphaService.toggleIsDone(alphaService.findTaskById(taskID).isDone(), taskID);
+        return "redirect:/tasks/view/" + projectID + "/" + taskID;
+    }
+
+
+    @GetMapping("/projects/{projectID}/{taskID}/update")
+    public String showUpdateTaskForm(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, Model model){
+        Task task = alphaService.findTaskById(taskID);
+        model.addAttribute("projectID", projectID);
+        model.addAttribute("taskID", taskID);
+        model.addAttribute("task", task);
+        return "update-task";
+    }
+
+
+    @PostMapping("/projects/{projectID}/{taskID}/update")
+    public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
+        task.setTaskID(taskID);
+        alphaService.updateTask(task);
+        return "redirect:/all-task/view/" + projectID;
+    }
+
+
+
+
+
+
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER

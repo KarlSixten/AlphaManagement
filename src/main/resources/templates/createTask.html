@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Task</title>
-    <!-- Add any required CSS files here -->
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/headerStyles.css">
@@ -13,27 +12,17 @@
 
 <body>
 <div class="container">
-    <h1>Create New Task</h1>
-    <form th:action="@{/tasks/new/submit}" th:object="${task}" method="post">
+    <form th:action="@{'/tasks/new/submit/' + ${projectID}}" th:object="${task}" method="post">
         <div class="form-group">
             <label for="taskName">Task Name:</label>
             <input type="text" id="taskName" th:field="*{taskName}" required="required" class="form-control"/>
         </div>
         <div class="form-group">
-            <label for="projectID">Project:</label>
-            <select id="projectID" th:field="*{projectID}" required="required" class="form-control">
-
-                <option th:each="project : ${projects}"
-                        th:value="${project['projectID']}"
-                        th:text="${project['projectName']}">Project Name</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label for="categoryID">Category:</label>
             <select id="categoryID" th:field="*{categoryID}" required="required" class="form-control">
                 <option th:each="category : ${categories}"
-                        th:value="${category['categoryID']}"
-                        th:text="${category['categoryName']}">Category Name</option>
+                        th:value="${category.categoryID}"
+                        th:text="${category.categoryName}"></option>
             </select>
         </div>
         <div class="form-group">

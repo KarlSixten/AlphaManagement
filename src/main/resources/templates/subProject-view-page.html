@@ -24,7 +24,9 @@
         </thead>
         <tbody>
         <tr th:each="subProject : ${subProjects}">
-            <td th:text="${subProject.projectName}">Project Name</td>
+            <td>
+                <a th:href="@{'/all-task' + '/view/' + ${subProject.projectID}}" th:text="${subProject.projectName}">Project Name</a>
+            </td>
             <td th:text="${subProject.startDate}">Start Date</td>
             <td th:text="${subProject.endDate}">End Date</td>
             <td>
