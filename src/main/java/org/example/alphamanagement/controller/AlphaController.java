@@ -81,7 +81,7 @@ public class AlphaController {
         if (userIsLoggedIn()) {
             Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
             model.addAttribute("jobType", loggedInEmp.getJobType());
-            List<Project> projects = alphaService.getAllProjects();
+            List<Project> projects = alphaService.getProjectsForEmp(loggedInEmp.getUsername());
             model.addAttribute("projects", projects);
             return "front-page";
         } else {
@@ -99,7 +99,7 @@ public class AlphaController {
     @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
-            alphaService.createProject(project);
+            alphaService.createProject(project, (Emp) httpSession.getAttribute("empLoggedIn"));
             return "redirect:/home";
         } else {
             return "redirect:/";
