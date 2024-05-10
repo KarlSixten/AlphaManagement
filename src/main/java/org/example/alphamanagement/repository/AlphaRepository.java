@@ -60,23 +60,33 @@ public class AlphaRepository {
         }
     }
 
-    public Project createProject(Project newProject) {
-        String SQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
-        Connection con = ConnectionManager.getConnection(url, user, password);
+    public Project createProject(Project newProject, Emp projectCreatorEmp) {
+        String projectSQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
+        String projectEmpSQL = "INSERT INTO project_emp (projectID, username) VALUES (?, ?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement preparedStatement = con.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, newProject.getProjectName());
-            preparedStatement.setDate(2, Date.valueOf(newProject.getStartDate()));
-            preparedStatement.setDate(3, Date.valueOf(newProject.getEndDate()));
-            preparedStatement.executeUpdate();
+            PreparedStatement projectPreparedStatement = connection.prepareStatement(projectSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            projectPreparedStatement.setString(1, newProject.getProjectName());
+            projectPreparedStatement.setDate(2, Date.valueOf(newProject.getStartDate()));
+            projectPreparedStatement.setDate(3, Date.valueOf(newProject.getEndDate()));
+            projectPreparedStatement.executeUpdate();
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            ResultSet generatedKeys = projectPreparedStatement.getGeneratedKeys();
+
+
+
             if (generatedKeys.next()) {
                 int generatedProjectID = generatedKeys.getInt(1);
                 newProject.setProjectID(generatedProjectID);
             } else {
                 throw new SQLException("Creating project failed, no ID obtained.");
             }
+
+            PreparedStatement projectEmpPreparedStatement = connection.prepareStatement(projectEmpSQL);
+            projectEmpPreparedStatement.setInt(1, generatedKeys.getInt(1));
+            projectEmpPreparedStatement.setString(2, projectCreatorEmp.getUsername());
+            projectEmpPreparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -135,6 +145,23 @@ public class AlphaRepository {
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                projects.add(createProjectFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return projects;
+    }
+
+    public List<Project> getProjectsForEmp(String username) {
+        List<Project> projects = new ArrayList<>();
+        String sql = "SELECT project.* FROM project JOIN project_emp ON project.projectID = project_emp.projectID WHERE project_emp.username = (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 projects.add(createProjectFromResultSet(rs));
             }
@@ -554,7 +581,9 @@ public class AlphaRepository {
             preparedStatement.setDate(6, java.sql.Date.valueOf(task.getEndDate()));
             preparedStatement.setInt(7, task.getTaskID());
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e){
+            e.printStackTrace();
             throw new RuntimeException("ups");
         }
         return task;

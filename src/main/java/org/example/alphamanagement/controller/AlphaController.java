@@ -70,12 +70,18 @@ public class AlphaController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout() {
+        httpSession.invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/home")
     public String getHome(Model model) {
         if (userIsLoggedIn()) {
             Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
             model.addAttribute("jobType", loggedInEmp.getJobType());
-            List<Project> projects = alphaService.getAllProjects();
+            List<Project> projects = alphaService.getProjectsForEmp(loggedInEmp.getUsername());
             model.addAttribute("projects", projects);
             return "front-page";
         } else {
@@ -93,7 +99,7 @@ public class AlphaController {
     @PostMapping("/projects/new/submit")
     public String createProject(@ModelAttribute Project project) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
-            alphaService.createProject(project);
+            alphaService.createProject(project, (Emp) httpSession.getAttribute("empLoggedIn"));
             return "redirect:/home";
         } else {
             return "redirect:/";
@@ -202,7 +208,6 @@ public class AlphaController {
         return "redirect:/projects/" + parentProjectID + "/subprojects";
     }
 
-
     @GetMapping("projects/{projectID}/subprojects")
     public String getSubProjects(@PathVariable("projectID") int parentProjectID, Model model) {
         Project parentProject = alphaService.findProjectByID(parentProjectID);
@@ -298,6 +303,7 @@ public class AlphaController {
         model.addAttribute("projectID", projectID);
         model.addAttribute("taskID", taskID);
         model.addAttribute("task", task);
+        model.addAttribute("categories", alphaService.getAllCategories());
         return "update-task";
     }
 

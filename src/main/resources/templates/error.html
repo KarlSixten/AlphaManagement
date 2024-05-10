@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Error</title></head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="/headerStyles.css">
+</head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <style>
     .header {
         position: fixed;
@@ -14,10 +20,5 @@
     }
 </style>
 <body>
-
-<!-- HEADER FINDES IKKE, KOMMENTERET UD
-<div th:replace="~{fragments/header :: header}" class="header"></div>
--->
-
 <h3>Der er opstået en fejl - kontakt systemadministrator</h3></body>
 </html>
