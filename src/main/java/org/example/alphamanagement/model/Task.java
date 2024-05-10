@@ -11,7 +11,7 @@ public class Task {
     private int estimate;
     private LocalDate startDate;
     private LocalDate endDate;
-    private int hoursDone;
+    private double hoursDone;
     private boolean isDone;
 
     public Task(int taskID, String taskName, int projectID, int categoryID, String description, int estimate, LocalDate startDate, LocalDate endDate) {
@@ -27,11 +27,11 @@ public class Task {
         this.isDone = false;
     }
 
-    public int getHoursDone() {
+    public double getHoursDone() {
         return hoursDone;
     }
 
-    public void setHoursDone(int hoursDone) {
+    public void setHoursDone(double hoursDone) {
         this.hoursDone = hoursDone;
     }
 
