@@ -114,3 +114,4 @@ INSERT INTO project_emp (projectID, username) VALUES (2, 'test');
 INSERT INTO project_emp (projectID, username) VALUES (3, 'test');
 
 INSERT INTO project_emp (projectID, username) VALUES (2, 'kabj0000');
+INSERT INTO project_emp (projectID, username) VALUES (2, 'user');

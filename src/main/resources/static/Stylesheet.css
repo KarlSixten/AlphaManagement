@@ -78,3 +78,20 @@ body {
 .se-task-knap:hover {
     background-color: #2980b9;
 }
+.projekt a.project-link {
+    display: block;
+    color: inherit; /* Ensures text colors are not changed */
+    text-decoration: none; /* Removes underline from links */
+}
+
+.button-group a {
+    display: inline-block; /* Keeps button-like appearance */
+}
+
+.button-group {
+    pointer-events: none;
+}
+
+.button-group a {
+    pointer-events: auto; /* Allows buttons to be clickable */
+}
