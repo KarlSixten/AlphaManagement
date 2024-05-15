@@ -323,12 +323,17 @@ public class AlphaRepository {
     }
 
     public void deleteProject(int projectID) {
-        String sql = "DELETE FROM project WHERE projectId = ?";
+        String projectSql = "DELETE FROM project WHERE projectId = (?)";
+        String projectEmpSql = "DELETE FROM project_emp WHERE projectId = (?);";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, projectID);
-            pstmt.executeUpdate();
+            PreparedStatement projectEmpPstmt = con.prepareStatement(projectEmpSql);
+            projectEmpPstmt.setInt(1, projectID);
+            projectEmpPstmt.executeUpdate();
+
+            PreparedStatement projectPstmt = con.prepareStatement(projectSql);
+            projectPstmt.setInt(1, projectID);
+            projectPstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete project", e);
         }
