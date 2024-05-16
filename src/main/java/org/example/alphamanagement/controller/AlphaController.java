@@ -132,7 +132,9 @@ public class AlphaController {
         }
     }
 
-
+    //TODO
+    //Delete project virker ikke (pr 10/5), det er højest sandsynligt fordi projektets reference
+    //også skal slettes det sted vi har oversigt over subprojects
 
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
