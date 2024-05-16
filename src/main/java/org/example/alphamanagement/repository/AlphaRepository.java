@@ -156,7 +156,7 @@ public class AlphaRepository {
 
     public List<Project> getProjectsForEmp(String username) {
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT project.* FROM project JOIN project_emp ON project.projectID = project_emp.projectID WHERE project_emp.username = (?);";
+        String sql = "SELECT project.* FROM project JOIN project_emp ON project.projectID = project_emp.projectID WHERE project_emp.username = (?) ORDER BY startDate ASC;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -323,12 +323,17 @@ public class AlphaRepository {
     }
 
     public void deleteProject(int projectID) {
-        String sql = "DELETE FROM project WHERE projectId = ?";
+        String projectSql = "DELETE FROM project WHERE projectId = (?)";
+        String projectEmpSql = "DELETE FROM project_emp WHERE projectId = (?);";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, projectID);
-            pstmt.executeUpdate();
+            PreparedStatement projectEmpPstmt = con.prepareStatement(projectEmpSql);
+            projectEmpPstmt.setInt(1, projectID);
+            projectEmpPstmt.executeUpdate();
+
+            PreparedStatement projectPstmt = con.prepareStatement(projectSql);
+            projectPstmt.setInt(1, projectID);
+            projectPstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete project", e);
         }
