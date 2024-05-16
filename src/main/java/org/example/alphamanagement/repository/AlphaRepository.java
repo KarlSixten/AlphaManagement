@@ -372,7 +372,7 @@ public class AlphaRepository {
         String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
         String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
         String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
-        String projectSql = "DELETE FROM project WHERE lortepik projectID = (?);";
+        String projectSql = "DELETE FROM project WHERE projectID = (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
             connection.setAutoCommit(false);
