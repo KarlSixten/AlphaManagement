@@ -326,25 +326,36 @@ public class AlphaRepository {
         String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
         String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
         String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
-        String projectSql = "DELETE FROM project WHERE projectID = (?);";
-        Connection con = ConnectionManager.getConnection(url, user, password);
+        String projectSql = "DELETE FROM project WHERE lortepik projectID = (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement projectEmpPstmt = con.prepareStatement(projectEmpSql);
+            connection.setAutoCommit(false);
+
+            PreparedStatement projectEmpPstmt = connection.prepareStatement(projectEmpSql);
             projectEmpPstmt.setInt(1, projectID);
             projectEmpPstmt.executeUpdate();
 
-            PreparedStatement taskPstmt = con.prepareStatement(taskSql);
+            PreparedStatement taskPstmt = connection.prepareStatement(taskSql);
             taskPstmt.setInt(1, projectID);
             taskPstmt.executeUpdate();
 
-            PreparedStatement subProjectPstmt = con.prepareStatement(subProjectSql);
+            PreparedStatement subProjectPstmt = connection.prepareStatement(subProjectSql);
             subProjectPstmt.setInt(1, projectID);
             subProjectPstmt.executeUpdate();
 
-            PreparedStatement projectPstmt = con.prepareStatement(projectSql);
+            PreparedStatement projectPstmt = connection.prepareStatement(projectSql);
             projectPstmt.setInt(1, projectID);
             projectPstmt.executeUpdate();
+
+            connection.commit();
+            connection.setAutoCommit(true);
+
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Failed to roll back transaction", ex);
+            }
             throw new RuntimeException("Failed to delete project", e);
         }
     }
