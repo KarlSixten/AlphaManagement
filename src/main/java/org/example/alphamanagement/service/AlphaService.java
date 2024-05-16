@@ -118,6 +118,9 @@ public class AlphaService {
     public Task updateTask(Task task){
         return alphaRepository.updateTask(task);
     }
+    public List<Emp> findEmpsContainingInParentProject(String searchQuery, int projectID){
+        return alphaRepository.findEmpsContainingInParentProject(searchQuery,projectID);
+    }
     public double updatehoursDone(int hoursDoneToday, int taskID){
         return alphaRepository.updatehoursDone(hoursDoneToday,taskID);
     }
