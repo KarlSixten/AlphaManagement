@@ -78,12 +78,6 @@ public class AlphaController {
 
     @GetMapping("/home")
     public String getHome(Model model) {
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////       UDELUKKENDE TIL AT TESTE STYLING ////////////////////////////////////////
-        httpSession.setAttribute("empLoggedIn", alphaService.findEmpByUsername("test"));
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-
         if (userIsLoggedIn()) {
             Emp loggedInEmp = (Emp) httpSession.getAttribute("empLoggedIn");
             model.addAttribute("jobType", loggedInEmp.getJobType());
