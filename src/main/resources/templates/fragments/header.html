@@ -11,7 +11,7 @@
             <img class="logo" src="/img/AlphaManagementLogo.png"/>
         </a>
         <div class="headerButtonGroup" th:if="${session.empLoggedIn != null}">
-            <a class="btn editUsers" th:if="${session.empLoggedIn.jobType == 2 or session.empLoggedIn.jobType == 3}" href="/find-user">Rediger bruger(e)</a>
+            <a class="btn editUsers" th:if="${session.empLoggedIn.jobType == 2 or session.empLoggedIn.jobType == 3}" href="/find-user">Rediger brugere</a>
             <a class="btn logOut" href="/logout">Log ud</a>
         </div>
     </header>
