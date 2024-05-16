@@ -116,24 +116,35 @@ public class AlphaRepository {
         String deleteFromEmp_Task = "DELETE FROM EMP_TASK WHERE username =?";
         String deleteFromEmp_Skill = "DELETE FROM EMP_SKILL WHERE username =?";
         Connection connection = ConnectionManager.getConnection(url, user, password);
-
         try {
-            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
+            connection.setAutoCommit(false);
             PreparedStatement deleteFromProject_EmpPstmt = connection.prepareStatement(deleteFromProject_Emp);
-            PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
-            PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
-
-
             deleteFromProject_EmpPstmt.setString(1, username);
             deleteFromProject_EmpPstmt.executeUpdate();
-            deleteFromEmp_TaskPstmt.setString(1, username);
-            deleteFromEmp_TaskPstmt.executeUpdate();
-            deleteFromEmp_SkillPstmt.setString(1, username);
-            deleteFromEmp_SkillPstmt.executeUpdate();
+
+
+            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
             deleteFromEmpPstmt.setString(1, username);
             deleteFromEmpPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
+            deleteFromEmp_TaskPstmt.setString(1, username);
+            deleteFromEmp_TaskPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
+            deleteFromEmp_SkillPstmt.setString(1, username);
+            deleteFromEmp_SkillPstmt.executeUpdate();
+
+            connection.commit();
+            connection.setAutoCommit(true);
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Failed to roll back transaction", ex);
+            }
+            throw new RuntimeException("Failed to delete emp", e);
         }
     }
 
