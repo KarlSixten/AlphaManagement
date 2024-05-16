@@ -323,13 +323,23 @@ public class AlphaRepository {
     }
 
     public void deleteProject(int projectID) {
-        String projectSql = "DELETE FROM project WHERE projectId = (?)";
-        String projectEmpSql = "DELETE FROM project_emp WHERE projectId = (?);";
+        String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
+        String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
+        String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
+        String projectSql = "DELETE FROM project WHERE projectID = (?);";
         Connection con = ConnectionManager.getConnection(url, user, password);
         try {
             PreparedStatement projectEmpPstmt = con.prepareStatement(projectEmpSql);
             projectEmpPstmt.setInt(1, projectID);
             projectEmpPstmt.executeUpdate();
+
+            PreparedStatement taskPstmt = con.prepareStatement(taskSql);
+            taskPstmt.setInt(1, projectID);
+            taskPstmt.executeUpdate();
+
+            PreparedStatement subProjectPstmt = con.prepareStatement(subProjectSql);
+            subProjectPstmt.setInt(1, projectID);
+            subProjectPstmt.executeUpdate();
 
             PreparedStatement projectPstmt = con.prepareStatement(projectSql);
             projectPstmt.setInt(1, projectID);
