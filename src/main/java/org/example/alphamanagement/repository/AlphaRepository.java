@@ -167,7 +167,12 @@ public class AlphaRepository {
 
     public List<Project> getProjectsForEmp(String username) {
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT project.* FROM project JOIN project_emp ON project.projectID = project_emp.projectID WHERE project_emp.username = (?) ORDER BY startDate ASC;";
+        String sql = "SELECT project.* " +
+                "FROM project " +
+                "JOIN project_emp ON project.projectID = project_emp.projectID " +
+                "WHERE project_emp.username = ? " +
+                "AND project.parentProjectID IS NULL " +
+                "ORDER BY startDate ASC;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -199,6 +204,37 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Emp> findEmpsContainingInParentProject(String searchQuery, int projectID){
+            List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT e.* " +
+                "FROM emp e " +
+                "JOIN project_emp pe ON e.username = pe.username " +
+                "WHERE (e.username LIKE ? OR e.firstName LIKE ? OR e.lastName LIKE ?) " +
+                "AND pe.projectID = ? " +
+                "AND e.username NOT IN (" +
+                "    SELECT username " +
+                "    FROM project_emp " +
+                "    WHERE projectID = ?" +
+                ");";
+            Connection connection = ConnectionManager.getConnection(url, user, password);
+
+            try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+                psmt.setString(1, "%" + searchQuery + "%");
+                psmt.setString(2, "%" + searchQuery + "%");
+                psmt.setString(3, "%" + searchQuery + "%");
+                psmt.setInt(4, findProjectByID(projectID).getParentProjectID());
+                psmt.setInt(5, projectID);
+                ResultSet rs = psmt.executeQuery();
+                while (rs.next()) {
+                    searchResults.add(createEmpFromResultSet(rs));
+                }
+                return searchResults;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
     }
 
     public List<Emp> findEmpsConatiningNotOnProject(String searchQuery, int projectID) {
@@ -404,17 +440,32 @@ public class AlphaRepository {
     }
 
     public void removeEmpFromProject(int projectID, String username) {
-        String sql = "DELETE FROM project_emp WHERE projectID = (?) AND username = (?);";
+        String sql;
+        if (findProjectByID(projectID).getParentProjectID() > 0) {
+            sql = "DELETE FROM project_emp WHERE projectID = ? AND username = ?;";
+        } else {
+            sql = "DELETE FROM project_emp " +
+                    "WHERE (projectID = ? OR projectID IN (" +
+                    "           SELECT projectID " +
+                    "           FROM project " +
+                    "           WHERE parentProjectID = ?" +
+                    "      ))" +
+                    "AND username = ?;";
+        }
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, projectID);
-            pstmt.setString(2, username);
+            pstmt.setInt(2, projectID); // For the subquery in the else block
+            pstmt.setString(3, username);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+
+
 
     public Project createSubProject(int parentProjectID, Project newProject) {
         newProject.setParentProjectID(parentProjectID);
@@ -455,6 +506,7 @@ public class AlphaRepository {
 
     public List<Emp> getEmpsOnProject(int projectID) {
         List<Emp> empList = new ArrayList<>();
+
         String sql = "SELECT emp.username, emp.password, emp.firstName, emp.lastName, emp.jobTypeID FROM emp JOIN project_emp ON emp.username = project_emp.username WHERE projectID = (?) ORDER BY projectID;";
 
         Connection connection = ConnectionManager.getConnection(url, user, password);

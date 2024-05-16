@@ -33,6 +33,7 @@
             <td>
                 <a th:href="@{'/projects/' + ${subProject.projectID} + '/update'}" class="btn btn-info">Update</a>
                 <a th:href="@{'/projects/' + ${subProject.projectID} + '/delete'}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this sub-project?');">Delete</a>
+                <a th:href="@{'/projects/' + ${subProject.projectID} + '/update-emps'}" class="btn projectBtn">Medarbejdere</a>
             </td>
         </tr>
         </tbody>

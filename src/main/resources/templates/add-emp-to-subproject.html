@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee to Subproject</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/generalStyles.css">
+    <link rel="stylesheet" href="/headerStyles.css">
+</head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
+<body>
+<h1>Add Employee to Project</h1>
+<form th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
+    <input type="text" name="searchString" placeholder="Search for employees...">
+    <button type="submit">Search</button>
+</form>
+
+<div>
+    <ul>
+        <li th:each="emp : ${empsToAdd}">
+            <span th:text="${emp.username}"></span>
+            <form th:action="@{'/projects/' + ${projectID} + '/update-emps/add/' + ${emp.username}}" method="post">
+                <button type="submit">Add to Project</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<h1>Emps on project currently</h1>
+<div>
+    <ul>
+        <li th:each="emp : ${empsOnProject}">
+            <span th:text="${emp.username}"></span>
+            <form th:action="@{'/projects/' + ${projectID} + '/update-emps/remove/' + ${emp.username}}" method="post">
+                <button type="submit">Remove from project</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<a th:href="'/projects/' + ${parentProjectID} +  '/subprojects'">Tilbage</a>
+
+</body>
+</html>

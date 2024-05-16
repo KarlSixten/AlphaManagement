@@ -225,12 +225,24 @@ public class AlphaController {
             searchString = "";
         }
         List<Emp> empsOnProject = alphaService.getEmpsOnProject(projectID);
-        List<Emp> empsToAdd = alphaService.findByUsernameContainingNotOnProject(searchString, projectID);
+        List<Emp> empsToAdd = null;
 
-        model.addAttribute("empsOnProject", empsOnProject);
-        model.addAttribute("empsToAdd", empsToAdd);
-        model.addAttribute("projectID", projectID);
-        return "update_project_emps";
+        if (alphaService.findProjectByID(projectID).getParentProjectID() != 0) {
+            empsToAdd = alphaService.findEmpsContainingInParentProject(searchString,projectID);
+            model.addAttribute("empsOnProject", empsOnProject);
+            model.addAttribute("empsToAdd", empsToAdd);
+            model.addAttribute("projectID", projectID);
+            model.addAttribute("parentProjectID", alphaService.findProjectByID(projectID).getParentProjectID());
+            return "add-emp-to-subproject";
+        }
+        else {
+            empsToAdd = alphaService.findByUsernameContainingNotOnProject(searchString, projectID);
+
+            model.addAttribute("empsOnProject", empsOnProject);
+            model.addAttribute("empsToAdd", empsToAdd);
+            model.addAttribute("projectID", projectID);
+            return "update_project_emps";
+        }
     }
 
     @PostMapping("/projects/{projectID}/update-emps/add/{username}")
