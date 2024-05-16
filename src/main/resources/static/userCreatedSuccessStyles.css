@@ -1,0 +1,41 @@
+#infoContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.userInfo {
+    width: 300px;
+    height: 150px;
+    background-color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.userCreatedText {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.homeButton {
+    width: fit-content;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}

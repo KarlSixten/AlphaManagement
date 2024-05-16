@@ -6,17 +6,21 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
+    <link rel="stylesheet" href="/userCreatedSuccessStyles.css">
 </head>
 
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 <body>
-USER CREATED
+<h1 class="userCreatedText">Medarbejder oprettet!</h1>
+<div id="infoContainer">
+    <div class="userInfo">
+        <h3 class="fullName" th:text="'Navn: ' + ${createdUser.firstName} + ' ' + ${createdUser.lastName}"></h3>
+        <p class="username" th:text="'Brugernavn: ' + ${createdUser.username}"></p>
+        <p class="password" th:text="'Adgangskode: ' + ${createdUser.password}"></p>
+    </div>
+    <a class="btn homeButton" href="/home">Hjem</a>
+</div>
 
-<p th:text="${createdUser.firstName}"></p>
-<p th:text="${createdUser.lastName}"></p>
-<p th:text="${createdUser.username}"></p>
-<p th:text="${createdUser.password}"></p>
 
-<a href="/home">Hjem</a>
 </body>
 </html>

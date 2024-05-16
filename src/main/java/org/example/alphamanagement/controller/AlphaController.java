@@ -48,7 +48,17 @@ public class AlphaController {
 
     @GetMapping("/user-created-success")
     public String getCreateUserSuccess(Model model) {
+
+
         model.addAttribute("createdUser", httpSession.getAttribute("newlyCreatedEmp"));
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////TEST///////////////////////////////////////////
+        model.addAttribute("createdUser", alphaService.findEmpByUsername("test"));
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
+
+
         return "user_created_success";
     }
 
@@ -132,10 +142,6 @@ public class AlphaController {
         }
     }
 
-    //TODO
-    //Delete project virker ikke (pr 10/5), det er højest sandsynligt fordi projektets reference
-    //også skal slettes det sted vi har oversigt over subprojects
-
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
@@ -165,6 +171,13 @@ public class AlphaController {
         if (searchString == null) {
             searchString = "";
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////TEST///////////////////////////////////////////
+        httpSession.setAttribute("empLoggedIn", alphaService.findEmpByUsername("test"));
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
+
         List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
         model.addAttribute("foundEmps", foundEmps);
         return "find_user";
