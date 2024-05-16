@@ -162,13 +162,6 @@ public class AlphaController {
 
     @GetMapping("/find-user")
     public String showEmployees(Model model, @RequestParam(required = false) String searchString) {
-
-        //////////////////////////////////////////////////////////////////////
-        //UDELUKKENDE TIL TEST AF STYLING        /////////////////////////////
-        httpSession.setAttribute("empLoggedIn", alphaService.findEmpByUsername("test"));
-        //////////////////////////////////////////////////////////////////////
-
-
         if (searchString == null) {
             searchString = "";
         }
