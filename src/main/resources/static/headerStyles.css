@@ -13,13 +13,15 @@
     align-items: center;
 }
 
-.btn {
-    margin-right: 20px;
-}
+
 
 .headerButtonGroup {
     display: flex;
     align-items: center;
     justify-content: space-between;
     white-space: nowrap;
+}
+
+.headerButtonGroup .btn {
+    margin-right: 20px;
 }
