@@ -6,24 +6,34 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
+    <link rel="stylesheet" href="/findUserStyles.css">
 </head>
 
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<form th:action="@{/find-user}" method="get">
-    <input type="text" name="searchString" placeholder="Search for employees...">
-    <button type="submit">Search</button>
-</form>
+<div class="search-container">
+    <form class="searchBar" th:action="@{/find-user}" method="get">
+        <input type="text" name="searchString" placeholder="Search for employees...">
+        <button class="btn" type="submit">Search</button>
+    </form>
+</div>
 
-<ul>
-    <li th:each="emp : ${foundEmps}">
-        <span th:text="${emp.username}"></span>
-        <form th:action="@{'find-user/' + ${emp.username} + '/delete-emp'}" method="post" th:unless="${emp.username} == ${session.empLoggedIn.username}">
-            <button type="submit" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</button>
-        </form>
-        <a th:href="@{'find-user/' + ${emp.username} + '/update-emp'}">Update</a>
-    </li>
-</ul>
+<a class="btn createUser" href="/create-emp" >+Opret medarbejder</a>
+
+<div id="emp-container">
+    <div class="empBox" th:each="emp : ${foundEmps}">
+            <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">full name</h2>
+            <h5 class="username" th:text="${emp.username}">username</h5>
+
+            <div class="button-group">
+                <a th:href="@{'/find-user/' + ${emp.username} + '/update-emp'}" class="btn">Opdater</a>
+                <form th:action="@{'find-user/' + ${emp.username} + '/delete-emp'}" method="post" th:unless="${emp.username} == ${session.empLoggedIn.username}">
+                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</button>
+                </form>
+            </div>
+        </a>
+    </div>
+</div>
 </body>
 </html>

@@ -122,11 +122,6 @@ public class AlphaRepository {
             deleteFromProject_EmpPstmt.setString(1, username);
             deleteFromProject_EmpPstmt.executeUpdate();
 
-
-            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
-            deleteFromEmpPstmt.setString(1, username);
-            deleteFromEmpPstmt.executeUpdate();
-
             PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
             deleteFromEmp_TaskPstmt.setString(1, username);
             deleteFromEmp_TaskPstmt.executeUpdate();
@@ -134,6 +129,10 @@ public class AlphaRepository {
             PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
             deleteFromEmp_SkillPstmt.setString(1, username);
             deleteFromEmp_SkillPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
+            deleteFromEmpPstmt.setString(1, username);
+            deleteFromEmpPstmt.executeUpdate();
 
             connection.commit();
             connection.setAutoCommit(true);
@@ -373,7 +372,7 @@ public class AlphaRepository {
         String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
         String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
         String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
-        String projectSql = "DELETE FROM project WHERE lortepik projectID = (?);";
+        String projectSql = "DELETE FROM project WHERE projectID = (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
             connection.setAutoCommit(false);

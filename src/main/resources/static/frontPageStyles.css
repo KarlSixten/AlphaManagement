@@ -85,10 +85,11 @@ body {
 }
 
 .createProject {
+    white-space: nowrap;
     position: absolute;
-    width: 150px;
     right: 0%;
     top: 80px;
+    margin-right: 20px;
 }
 
 .projekt a.project-link {

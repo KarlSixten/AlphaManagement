@@ -46,12 +46,12 @@
             </select>
         </div>
 
-        <!-- Loop through allSkills and create hidden input fields for all possible skills -->
+
         <div th:each="skill : ${allSkills}">
             <input type="hidden" name="allSkills" th:value="${skill}" />
         </div>
 
-        <!-- Loop through allSkills and create checkboxes -->
+
         <div th:each="skill : ${allSkills}" class="form-check">
             <input type="checkbox" class="form-check-input" name="empSkills" th:id="'skill' + ${skill}" th:value="${skill}"
                    th:checked="${empSkills != null and empSkills.contains(skill)}"/>

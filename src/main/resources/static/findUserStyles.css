@@ -1,0 +1,59 @@
+#emp-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: center;
+}
+
+.empBox {
+    width: 300px;
+    height: 150px;
+    background-color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.empBox:hover {
+    box-shadow: 0 0 10px rgb(234, 51, 109);
+}
+
+.empBox h2 {
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+.empBox p {
+    font-size: 1em;
+    margin: 5px 0;
+    text-align: center;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.empBox .button-group {
+    display: flex;
+    justify-content: space-around;
+}
+
+.button-group .btn {
+    margin: 10px;
+}
+
+.createUser {
+    white-space: nowrap;
+    position: absolute;
+    right: 0%;
+    top: 80px;
+    margin-right: 20px;
+}
