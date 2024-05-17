@@ -33,6 +33,36 @@
     <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID}}" method="post">
         <button type="submit">Toggle Done</button>
     </form>
+    <div>
+
+
+        <div>
+            <ul>
+                <li th:each="emp : ${empsToAdd}">
+                    <span th:text="${emp.username}"></span>
+                    <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID} + '/add/' + ${emp.username}}" method="post">
+                        <button type="submit">Tilføj til task</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <h1>Emps on task currently</h1>
+        <div>
+            <ul>
+                <li th:each="emp : ${empsOnTask}">
+                    <span th:text="${emp.username}"></span>
+                    <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID} + '/remove/' + ${emp.username}}" method="post">
+                        <button type="submit">Fjern fra task</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+
+
+    </div>
+
     <div class="container">
         <a th:href="@{'/all-task/view/' + ${projectID}}" class="btn btn-primary">Go Back</a>
     </div>
