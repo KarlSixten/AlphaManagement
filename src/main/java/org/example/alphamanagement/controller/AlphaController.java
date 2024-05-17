@@ -284,12 +284,36 @@ public class AlphaController {
             return "redirect:/";
         }
     }
+
     @GetMapping("tasks/view/{projectID}/{taskId}")
     public String viewTask(@PathVariable("taskId") int taskId,@PathVariable("projectID") int projectID, Model model){
-       Task task = alphaService.findTaskById(taskId);
+
+        Task task = alphaService.findTaskById(taskId);
+        List<Emp> empsOnTask = alphaService.getEmpsOnTask(taskId);
+        List<Emp> empsToAdd = alphaService.getEmpsNotOnTask(taskId,projectID);
        model.addAttribute("task", task);
        model.addAttribute("projectID", projectID);
+       model.addAttribute("empsOnTask", empsOnTask);
+       model.addAttribute("empsToAdd", empsToAdd);
+
        return "viewTask";
+    }
+
+    @PostMapping("tasks/view/{projectID}/{taskId}/add/{username}")
+    public String addEmpToTask(@PathVariable("projectID") int projectID,
+                               @PathVariable("username") String username,
+                               @PathVariable("taskId") int taskId){
+        alphaService.addEmpToTask(username, taskId);
+        return "redirect:/tasks/view/" + projectID + "/" + taskId;
+    }
+
+    @PostMapping("tasks/view/{projectID}/{taskId}/remove/{username}")
+    public String removeEmpFromTask(@PathVariable("projectID") int projectID,
+                                    @PathVariable("username") String username,
+                                    @PathVariable("taskId") int taskId){
+
+        alphaService.removeEmpFromTask(taskId, username);
+        return "redirect:/tasks/view/" + projectID + "/" + taskId;
     }
 
 
