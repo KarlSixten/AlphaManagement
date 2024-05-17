@@ -121,6 +121,11 @@ public class AlphaService {
     public List<Emp> findEmpsContainingInParentProject(String searchQuery, int projectID){
         return alphaRepository.findEmpsContainingInParentProject(searchQuery,projectID);
     }
+
+    public void addEmpToTask(String username, int taskID){
+        alphaRepository.addEmpToTask(username, taskID);
+
+    }
     public double updatehoursDone(int hoursDoneToday, int taskID){
         return alphaRepository.updatehoursDone(hoursDoneToday,taskID);
     }
@@ -136,5 +141,19 @@ public class AlphaService {
 
     public List<Project> getProjectsForEmp(String username) {
         return alphaRepository.getProjectsForEmp(username);
+    }
+
+    public List<Emp> getEmpsOnTask(int taskID) {
+        return alphaRepository.getEmpsOnTask(taskID);
+
+    }
+
+    public List<Emp> getEmpsNotOnTask(int taskID, int projectID) {
+        return alphaRepository.getEmpsNotOnTask(taskID, projectID);
+
+    }
+
+    public void removeEmpFromTask(int taskID, String username){
+        alphaRepository.removeEmpFromTask(taskID, username);
     }
 }

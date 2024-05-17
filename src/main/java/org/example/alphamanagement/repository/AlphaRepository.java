@@ -438,31 +438,39 @@ public class AlphaRepository {
         }
     }
 
-    public void removeEmpFromProject(int projectID, String username) {
-        String sql;
-        if (findProjectByID(projectID).getParentProjectID() > 0) {
-            sql = "DELETE FROM project_emp WHERE projectID = ? AND username = ?;";
-        } else {
-            sql = "DELETE FROM project_emp " +
-                    "WHERE (projectID = ? OR projectID IN (" +
-                    "           SELECT projectID " +
-                    "           FROM project " +
-                    "           WHERE parentProjectID = ?" +
-                    "      ))" +
-                    "AND username = ?;";
-        }
+    public void addEmpToTask(String username, int taskID){
+        String SQL = "INSERT INTO EMP_TASK (USERNAME, TASKID) VALUES (?,?)";
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, projectID);
-            pstmt.setInt(2, projectID); // For the subquery in the else block
-            pstmt.setString(3, username);
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, taskID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void removeEmpFromTask(int taskID, String username){
+        String sql;
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        sql = "DELETE FROM EMP_TASK WHERE TASKID = ? AND USERNAME = ?;";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, taskID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        if (findProjectByID(projectID).getParentProjectID() > 0) {
+            removeEmpFromSubProject(projectID, username);
+        } else {
+            removeEmpFromParentProject(projectID, username);
+        }
+    }
 
 
 
@@ -520,6 +528,55 @@ public class AlphaRepository {
         }
         return empList;
     }
+
+    public List<Emp> getEmpsOnTask(int taskID) {
+        List<Emp> empList = new ArrayList<>();
+
+        String sql = "SELECT emp.username, emp.password, emp.firstName, emp.lastName, emp.jobTypeID " +
+                "FROM emp " +
+                "JOIN emp_task ON emp.username = emp_task.username " +
+                "WHERE taskID = ? " +
+                "ORDER BY emp.username;";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, taskID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                empList.add(createEmpFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return empList;
+    }
+
+    public List<Emp> getEmpsNotOnTask(int taskID, int projectID) {
+        List<Emp> empList = new ArrayList<>();
+        String sql = "SELECT emp.* " +
+                "FROM emp " +
+                "JOIN project_emp ON emp.username = project_emp.username " +
+                "LEFT JOIN emp_task ON emp.username = emp_task.username AND emp_task.taskID = ? " +
+                "WHERE project_emp.projectID = ? " +
+                "AND emp_task.username IS NULL " +
+                "ORDER BY emp.username;";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, taskID);
+            pstmt.setInt(2, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                empList.add(createEmpFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return empList;
+    }
+
+
+
 
 
     public Task createTask(Task newTask, int projectID) {
@@ -839,6 +896,87 @@ public class AlphaRepository {
         return task;
 
     }
+
+    private void removeEmpFromSubProject(int projectID, String username) {
+
+        removeEmpFromSubProjectTasks(projectID, username);
+        String sql = "DELETE FROM project_emp WHERE projectID = ? AND username = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private void removeEmpFromParentProject(int parentProjectID, String username) {
+        String sql = "DELETE FROM project_emp " +
+                "WHERE (projectID = ? OR projectID IN (" +
+                "           SELECT projectID " +
+                "           FROM project " +
+                "           WHERE parentProjectID = ?" +
+                "      ))" +
+                "AND username = ?;";
+
+        removeEmpFromParentProjectTasks(parentProjectID, username);
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, parentProjectID);
+            pstmt.setInt(2, parentProjectID);
+            pstmt.setString(3, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private void removeEmpFromParentProjectTasks(int parentProjectID, String username) {
+        String sql = "DELETE FROM emp_task " +
+                "WHERE taskID IN (" +
+                "           SELECT taskID " +
+                "           FROM task " +
+                "           WHERE projectID IN (" +
+                "                   SELECT projectID " +
+                "                   FROM project " +
+                "                   WHERE parentProjectID = ?" +
+                "           )" +
+                ") " +
+                "AND username = ?;";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, parentProjectID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void removeEmpFromSubProjectTasks(int subProjectID, String username) {
+        String sql = "DELETE FROM emp_task " +
+                "WHERE taskID IN (" +
+                "           SELECT taskID " +
+                "           FROM task " +
+                "           WHERE projectID = ?" +
+                ") " +
+                "AND username = ?;";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, subProjectID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 }
