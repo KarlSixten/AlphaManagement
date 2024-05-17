@@ -156,4 +156,8 @@ public class AlphaService {
     public void removeEmpFromTask(int taskID, String username){
         alphaRepository.removeEmpFromTask(taskID, username);
     }
+
+    public List<Task> getTasksForEmp(String username) {
+        return alphaRepository.getTasksForEmp(username);
+    }
 }

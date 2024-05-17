@@ -577,7 +577,7 @@ public class AlphaRepository {
 
     public List<Task> getTasksForEmp(String username) {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?);";
+        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?) ORDER BY task.endDate ASC;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
