@@ -103,7 +103,7 @@ public class AlphaService {
     }
 
     public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
-        return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
+        return alphaRepository.findEmpsContainingNotOnProject(searchString, projectID);
     }
 
     public void removeEmpFromProject(int projectID, String username) {
@@ -136,7 +136,7 @@ public class AlphaService {
     }
 
     public int getRemaningHoursOfWork(int projectID){
-        return alphaRepository.getRemaningHoursOfWork(projectID);
+        return alphaRepository.getRemainingHoursOfWork(projectID);
     }
 
     public List<Project> getProjectsForEmp(String username) {

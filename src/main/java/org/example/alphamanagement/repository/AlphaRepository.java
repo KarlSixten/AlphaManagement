@@ -236,7 +236,7 @@ public class AlphaRepository {
 
     }
 
-    public List<Emp> findEmpsConatiningNotOnProject(String searchQuery, int projectID) {
+    public List<Emp> findEmpsContainingNotOnProject(String searchQuery, int projectID) {
         List<Emp> searchResults = new ArrayList<>();
         String sql = "SELECT emp.* FROM emp LEFT JOIN project_emp ON emp.username = project_emp.username AND project_emp.projectID = (?) WHERE project_emp.username IS NULL AND (emp.username LIKE (?) OR emp.firstName LIKE (?) OR emp.lastName LIKE (?));";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -789,7 +789,7 @@ public class AlphaRepository {
         }
     }
 
-    public int getRemaningHoursOfWork(int projectID){
+    public int getRemainingHoursOfWork(int projectID){
         ArrayList<Task> tasksInProject = getAllTaskOfSubProject(projectID);
         int sumOfEstimates = 0;
         double sumOfHoursDone = 0;
