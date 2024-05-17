@@ -29,7 +29,11 @@
         <p th:text="'Project is done: ' + ${task.isDone()}"></p>
 
     </div>
-    <a th:href="@{/tasks/edit/{id}(id=${task.taskID})}" >Edit Task</a>
+    <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
+        <input type="hidden" name="projectID" th:value="${projectID}" />
+        <input type="hidden" name="taskID" th:value="${task.taskID}" />
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
     <form th:action="@{'/tasks/view/' + ${task.projectID} + '/' + ${task.taskID}}" method="post">
         <button type="submit">Toggle Done</button>
     </form>
