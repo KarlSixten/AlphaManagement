@@ -8,6 +8,7 @@ import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.*;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
@@ -509,6 +510,53 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
         return subProjects;
+    }
+
+    public double hoursPrDayCalculator(int projectID){
+            int sumOfEstimates = getAllEstimatesInSubProject(projectID);
+            int getLengthOfSubproject = getLengthOfSubProject(projectID);
+            int getNoOfEmpsOnSubproject = getNoOfEmpsOnSubproject(projectID);
+
+        return (double)sumOfEstimates/getLengthOfSubproject/getNoOfEmpsOnSubproject;
+    }
+
+    public int getAllEstimatesInSubProject(int projectID){
+        String SQL = "SELECT SUM(estimate) AS total_estimate FROM task WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        int sumOfEstimates = 0;
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)){
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                sumOfEstimates = rs.getInt("total_estimate");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sumOfEstimates;
+    }
+
+    public int getLengthOfSubProject(int subProjectID) {
+        String SQL = "SELECT DATEDIFF(day, startDate, endDate) AS dateDifference FROM project WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        int lengthOfSubProject = 0;
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
+            pstmt.setInt(1, subProjectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()){
+                lengthOfSubProject = rs.getInt("dateDifference");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return lengthOfSubProject;
+    }
+
+
+
+    public int getNoOfEmpsOnSubproject(int projectID){
+        return getEmpsOnProject(projectID).size();
     }
 
     public List<Emp> getEmpsOnProject(int projectID) {
