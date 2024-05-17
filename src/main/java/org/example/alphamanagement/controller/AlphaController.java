@@ -327,6 +327,7 @@ public class AlphaController {
         model.addAttribute("totalEstimate", alphaService.sumOfEstimates(projectID));
         model.addAttribute("workProgressPercentage", alphaService.getWorkProgressPercentage(projectID));
         model.addAttribute("workRemainingHours", alphaService.getRemaningHoursOfWork(projectID));
+        model.addAttribute("hoursPrDay", alphaService.hoursPrDayCalculator(projectID));
         return "viewAllTasks";
     }
 

@@ -158,6 +158,14 @@ public class AlphaService {
         alphaRepository.removeEmpFromTask(taskID, username);
     }
 
+    public int getAllEstimatesInSubProject(int projectID){
+        return alphaRepository.getAllEstimatesInSubProject(projectID);
+    }
+
+    public double hoursPrDayCalculator(int projectID){
+        return alphaRepository.hoursPrDayCalculator(projectID);
+    }
+
     public List<Task> getTasksForEmp(String username) {
         return alphaRepository.getTasksForEmp(username);
     }
