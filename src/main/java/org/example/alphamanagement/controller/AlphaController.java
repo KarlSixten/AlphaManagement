@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +120,14 @@ public class AlphaController {
     @GetMapping("/projects/{projectID}/update")
     public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
         Project project = alphaService.findProjectByID(projectID);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedStartDate = project.getStartDate().format(formatter);
+        String formattedEndDate = project.getEndDate().format(formatter);
+
+        model.addAttribute("formattedStartDate", formattedStartDate);
+        model.addAttribute("formattedEndDate", formattedEndDate);
+
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             model.addAttribute("project", project);
             return "update-project";
