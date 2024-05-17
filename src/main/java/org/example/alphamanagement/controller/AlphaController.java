@@ -84,6 +84,8 @@ public class AlphaController {
             model.addAttribute("jobType", loggedInEmp.getJobType());
             List<Project> projects = alphaService.getProjectsForEmp(loggedInEmp.getUsername());
             model.addAttribute("projects", projects);
+            List<Task> tasks = alphaService.getTasksForEmp(loggedInEmp.getUsername());
+            model.addAttribute("tasks", tasks);
             return "front-page";
         } else {
             return "redirect:/";

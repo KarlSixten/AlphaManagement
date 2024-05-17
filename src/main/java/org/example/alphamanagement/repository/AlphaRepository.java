@@ -575,9 +575,22 @@ public class AlphaRepository {
         return empList;
     }
 
+    public List<Task> getTasksForEmp(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?) ORDER BY task.endDate ASC;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
 
-
-
+            while (rs.next()) {
+                tasks.add(createTaskFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
 
     public Task createTask(Task newTask, int projectID) {
         String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
