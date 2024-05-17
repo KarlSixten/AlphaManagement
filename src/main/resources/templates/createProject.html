@@ -6,29 +6,32 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
+
 </head>
 
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<h1>Create a New Project</h1>
-<form action="#" th:action="@{/projects/new/submit}" th:object="${project}" method="post">
-    <label for="projectName">Project Name:</label>
-    <input type="text" id="projectName" name="projectName" th:value="*{projectName}" required>
-    <br>
+<div class="container">
+    <h2>Opret nyt projekt</h2>
+    <form action="#" th:action="@{/projects/new/submit}" th:object="${project}" method="post">
+        <div class="form-group">
+            <label for="projectName">Projektnavn:</label>
+            <input type="text" id="projectName" class="form-control" name="projectName" required/>
+        </div>
 
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required>
-    <br>
+        <div class="form-group">
+            <label for="startDate">Start dato:</label>
+            <input type="date" id="startDate" class="form-control" name="startDate" required/>
+        </div>
 
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required>
-    <br>
+        <div class="form-group">
+            <label for="endDate">Slut dato:</label>
+            <input type="date" id="endDate" class="form-control" name="endDate" required/>
+        </div>
 
-    <button type="submit">Create Project</button>
-</form>
-
-<a href="/home">Tilbage</a>
-
+        <button class="btn" type="submit" value="createProject">Opret projekt</button>
+    </form>
+</div>
 </body>
 </html>

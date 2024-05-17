@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
 </head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
 <body>
 <div class="container">
     <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>

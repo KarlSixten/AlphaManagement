@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +110,14 @@ public class AlphaController {
     @GetMapping("/projects/{projectID}/update")
     public String showUpdateProjectForm(@PathVariable int projectID, Model model) {
         Project project = alphaService.findProjectByID(projectID);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedStartDate = project.getStartDate().format(formatter);
+        String formattedEndDate = project.getEndDate().format(formatter);
+
+        model.addAttribute("formattedStartDate", formattedStartDate);
+        model.addAttribute("formattedEndDate", formattedEndDate);
+
         if (userIsLoggedIn() && (userHasRole(2) || userHasRole(3))) {
             model.addAttribute("project", project);
             return "update-project";
@@ -131,10 +140,6 @@ public class AlphaController {
             return "redirect:/home";
         }
     }
-
-    //TODO
-    //Delete project virker ikke (pr 10/5), det er højest sandsynligt fordi projektets reference
-    //også skal slettes det sted vi har oversigt over subprojects
 
     @GetMapping("/projects/{projectID}/delete")
     public String deleteProject(@PathVariable int projectID) {
@@ -226,12 +231,12 @@ public class AlphaController {
         }
         List<Emp> empsOnProject = alphaService.getEmpsOnProject(projectID);
         List<Emp> empsToAdd = null;
-
         if (alphaService.findProjectByID(projectID).getParentProjectID() != 0) {
             empsToAdd = alphaService.findEmpsContainingInParentProject(searchString,projectID);
             model.addAttribute("empsOnProject", empsOnProject);
             model.addAttribute("empsToAdd", empsToAdd);
             model.addAttribute("projectID", projectID);
+            model.addAttribute("project", alphaService.findProjectByID(projectID));
             model.addAttribute("parentProjectID", alphaService.findProjectByID(projectID).getParentProjectID());
             return "add-emp-to-subproject";
         }
@@ -241,6 +246,7 @@ public class AlphaController {
             model.addAttribute("empsOnProject", empsOnProject);
             model.addAttribute("empsToAdd", empsToAdd);
             model.addAttribute("projectID", projectID);
+            model.addAttribute("project", alphaService.findProjectByID(projectID));
             return "update_project_emps";
         }
     }
