@@ -26,6 +26,16 @@ public class Task {
         this.hoursDone = 0;
         this.isDone = false;
     }
+    public Task(String taskName, int categoryID, String description, int estimate, LocalDate startDate, LocalDate endDate) {
+        this.taskName = taskName;
+        this.categoryID = categoryID;
+        this.description = description;
+        this.estimate = estimate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.hoursDone = 0;
+        this.isDone = false;
+    }
 
     public double getHoursDone() {
         return hoursDone;
