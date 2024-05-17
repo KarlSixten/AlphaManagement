@@ -49,17 +49,7 @@ public class AlphaController {
 
     @GetMapping("/user-created-success")
     public String getCreateUserSuccess(Model model) {
-
-
         model.addAttribute("createdUser", httpSession.getAttribute("newlyCreatedEmp"));
-
-        ////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////TEST///////////////////////////////////////////
-        model.addAttribute("createdUser", alphaService.findEmpByUsername("test"));
-        ////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////
-
-
         return "user_created_success";
     }
 
@@ -180,13 +170,6 @@ public class AlphaController {
         if (searchString == null) {
             searchString = "";
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////TEST///////////////////////////////////////////
-        httpSession.setAttribute("empLoggedIn", alphaService.findEmpByUsername("test"));
-        ////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////
-
         List<Emp> foundEmps = alphaService.findByUsernameContaining(searchString);
         model.addAttribute("foundEmps", foundEmps);
         return "find_user";
@@ -248,12 +231,12 @@ public class AlphaController {
         }
         List<Emp> empsOnProject = alphaService.getEmpsOnProject(projectID);
         List<Emp> empsToAdd = null;
-
         if (alphaService.findProjectByID(projectID).getParentProjectID() != 0) {
             empsToAdd = alphaService.findEmpsContainingInParentProject(searchString,projectID);
             model.addAttribute("empsOnProject", empsOnProject);
             model.addAttribute("empsToAdd", empsToAdd);
             model.addAttribute("projectID", projectID);
+            model.addAttribute("project", alphaService.findProjectByID(projectID));
             model.addAttribute("parentProjectID", alphaService.findProjectByID(projectID).getParentProjectID());
             return "add-emp-to-subproject";
         }
@@ -263,6 +246,7 @@ public class AlphaController {
             model.addAttribute("empsOnProject", empsOnProject);
             model.addAttribute("empsToAdd", empsToAdd);
             model.addAttribute("projectID", projectID);
+            model.addAttribute("project", alphaService.findProjectByID(projectID));
             return "update_project_emps";
         }
     }
