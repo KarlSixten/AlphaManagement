@@ -237,7 +237,7 @@ public class AlphaRepository {
 
     }
 
-    public List<Emp> findEmpsConatiningNotOnProject(String searchQuery, int projectID) {
+    public List<Emp> findEmpsContainingNotOnProject(String searchQuery, int projectID) {
         List<Emp> searchResults = new ArrayList<>();
         String sql = "SELECT emp.* FROM emp LEFT JOIN project_emp ON emp.username = project_emp.username AND project_emp.projectID = (?) WHERE project_emp.username IS NULL AND (emp.username LIKE (?) OR emp.firstName LIKE (?) OR emp.lastName LIKE (?));";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -623,9 +623,22 @@ public class AlphaRepository {
         return empList;
     }
 
+    public List<Task> getTasksForEmp(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?) ORDER BY task.endDate ASC;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
 
-
-
+            while (rs.next()) {
+                tasks.add(createTaskFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
 
     public Task createTask(Task newTask, int projectID) {
         String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
@@ -824,7 +837,7 @@ public class AlphaRepository {
         }
     }
 
-    public int getRemaningHoursOfWork(int projectID){
+    public int getRemainingHoursOfWork(int projectID){
         ArrayList<Task> tasksInProject = getAllTaskOfSubProject(projectID);
         int sumOfEstimates = 0;
         double sumOfHoursDone = 0;

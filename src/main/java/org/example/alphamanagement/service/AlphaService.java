@@ -79,6 +79,7 @@ public class AlphaService {
 
     public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills){
         return alphaRepository.createEmpWithSkills(newEmp, skills);}
+
     public Task createTask(Task newTask, int projectID){
         return alphaRepository.createTask(newTask, projectID);
     }
@@ -103,7 +104,7 @@ public class AlphaService {
     }
 
     public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
-        return alphaRepository.findEmpsConatiningNotOnProject(searchString, projectID);
+        return alphaRepository.findEmpsContainingNotOnProject(searchString, projectID);
     }
 
     public void removeEmpFromProject(int projectID, String username) {
@@ -136,7 +137,7 @@ public class AlphaService {
     }
 
     public int getRemaningHoursOfWork(int projectID){
-        return alphaRepository.getRemaningHoursOfWork(projectID);
+        return alphaRepository.getRemainingHoursOfWork(projectID);
     }
 
     public List<Project> getProjectsForEmp(String username) {
@@ -163,5 +164,9 @@ public class AlphaService {
 
     public double hoursPrDayCalculator(int projectID){
         return alphaRepository.hoursPrDayCalculator(projectID);
+    }
+
+    public List<Task> getTasksForEmp(String username) {
+        return alphaRepository.getTasksForEmp(username);
     }
 }
