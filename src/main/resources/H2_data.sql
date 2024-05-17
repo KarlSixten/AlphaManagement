@@ -124,3 +124,6 @@ INSERT INTO project_emp (projectID, username) VALUES (4, 'kabj0000');
 INSERT INTO project_emp (projectID, username) VALUES (4, 'user');
 INSERT INTO emp_task(username, taskID) VALUES ('kabj0000', 1);
 INSERT INTO emp_task(username, taskID) VALUES ('user', 2);
+
+INSERT INTO emp_task(username, taskID) VALUES ('test', 1);
+INSERT INTO emp_task(username, taskID) VALUES ('test', 2);
