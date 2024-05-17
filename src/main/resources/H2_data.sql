@@ -116,6 +116,10 @@ INSERT INTO project_emp (projectID, username) VALUES (3, 'test');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'kabj0000');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'user');
 
+INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 1);
+INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 2);
+INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 3);
+
 INSERT INTO project_emp (projectID, username) VALUES (4, 'kabj0000');
 INSERT INTO project_emp (projectID, username) VALUES (4, 'user');
 INSERT INTO emp_task(username, taskID) VALUES ('kabj0000', 1);
