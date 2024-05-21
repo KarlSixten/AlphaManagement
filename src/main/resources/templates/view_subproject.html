@@ -13,14 +13,14 @@
 <body>
 <div class="container mt-4 mb-4">
     <h1 th:text="'Subprojekter for ' + ${parentProject.projectName}">Subprojeker for projekt</h1>
-    <a th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary mb-2">Tilføj nyt subprojekt</a>
+    <a th:if="${session.empLoggedIn.jobType == 2}" th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary mb-2">Tilføj nyt subprojekt</a>
     <table class="table table-bordered mt-4 mb-4">
         <thead>
         <tr>
             <th>Projektnavn</th>
             <th>Start Dato</th>
             <th>Slut dato</th>
-            <th>Handlinger</th>
+            <th th:if="${session.empLoggedIn.jobType == 2}">Handlinger</th>
         </tr>
         </thead>
         <tbody>
@@ -30,7 +30,7 @@
             </td>
             <td th:text="${subProject.startDate}">Start Dato</td>
             <td th:text="${subProject.endDate}">Slut Dato</td>
-            <td>
+            <td th:if="${session.empLoggedIn.jobType == 2}" >
                 <a th:href="@{'/projects/' + ${subProject.projectID} + '/update'}" class="btn btn-info mr-2">Opdater</a>
                 <a th:href="@{'/projects/' + ${subProject.projectID} + '/delete'}" class="btn btn-danger mr-2" onclick="return confirm('Er du sikker på at du vil slette dette subprojekt');">Slet</a>
                 <a th:href="@{'/projects/' + ${subProject.projectID} + '/update-emps'}" class="btn btn-secondary">Medarbejdere</a>

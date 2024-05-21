@@ -22,10 +22,10 @@
             <h2 class="projectTitle" th:text="${project.projectName}">Projektnavn</h2>
             <p class="projectStartDate" th:text="'Start Dato: ' + ${project.startDate}">Start Dato/p>
             <p class="projectEndDate" th:text="'Slut dato: ' + ${project.endDate}">Slut dato</p>
-            <div class="button-group">
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn projectBtn">Opdater</a>
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="btn projectBtn" th:onclick="return confirm('Er du sikker på at du vil slette dette projekt?')">Slet</a>
-                <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update-emps'}" class="btn projectBtn">Medarbejdere</a>
+            <div th:if="${jobType == 2}" class="button-group">
+                <a th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn projectBtn">Opdater</a>
+                <a th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="btn projectBtn" th:onclick="return confirm('Er du sikker på at du vil slette dette projekt?')">Slet</a>
+                <a th:href="@{'/projects/' + ${project.projectID} + '/update-emps'}" class="btn projectBtn">Medarbejdere</a>
             </div>
         </a>
     </div>
