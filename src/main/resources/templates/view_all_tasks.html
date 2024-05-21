@@ -36,11 +36,11 @@
                         <input type="hidden" name="projectID" th:value="${projectID}" />
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
                     </form>
-                    <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
-                        <input type="hidden" name="projectID" th:value="${projectID}" />
-                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
+
+
+                    <a class="btn" th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/edit-emps'}">Medarbejdere</a>
+                    <a class="btn" th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/update'}">Opdater</a>
+
                 </td>
 
             </tr>

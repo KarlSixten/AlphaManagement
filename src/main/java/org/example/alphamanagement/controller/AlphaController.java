@@ -53,7 +53,7 @@ public class AlphaController {
     }
 
     //---------------------------------------------------------------------------------------------------------------
-    //Home
+    // HOME
     //---------------------------------------------------------------------------------------------------------------
 
     @GetMapping("/home")
@@ -343,11 +343,11 @@ public class AlphaController {
     //---------------------------------------------------------------------------------------------------------------
 
     @GetMapping("/projects/{projectID}/view-tasks/{taskId}")
-    public String viewTask(@PathVariable("taskId") int taskId,@PathVariable("projectID") int projectID, Model model){
+    public String viewTask(@PathVariable("taskId") int taskID,@PathVariable("projectID") int projectID, Model model){
 
-        Task task = alphaService.findTaskById(taskId);
-        List<Emp> empsOnTask = alphaService.getEmpsOnTask(taskId);
-        List<Emp> empsToAdd = alphaService.getEmpsNotOnTask(taskId,projectID);
+        Task task = alphaService.findTaskById(taskID);
+        List<Emp> empsOnTask = alphaService.getEmpsOnTask(taskID);
+        List<Emp> empsToAdd = alphaService.getEmpsNotOnTask(taskID,projectID);
        model.addAttribute("task", task);
        model.addAttribute("projectID", projectID);
        model.addAttribute("empsOnTask", empsOnTask);
@@ -366,38 +366,40 @@ public class AlphaController {
         return "redirect:/projects/" + projectID + "/view-tasks";
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    // EDIT TASK EMPS
+    //---------------------------------------------------------------------------------------------------------------
 
-
-    @PostMapping("tasks/view/{projectID}/{taskId}/add/{username}")
-    public String addEmpToTask(@PathVariable("projectID") int projectID,
-                               @PathVariable("username") String username,
-                               @PathVariable("taskId") int taskId){
-        alphaService.addEmpToTask(username, taskId);
-        return "redirect:/tasks/view/" + projectID + "/" + taskId;
+    @GetMapping("/projects/{projectID}/view-tasks/{taskID}/edit-emps")
+    public String editTaskEmps(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, Model model) {
+        Project project = alphaService.findProjectByID(projectID);
+        Task task = alphaService.findTaskById(taskID);
+        List<Emp> empsOnTask = alphaService.getEmpsOnTask(taskID);
+        List<Emp> empsToAdd = alphaService.getEmpsNotOnTask(taskID,projectID);
+        model.addAttribute("project", project);
+        model.addAttribute("task", task);
+        model.addAttribute("empsOnTask", empsOnTask);
+        model.addAttribute("empsToAdd", empsToAdd);
+        return "edit_task_emps";
     }
 
-    @PostMapping("tasks/view/{projectID}/{taskId}/remove/{username}")
-    public String removeEmpFromTask(@PathVariable("projectID") int projectID,
-                                    @PathVariable("username") String username,
-                                    @PathVariable("taskId") int taskId){
-
-        alphaService.removeEmpFromTask(taskId, username);
-        return "redirect:/tasks/view/" + projectID + "/" + taskId;
+    @PostMapping("/projects/{projectID}/view-tasks/{taskID}/edit-emps/add/{username}")
+    public String addEmpToTask(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, @PathVariable("username") String username){
+        alphaService.addEmpToTask(username, taskID);
+        return "redirect:/projects/" + projectID + "/view-tasks/" + taskID + "/edit-emps";
     }
 
-
-
-
-
-
-    @PostMapping("tasks/view/{projectID}/{taskID}")
-    public String toggleIsDone(@PathVariable ("projectID") int projectID, @PathVariable("taskID") int taskID){
-        alphaService.toggleIsDone(alphaService.findTaskById(taskID).isDone(), taskID);
-        return "redirect:/tasks/view/" + projectID + "/" + taskID;
+    @PostMapping("/projects/{projectID}/view-tasks/{taskID}/edit-emps/remove/{username}")
+    public String removeEmpFromTask(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, @PathVariable("username") String username){
+        alphaService.removeEmpFromTask(taskID, username);
+        return "redirect:/projects/" + projectID + "/view-tasks/" + taskID + "/edit-emps";
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    // UPDATE TASK
+    //---------------------------------------------------------------------------------------------------------------
 
-    @GetMapping("/projects/{projectID}/{taskID}/update")
+    @GetMapping("/projects/{projectID}/view-tasks/{taskID}/update")
     public String showUpdateTaskForm(@PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID, Model model){
         Task task = alphaService.findTaskById(taskID);
         model.addAttribute("projectID", projectID);
@@ -407,24 +409,27 @@ public class AlphaController {
         return "update_task";
     }
 
-    @PostMapping("/projects/{projectID}/{taskID}/progressmade")
+    @PostMapping("/projects/{projectID}/view-tasks/{taskID}/update/submit")
+    public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
+        task.setTaskID(taskID);
+        alphaService.updateTask(task);
+        return "redirect:/projects/" + projectID + "/view-tasks";
+    }
+
+    @PostMapping("/projects/{projectID}/view-tasks/{taskID}/toogle-done")
+    public String toggleIsDone(@PathVariable ("projectID") int projectID, @PathVariable("taskID") int taskID){
+        alphaService.toggleIsDone(alphaService.findTaskById(taskID).isDone(), taskID);
+        return "redirect:/projects/" + projectID + "/view-tasks/" + taskID;
+
+    }
+
+    @PostMapping("/projects/{projectID}/view-tasks/{taskID}/progressmade")
     public String hoursDoneInput(@PathVariable("projectID") int projectID,
                                  @PathVariable("taskID") int taskID,
                                  @ModelAttribute("hoursDone") int hoursDone){
         alphaService.updatehoursDone(hoursDone, taskID);
-        return "redirect:/tasks/view/" + projectID + "/" + taskID;
+        return "redirect:/projects/" + projectID + "/view-tasks/" + taskID;
     }
-
-
-    @PostMapping("/projects/{projectID}/{taskID}/update")
-    public String updateTask(@ModelAttribute ("task") Task task, @PathVariable("projectID") int projectID, @PathVariable("taskID") int taskID){
-        task.setTaskID(taskID);
-        alphaService.updateTask(task);
-        return "redirect:/all-task/view/" + projectID;
-    }
-
-
-
 
     //---------------------------------------------------------------------------------------------------------------
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
