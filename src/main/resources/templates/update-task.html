@@ -10,16 +10,16 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Update Task</h2>
+    <h2>Opdater opgave</h2>
     <form th:action="@{/projects/{projectID}/{taskID}/update(projectID=${projectID}, taskID=${taskID})}" method="post">
         <input type="hidden" name="projectID" th:value="${projectID}">
         <input type="hidden" name="taskID" th:value="${taskID}">
         <div class="form-group">
-            <label for="taskName">Task Name</label>
+            <label for="taskName">Opgave navn</label>
             <input type="text" class="form-control" id="taskName" name="taskName" th:value="${task.taskName}" required>
         </div>
         <div class="form-group">
-            <label for="categoryID">Category:</label>
+            <label for="categoryID">Kategori:</label>
             <select id="categoryID" th:field="*{task.categoryID}" required="required" class="form-control">
                 <option th:each="category : ${categories}"
                         th:value="${category.categoryID}"
@@ -27,22 +27,22 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="description">Description</label>
+            <label for="description">Beskrivelse</label>
             <input type="text" class="form-control" id="description" name="description" th:value="${task.description}" required>
         </div>
         <div class="form-group">
-            <label for="estimate">Estimate</label>
+            <label for="estimate">Estimat</label>
             <input type="number" class="form-control" id="estimate" name="estimate" th:value="${task.estimate}" required>
         </div>
         <div class="form-group">
-            <label for="startDate">Start Date</label>
+            <label for="startDate">Start Dato</label>
             <input type="date" class="form-control" id="startDate" name="startDate" th:value="${task.startDate}" required>
         </div>
         <div class="form-group">
-            <label for="endDate">End Date</label>
+            <label for="endDate">Slut Dato</label>
             <input type="date" class="form-control" id="endDate" name="endDate" th:value="${task.endDate}" required>
         </div>
-        <button type="submit" class="btn btn-primary">Update Task</button>
+        <button type="submit" class="btn btn-primary">Opdater opgave</button>
     </form>
 </div>
 </body>

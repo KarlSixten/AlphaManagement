@@ -537,7 +537,10 @@ public class AlphaRepository {
     }
 
     public int getLengthOfSubProject(int subProjectID) {
-        String SQL = "SELECT DATEDIFF(day, startDate, endDate) AS dateDifference FROM project WHERE projectID = ?;";
+        String SQL = "SELECT DATEDIFF('day', startDate, endDate) " +
+                "       - (DATEDIFF('week', startDate, endDate) * 2)" +
+                "       - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
+                "       + CASE WHEN DAY_OF_WEEK(endDate) = 1 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         int lengthOfSubProject = 0;
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Update Project</title>
+    <title>Opdater subprojekt</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
@@ -13,23 +13,23 @@
 
 <body>
 <div class="container">
-    <h1>Update Project</h1>
+    <h1>Opdater subprojekt</h1>
     <form method="post" th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}">
         <input type="hidden" th:field="*{projectID}" />
         <div class="form-group">
-            <label for="projectName">Project Name:</label>
+            <label for="projectName">Projektnavn:</label>
             <input type="text" id="projectName" name="projectName" th:field="*{projectName}" required>
         </div>
         <div class="form-group">
-            <label for="startDate">Start Date:</label>
+            <label for="startDate">Start Dato:</label>
             <input type="date" id="startDate" name="startDate" th:field="*{startDate}" required>
         </div>
         <div class="form-group">
-            <label for="endDate">End Date:</label>
+            <label for="endDate">Slut dato:</label>
             <input type="date" id="endDate" name="endDate" th:field="*{endDate}" required>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Update Project</button>
+            <button type="submit" class="btn btn-primary">Opdater subprojekt</button>
         </div>
     </form>
 </div>
