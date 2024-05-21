@@ -523,7 +523,7 @@ public class AlphaController {
         return httpSession.getAttribute("empLoggedIn") != null;
     }
 
-    public boolean userIsProjectManager() {
+    private boolean userIsProjectManager() {
         Emp empLoggedIn = (Emp) httpSession.getAttribute("empLoggedIn");
         return empLoggedIn != null && empLoggedIn.getJobType() == 2;
     }

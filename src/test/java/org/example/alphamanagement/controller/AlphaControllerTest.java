@@ -92,6 +92,11 @@ class AlphaControllerTest {
         mockMvc.perform(get("/projects/new").session(mockSession))
                 .andExpect(status().isOk())
                 .andExpect(view().name("create_project"));
+
+        empLoggedIn.setJobType(3);
+        mockMvc.perform(get("/projects/new").session(mockSession))
+                .andExpect(status().isOk())
+                .andExpect(view().name("incorrect_jobtype_error"));
     }
 
 
@@ -123,6 +128,12 @@ class AlphaControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/projects/{projectID}/create-subproject", 1).session(mockSession))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("create_subproject"));
+
+        empLoggedIn.setJobType(1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/projects/{projectID}/create-subproject", 1).session(mockSession))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("incorrect_jobtype_error"));
+
     }
 
 
