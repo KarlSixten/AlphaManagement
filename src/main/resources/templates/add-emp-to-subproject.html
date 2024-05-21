@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Employee to Subproject</title>
+    <title>Tilføj medarbejder til subprojekt</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
@@ -18,7 +18,7 @@
 <div class="search-container">
     <form class="searchBar" th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
         <input type="text" name="searchString" placeholder="Search for employees...">
-        <button class="btn" type="submit">Search</button>
+        <button class="btn" type="submit">Søg</button>
     </form>
 </div>
 
@@ -27,19 +27,19 @@
         <li th:each="emp : ${empsToAdd}">
             <span th:text="${emp.username}"></span>
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/add/' + ${emp.username}}" method="post">
-                <button type="submit">Add to Project</button>
+                <button type="submit">Tilføj til projekt</button>
             </form>
         </li>
     </ul>
 </div>
 
-<h1>Emps on project currently</h1>
+<h1>Medarbejdere på projektet</h1>
 <div>
     <ul>
         <li th:each="emp : ${empsOnProject}">
             <span th:text="${emp.username}"></span>
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/remove/' + ${emp.username}}" method="post">
-                <button type="submit">Remove from project</button>
+                <button type="submit">Fjern fra projekt</button>
             </form>
         </li>
     </ul>
