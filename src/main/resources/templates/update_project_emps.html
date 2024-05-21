@@ -20,15 +20,15 @@
 
 <div class="search-container">
     <form class="searchBar" th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
-        <input type="text" name="searchString" placeholder="Search for employees...">
-        <button class="btn" type="submit">Search</button>
+        <input type="text" name="searchString" placeholder="Søg efter medarbejdere...">
+        <button class="btn" type="submit">Søg</button>
     </form>
 </div>
 
 <div id="emp-container">
     <div class="empBox" th:each="emp : ${empsToAdd}">
-        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">full name</h2>
-        <h5 class="username" th:text="${emp.username}">username</h5>
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">Fulde navn</h2>
+        <h5 class="username" th:text="${emp.username}">Brugernavn</h5>
 
         <div class="button-group">
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/add/' + ${emp.username}}" method="post">
@@ -42,8 +42,8 @@
 
 <div id="emp-container">
     <div class="empBox" th:each="emp : ${empsOnProject}">
-        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">full name</h2>
-        <h5 class="username" th:text="${emp.username}">username</h5>
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">Fulde navn</h2>
+        <h5 class="username" th:text="${emp.username}">Brugernavn</h5>
         <div class="button-group">
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/remove/' + ${emp.username}}" method="post">
                 <button class="btn" type="submit">Fjern fra projekt</button>
