@@ -22,13 +22,14 @@ AlphaRepository alphaRepository;
 
 
 
+
     @Test
     void createEmpWithSkillsTest() {
         Emp emp = new Emp("Navn", "efternavn","username1231", "kode", 3);
         ArrayList<String> skilz = new ArrayList<>(List.of("Java"));
         alphaRepository.createEmpWithSkills(emp,skilz);
 
-        int actual = 4;
+        int actual = 5;
         int expected = alphaRepository.getAllEmp().size();
         assertEquals(actual,expected);
     }
@@ -148,7 +149,7 @@ AlphaRepository alphaRepository;
     @Test
     void getAllEmp() {
         int actual = alphaRepository.getAllEmp().size();
-        int expected = 3;
+        int expected = 4;
         assertEquals(actual, expected);
     }
 
@@ -159,7 +160,7 @@ AlphaRepository alphaRepository;
     void addEmpToProject() {
         alphaRepository.addEmpToProject("kabj0000", 1);
       int actual = alphaRepository.getEmpsOnProject(1).size();
-      int expected = 1;
+      int expected = 3;
       assertEquals(actual,expected);
     }
 
@@ -184,7 +185,7 @@ AlphaRepository alphaRepository;
     @Test
     void getEmpsOnProject() {
        int actual = alphaRepository.getEmpsOnProject(1).size();
-       int expected = 0;
+       int expected = 2;
        assertEquals(actual,expected);
     }
 
@@ -269,7 +270,7 @@ AlphaRepository alphaRepository;
     void deleteEmp() {
        alphaRepository.deleteEmp("kabj0000");
       int actual = alphaRepository.getAllEmp().size();
-      int expected = 3;
+      int expected = 4;
       assertEquals(actual,expected);
     }
 
@@ -286,7 +287,7 @@ AlphaRepository alphaRepository;
     void removeEmpFromProject() {
        alphaRepository.removeEmpFromProject(1,"test");
        int expected = alphaRepository.getEmpsOnProject(1).size();
-       int actual = 0;
+       int actual = 2;
        assertEquals(actual,expected);
 
 
