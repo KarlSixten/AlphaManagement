@@ -8,36 +8,54 @@
     <link rel="stylesheet" href="/headerStyles.css">
 </head>
 
+<body>
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
-</head>
-<body>
-<div class="container">
-    <h1>Opgave detaljer</h1>
-    <div>
-        <h2 th:text="'Opgavenavn: ' + ${task.taskName}"></h2>
-        <p th:text="'Beskrivelse: ' + ${task.description}"></p>
-        <p th:text="'Start Dato: ' + ${task.startDate}"></p>
-        <p th:text="'Slut Dato: ' + ${task.endDate}"></p>
-        <p th:text="'Estimeret antal timer: ' + ${task.estimate}"></p>
-        <p th:text="'Antal timer brugt på denne opgave: ' + ${task.getHoursDone()}">
-        <p th:text="'Hvor mange timers arbejde har du lavet på denne opgave idag?:'">
-        <form th:action="'/projects/' + ${task.projectID} + '/view-tasks/' + ${task.taskID} + '/progressmade'" method="post">
-            <input type="number" name="hoursDone" />
-        <button type="submit" class="btn btn-danger" onclick="return confirm('Hvis arbejde lavet er højere en estimatet vil opgaven blive markeret som færdig. Ændre estimatet hvis det ikke passer til. Tryk ok hvis du vil fortsætte');">Bekræft</button>
-        </form>
-        <p th:text="'Opgaven er ' + (${task.isDone()} ? 'færdig' : 'ikke færdig')"></p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-4">
+                <h2><strong th:text="${task.taskName}"></strong></h2>
+                <p><strong th:text="'Beskrivelse: ' + ${task.description}"></strong></p>
 
+                <form th:action="'/projects/' + ${task.projectID} + '/view-tasks/' + ${task.taskID} + '/progressmade'" method="post" class="mb-3">
+                    <label for="hoursDone"><strong>Hvor mange timers arbejde har du lavet på denne opgave idag?:</strong></label>
+                    <input type="number" name="hoursDone" class="form-control mb-2 w-25" />
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Hvis arbejde lavet er højere end estimatet vil opgaven blive markeret som færdig. Ændre estimatet hvis det ikke passer til. Tryk ok hvis du vil fortsætte');">Bekræft</button>
+                </form>
+
+                <div class="d-flex align-items-center">
+                    <p class="mb-0"><strong th:text="'Opgaven er ' + (${task.isDone()} ? 'færdig' : 'ikke færdig')"></strong></p>
+                    <form th:action="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/toogle-done'}" method="post" class="ml-3">
+                        <button type="submit" class="btn btn-primary">Ændre status</button>
+                    </form>
+                </div>
+            </div>
+            <a th:href="@{'/projects/' + ${projectID} + '/view-tasks'}" class="btn btn-secondary">Tilbage</a>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong th:text="'Total antal timer estimeret: ' + ${task.estimate} + ' timer'"></strong></p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong th:text="'Antal timer brugt på denne opgave: ' + ${task.getHoursDone()}"></strong></p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong th:text="'Start Dato: ' + ${task.startDate}"></strong></p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong th:text="'Slut Dato: ' + ${task.endDate}"></strong></p>
+                </div>
+            </div>
+        </div>
     </div>
-    <form th:action="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/toogle-done'}" method="post">
-        <button type="submit">Ændre opgavens statustilstand</button>
-    </form>
-
-
-    <div class="container">
-        <a th:href="@{'/projects/' + ${projectID} + '/view-tasks'}" class="btn btn-primary">Tilbage</a>
-    </div>
-
 </div>
 </body>
 </html>

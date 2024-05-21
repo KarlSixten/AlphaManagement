@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Subprojekter for [[${parentProjectName}]]</title>
+    <title>Subprojekter for [[${parentProject.projectName}]]</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
@@ -11,10 +11,10 @@
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<div class="container">
-    <h1 th:text="'Subprojeker for ' + ${parentProject.projectName}">Subprojeker for projekt</h1>
-
-    <table class="table table-bordered">
+<div class="container mt-4 mb-4">
+    <h1 th:text="'Subprojekter for ' + ${parentProject.projectName}">Subprojeker for projekt</h1>
+    <a th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary mb-2">Tilføj nyt subprojekt</a>
+    <table class="table table-bordered mt-4 mb-4">
         <thead>
         <tr>
             <th>Projektnavn</th>
@@ -31,18 +31,15 @@
             <td th:text="${subProject.startDate}">Start Dato</td>
             <td th:text="${subProject.endDate}">Slut Dato</td>
             <td>
-                <a th:href="@{'/projects/' + ${subProject.projectID} + '/update'}" class="btn btn-info">Opdater</a>
-                <a th:href="@{'/projects/' + ${subProject.projectID} + '/delete'}" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette dette subprojekt');">Slet</a>
-                <a th:href="@{'/projects/' + ${subProject.projectID} + '/update-emps'}" class="btn projectBtn">Medarbejdere</a>
+                <a th:href="@{'/projects/' + ${subProject.projectID} + '/update'}" class="btn btn-info mr-2">Opdater</a>
+                <a th:href="@{'/projects/' + ${subProject.projectID} + '/delete'}" class="btn btn-danger mr-2" onclick="return confirm('Er du sikker på at du vil slette dette subprojekt');">Slet</a>
+                <a th:href="@{'/projects/' + ${subProject.projectID} + '/update-emps'}" class="btn btn-secondary">Medarbejdere</a>
             </td>
         </tr>
         </tbody>
     </table>
-
-    <a th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary">Tilføj nyt subprojekt</a>
+    <a th:href="'/home'" class="btn btn-secondary mb-2">Tilbage</a>
 </div>
-
-<a href="/home">Tilbage</a>
 
 </body>
 </html>
