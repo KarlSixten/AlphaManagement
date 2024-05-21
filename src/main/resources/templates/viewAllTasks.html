@@ -12,45 +12,67 @@
 
 <body>
 <div class="container">
-    <h1 th:text="'Tasks for Project ' + ${projectID}">Opgaver i subprojekt</h1>
-    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Opret ny opgave</a>
+    <div class="row">
+        <div class="col-md-8">
+            <h1 th:text="'Opgaver for Projekt: ' + ${projectID}">Opgaver i subprojekt</h1>
+            <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Opret ny opgave</a>
 
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Navn</th>
-                <th>Estimat</th>
-                <th>Slut Dato</th>
-                <th>Handlinger</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="task : ${tasks}"><td>
-                <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Navn</a>
-            </td>
-                <td th:text="${task.estimate}">Estimat</td>
-                <td th:text="${task.endDate}">Slut Dato</td>
-                <td>
-                    <form th:action="@{'/delete-task'}" method="post" style="display: inline-block;">
-                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
-                        <input type="hidden" name="projectID" th:value="${projectID}" />
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne opgave?');">Slet</button>
-                    </form>
-                    <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
-                        <input type="hidden" name="projectID" th:value="${projectID}" />
-                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
-                        <button type="submit" class="btn btn-primary">Opdater</button>
-                    </form>
-                </td>
-
-            </tr>
-            </tbody>
-        </table>
-<p th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer'" ></p>
-    <p th:text="'Total antal timer tilbage: ' + ${workRemainingHours} + ' timer'" ></p>
-
-    <p th:text="' ' + ${workProgressPercentage} + '% færdig'" ></p>
-    <p th:text="'Projektet er estimeret til: ' + ${hoursPrDay} + ' timer pr. dag pr. person. Weekender ekskluderet'"></p>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Estimat</th>
+                    <th>Slut Dato</th>
+                    <th>Handlinger</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td>
+                        <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Navn</a>
+                    </td>
+                    <td th:text="${task.estimate}">Estimat</td>
+                    <td th:text="${task.endDate}">Slut Dato</td>
+                    <td>
+                        <form th:action="@{'/delete-task'}" method="post" style="display: inline-block;">
+                            <input type="hidden" name="taskID" th:value="${task.taskID}" />
+                            <input type="hidden" name="projectID" th:value="${projectID}" />
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne opgave?');">Slet</button>
+                        </form>
+                        <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
+                            <input type="hidden" name="projectID" th:value="${projectID}" />
+                            <input type="hidden" name="taskID" th:value="${task.taskID}" />
+                            <button type="submit" class="btn btn-primary">Opdater</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text" th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer'"></p>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p class="card-text" th:text="'Total antal timer tilbage: ' + ${workRemainingHours} + ' timer'"></p>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p class="card-text" th:text="' ' + ${workProgressPercentage} + '% færdig'"></p>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p class="card-text" th:text="'Projektet er estimeret til: ' + ${#numbers.formatDecimal(hoursPrDay, 1, 2)} + ' timer pr. dag pr. person. Weekender er ikke talt med'"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a th:href="'/projects/' + ${parentProjectID} + '/subprojects'" class="btn btn-primary">Tilbage</a>
 </div>
-    </body>
-    </html>
+</body>
+</html>
