@@ -12,11 +12,15 @@
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<h1>Add Employee to Project</h1>
-<form th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
-    <input type="text" name="searchString" placeholder="Search for employees...">
-    <button type="submit">Search</button>
-</form>
+
+<h1 th:text="'Tilføj medarbejdere til ' + ${project.projectName}"></h1>
+
+<div class="search-container">
+    <form class="searchBar" th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
+        <input type="text" name="searchString" placeholder="Search for employees...">
+        <button class="btn" type="submit">Search</button>
+    </form>
+</div>
 
 <div>
     <ul>
