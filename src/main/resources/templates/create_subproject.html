@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Project</title>
+    <title>Opret subprojekt</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
@@ -11,21 +11,21 @@
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<h1>Create a New Project</h1>
+<h1>Opret nyt subprojekt</h1>
 <form action="#" th:action="@{'/projects/' + ${parentProjectID} + '/create-subproject/submit'}" th:object="${subProject}" method="post">
-    <label for="projectName">Project Name:</label>
+    <label for="projectName">Projektnavn:</label>
     <input type="text" id="projectName" name="projectName" th:value="*{projectName}" required>
     <br>
 
-    <label for="startDate">Start Date:</label>
+    <label for="startDate">Start dato:</label>
     <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required>
     <br>
 
-    <label for="endDate">End Date:</label>
+    <label for="endDate">Slut dato:</label>
     <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required>
     <br>
 
-    <button type="submit">Create Subproject</button>
+    <button type="submit">Opret subprojekt</button>
 </form>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Projects List</title>
+    <title>Projektliste</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
     <link rel="stylesheet" href="/headerStyles.css">
@@ -19,9 +19,9 @@
 <div id="projekt-container">
     <div class="projekt" th:each="project : ${projects}">
         <a th:href="@{'/projects/' + ${project.projectID} + '/subprojects'}" class="project-link">
-            <h2 class="projectTitle" th:text="${project.projectName}">Project Name</h2>
-            <p class="projectStartDate" th:text="'Start Dato: ' + ${project.startDate}">Start Date</p>
-            <p class="projectEndDate" th:text="'Slut dato: ' + ${project.endDate}">End Date</p>
+            <h2 class="projectTitle" th:text="${project.projectName}">Projektnavn</h2>
+            <p class="projectStartDate" th:text="'Start Dato: ' + ${project.startDate}">Start Dato/p>
+            <p class="projectEndDate" th:text="'Slut dato: ' + ${project.endDate}">Slut dato</p>
             <div class="button-group">
                 <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/update'}" class="btn projectBtn">Opdater</a>
                 <a th:if="${jobType == 2 or jobType == 3}" th:href="@{'/projects/' + ${project.projectID} + '/delete'}" class="btn projectBtn" th:onclick="return confirm('Er du sikker på at du vil slette dette projekt?')">Slet</a>
@@ -30,13 +30,13 @@
         </a>
     </div>
 </div>
-<h1 class="myTasksTitle">Mine tasks</h1>
+<h1 class="myTasksTitle">Mine opgaver</h1>
 <div id="task-container">
     <div class="projekt" th:each="task : ${tasks}">
         <a th:href="@{'/projects/' + ${task.projectID} + '/view-tasks/' + ${task.taskID}}" class="project-link">
-            <h2 class="projectTitle" th:text="${task.taskName}">Task Name</h2>
-            <p class="taskStartDate" th:text="'Start Dato: ' + ${task.startDate}">Start Date</p>
-            <p class="projectEndDate" th:text="'Slut dato: ' + ${task.endDate}">End Date</p>
+            <h2 class="projectTitle" th:text="${task.taskName}">Opgavenavn</h2>
+            <p class="taskStartDate" th:text="'Start Dato: ' + ${task.startDate}">Start Dato</p>
+            <p class="projectEndDate" th:text="'Slut dato: ' + ${task.endDate}">Slut Dato</p>
         </a>
     </div>
 </div>

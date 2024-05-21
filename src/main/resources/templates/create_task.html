@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Task</title>
+    <title>Opret opgave</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/generalStyles.css">
@@ -15,11 +15,11 @@
 <div class="container">
     <form th:action="@{'/projects/' + ${projectID} + '/view-tasks/new/submit'}" th:object="${task}" method="post">
         <div class="form-group">
-            <label for="taskName">Task Name:</label>
+            <label for="taskName">Opgave navn:</label>
             <input type="text" id="taskName" th:field="*{taskName}" required="required" class="form-control"/>
         </div>
         <div class="form-group">
-            <label for="categoryID">Category:</label>
+            <label for="categoryID">Kategori:</label>
             <select id="categoryID" th:field="*{categoryID}" required="required" class="form-control">
                 <option th:each="category : ${categories}"
                         th:value="${category.categoryID}"
@@ -27,22 +27,22 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="description">Description:</label>
+            <label for="description">Beskrivelse:</label>
             <textarea id="description" th:field="*{description}" rows="3" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label for="estimate">Estimate (hours):</label>
+            <label for="estimate">Estimat (timer):</label>
             <input type="number" id="estimate" th:field="*{estimate}" class="form-control"/>
         </div>
         <div class="form-group">
-            <label for="startDate">Start Date:</label>
+            <label for="startDate">Start Dato:</label>
             <input type="date" id="startDate" th:field="*{startDate}" required="required" class="form-control"/>
         </div>
         <div class="form-group">
-            <label for="endDate">End Date:</label>
+            <label for="endDate">End Dato:</label>
             <input type="date" id="endDate" th:field="*{endDate}" required="required" class="form-control"/>
         </div>
-        <button type="submit" class="btn btn-primary">Create Task</button>
+        <button type="submit" class="btn btn-primary">Opret opgave</button>
     </form>
 </div>
 </body>
