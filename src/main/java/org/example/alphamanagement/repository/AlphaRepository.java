@@ -21,26 +21,9 @@ public class AlphaRepository {
     @Value("${spring.datasource.password}")
     private String password;
 
-    public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills) {
-        newEmp.setUsername(createUsername(newEmp.getFirstName(), newEmp.getLastName()));
-        String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, newEmp.getFirstName());
-            pstmt.setString(2, newEmp.getLastName());
-            pstmt.setString(3, newEmp.getUsername());
-            pstmt.setString(4, newEmp.getPassword());
-            pstmt.setInt(5, newEmp.getJobType());
-            pstmt.executeUpdate();
-            if (skills != null) {
-                saveSkills(newEmp.getUsername(), skills);
-            }
-            return newEmp;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    //---------------------------------------------------------------------------------------------------------------
+    // LOGIN
+    //---------------------------------------------------------------------------------------------------------------
 
     public Emp checkValidLogin(String empUsername, String empPassword) {
         String sql = "SELECT * FROM emp WHERE username LIKE (?) AND password LIKE (?);";
@@ -59,94 +42,9 @@ public class AlphaRepository {
             throw new RuntimeException(e);
         }
     }
-
-    public Project createProject(Project newProject, Emp projectCreatorEmp) {
-        String projectSQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
-        String projectEmpSQL = "INSERT INTO project_emp (projectID, username) VALUES (?, ?);";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement projectPreparedStatement = connection.prepareStatement(projectSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-            projectPreparedStatement.setString(1, newProject.getProjectName());
-            projectPreparedStatement.setDate(2, Date.valueOf(newProject.getStartDate()));
-            projectPreparedStatement.setDate(3, Date.valueOf(newProject.getEndDate()));
-            projectPreparedStatement.executeUpdate();
-
-            ResultSet generatedKeys = projectPreparedStatement.getGeneratedKeys();
-
-
-
-            if (generatedKeys.next()) {
-                int generatedProjectID = generatedKeys.getInt(1);
-                newProject.setProjectID(generatedProjectID);
-            } else {
-                throw new SQLException("Creating project failed, no ID obtained.");
-            }
-
-            PreparedStatement projectEmpPreparedStatement = connection.prepareStatement(projectEmpSQL);
-            projectEmpPreparedStatement.setInt(1, generatedKeys.getInt(1));
-            projectEmpPreparedStatement.setString(2, projectCreatorEmp.getUsername());
-            projectEmpPreparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return newProject;
-    }
-
-    public Emp findEmpByUsername(String username) {
-        Emp emp = new Emp();
-        String sql = "SELECT * FROM emp WHERE username like (?);";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, username);
-            ResultSet rs = psmt.executeQuery();
-            if (rs.next()) {
-                emp = createEmpFromResultSet(rs);
-            }
-            return emp;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void deleteEmp(String username) {
-        String deleteFromEmp = "DELETE FROM EMP WHERE username = ?";
-        String deleteFromProject_Emp = "DELETE FROM PROJECT_EMP WHERE username = ?";
-        String deleteFromEmp_Task = "DELETE FROM EMP_TASK WHERE username =?";
-        String deleteFromEmp_Skill = "DELETE FROM EMP_SKILL WHERE username =?";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement deleteFromProject_EmpPstmt = connection.prepareStatement(deleteFromProject_Emp);
-            deleteFromProject_EmpPstmt.setString(1, username);
-            deleteFromProject_EmpPstmt.executeUpdate();
-
-            PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
-            deleteFromEmp_TaskPstmt.setString(1, username);
-            deleteFromEmp_TaskPstmt.executeUpdate();
-
-            PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
-            deleteFromEmp_SkillPstmt.setString(1, username);
-            deleteFromEmp_SkillPstmt.executeUpdate();
-
-            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
-            deleteFromEmpPstmt.setString(1, username);
-            deleteFromEmpPstmt.executeUpdate();
-
-            connection.commit();
-            connection.setAutoCommit(true);
-
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException("Failed to roll back transaction", ex);
-            }
-            throw new RuntimeException("Failed to delete emp", e);
-        }
-    }
-
+    //---------------------------------------------------------------------------------------------------------------
+    // GET PROJECT
+    //---------------------------------------------------------------------------------------------------------------
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
@@ -186,171 +84,67 @@ public class AlphaRepository {
         return projects;
     }
 
-    public List<Emp> findEmpsContaining(String searchQuery) {
-        List<Emp> searchResults = new ArrayList<>();
-        String sql = "SELECT * FROM emp WHERE username LIKE (?) OR firstName LIKE (?) OR lastName LIKE (?);";
+    //---------------------------------------------------------------------------------------------------------------
+    // FIND PROJECT
+    //---------------------------------------------------------------------------------------------------------------
+
+    public Project findProjectByID(int projectID) {
+        String sql = "SELECT * FROM project WHERE projectId = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-            psmt.setString(1, "%" + searchQuery + "%");
-            psmt.setString(2, "%" + searchQuery + "%");
-            psmt.setString(3, "%" + searchQuery + "%");
-            ResultSet rs = psmt.executeQuery();
-            while (rs.next()) {
-                searchResults.add(createEmpFromResultSet(rs));
-            }
-            return searchResults;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<Emp> findEmpsContainingInParentProject(String searchQuery, int projectID){
-            List<Emp> searchResults = new ArrayList<>();
-        String sql = "SELECT e.* " +
-                "FROM emp e " +
-                "JOIN project_emp pe ON e.username = pe.username " +
-                "WHERE (e.username LIKE ? OR e.firstName LIKE ? OR e.lastName LIKE ?) " +
-                "AND pe.projectID = ? " +
-                "AND e.username NOT IN (" +
-                "    SELECT username " +
-                "    FROM project_emp " +
-                "    WHERE projectID = ?" +
-                ");";
-            Connection connection = ConnectionManager.getConnection(url, user, password);
-
-            try (PreparedStatement psmt = connection.prepareStatement(sql)) {
-                psmt.setString(1, "%" + searchQuery + "%");
-                psmt.setString(2, "%" + searchQuery + "%");
-                psmt.setString(3, "%" + searchQuery + "%");
-                psmt.setInt(4, findProjectByID(projectID).getParentProjectID());
-                psmt.setInt(5, projectID);
-                ResultSet rs = psmt.executeQuery();
-                while (rs.next()) {
-                    searchResults.add(createEmpFromResultSet(rs));
-                }
-                return searchResults;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-    }
-
-    public List<Emp> findEmpsContainingNotOnProject(String searchQuery, int projectID) {
-        List<Emp> searchResults = new ArrayList<>();
-        String sql = "SELECT emp.* FROM emp LEFT JOIN project_emp ON emp.username = project_emp.username AND project_emp.projectID = (?) WHERE project_emp.username IS NULL AND (emp.username LIKE (?) OR emp.firstName LIKE (?) OR emp.lastName LIKE (?));";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setInt(1, projectID);
-            pstmt.setString(2, "%" + searchQuery + "%");
-            pstmt.setString(3, "%" + searchQuery + "%");
-            pstmt.setString(4, "%" + searchQuery + "%");
             ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                searchResults.add(createEmpFromResultSet(rs));
-            }
-            return searchResults;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    public List<String> getSkillsList() {
-        List<String> skillsList = new ArrayList<>();
-        String SQL = "SELECT SKILLNAME FROM SKILL;";
-        Connection con = ConnectionManager.getConnection(url, user, password);
-
-        try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(SQL);
-
-            while (rs.next()) {
-                String skillName = rs.getString("skillName");
-                skillsList.add(skillName);
+            if (rs.next()) {
+                return createProjectFromResultSet(rs);
+            } else {
+                return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to find project by ID", e);
         }
-
-        return skillsList;
     }
 
-    public List<String> getEmpSkillList(String username) {
-        List<String> empSkillList = new ArrayList<>();
-        String sql = "SELECT username, skillName FROM emp_skill LEFT JOIN skill ON emp_skill.skillID = skill.skillID WHERE username LIKE (?);";
-
+    //---------------------------------------------------------------------------------------------------------------
+    // CREATE PROJECT
+    //---------------------------------------------------------------------------------------------------------------
+    public Project createProject(Project newProject, Emp projectCreatorEmp) {
+        String projectSQL = "INSERT INTO PROJECT(PROJECTNAME, STARTDATE, ENDDATE) values (?,?,?)";
+        String projectEmpSQL = "INSERT INTO project_emp (projectID, username) VALUES (?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                empSkillList.add(rs.getString("skillName"));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return empSkillList;
-    }
-
-
-    public Emp updateEmp(Emp emp, List<String> empSkills) {
-        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ? WHERE username = ?;";
-        String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
-        String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
-
-        Connection con = ConnectionManager.getConnection(url, user, password);
-        Emp updatedEmp = null;
-
         try {
-            PreparedStatement updateEmpStatement = con.prepareStatement(updateEmpQuery);
-            PreparedStatement delete = con.prepareStatement(deleteEmpSkillsQuery);
-            PreparedStatement insert = con.prepareStatement(insertEmpSkillsQuery);
+            PreparedStatement projectPreparedStatement = connection.prepareStatement(projectSQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            projectPreparedStatement.setString(1, newProject.getProjectName());
+            projectPreparedStatement.setDate(2, Date.valueOf(newProject.getStartDate()));
+            projectPreparedStatement.setDate(3, Date.valueOf(newProject.getEndDate()));
+            projectPreparedStatement.executeUpdate();
 
-            updateEmpStatement.setString(1, emp.getFirstName());
-            updateEmpStatement.setString(2, emp.getLastName());
-            updateEmpStatement.setString(3, emp.getPassword());
-            updateEmpStatement.setInt(4, emp.getJobType());
-            updateEmpStatement.setString(5, emp.getUsername());
-            updateEmpStatement.executeUpdate();
+            ResultSet generatedKeys = projectPreparedStatement.getGeneratedKeys();
 
-            delete.setString(1, emp.getUsername());
-            delete.executeUpdate();
 
-            for (String skill : empSkills) {
-                insert.setString(1, emp.getUsername());
-                insert.setString(2, skill);
-                insert.executeUpdate();
+
+            if (generatedKeys.next()) {
+                int generatedProjectID = generatedKeys.getInt(1);
+                newProject.setProjectID(generatedProjectID);
+            } else {
+                throw new SQLException("Creating project failed, no ID obtained.");
             }
 
-            updatedEmp = findEmpByUsername(emp.getUsername());
+            PreparedStatement projectEmpPreparedStatement = connection.prepareStatement(projectEmpSQL);
+            projectEmpPreparedStatement.setInt(1, generatedKeys.getInt(1));
+            projectEmpPreparedStatement.setString(2, projectCreatorEmp.getUsername());
+            projectEmpPreparedStatement.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return updatedEmp;
-    }
-
-
-    public List<Emp> getAllEmp() {
-        List<Emp> allEmp = new ArrayList<>();
-        String sql = "SELECT * FROM Emp;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                allEmp.add(createEmpFromResultSet(rs));
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return allEmp;
+        return newProject;
     }
 
+
+    //---------------------------------------------------------------------------------------------------------------
+    // UPDATE PROJECT
+    //---------------------------------------------------------------------------------------------------------------
     public Project updateProject(Project project) {
         String SQL = "UPDATE project SET projectName = ?, startDate = ?, endDate = ? WHERE projectId = ?;";
         Connection con = ConnectionManager.getConnection(url, user, password);
@@ -367,6 +161,10 @@ public class AlphaRepository {
         }
         return project;
     }
+
+    //---------------------------------------------------------------------------------------------------------------
+    // DELETE PROJECT
+    //---------------------------------------------------------------------------------------------------------------
 
     public void deleteProject(int projectID) {
         String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
@@ -407,73 +205,10 @@ public class AlphaRepository {
     }
 
 
-    public Project findProjectByID(int projectID) {
-        String sql = "SELECT * FROM project WHERE projectId = ?;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setInt(1, projectID);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return createProjectFromResultSet(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find project by ID", e);
-        }
-    }
 
-
-    public void addEmpToProject(String username, int projectID) {
-        String sql = "INSERT INTO PROJECT_EMP (USERNAME, PROJECTID) VALUES (?, ?);";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setInt(2, projectID);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addEmpToTask(String username, int taskID){
-        String SQL = "INSERT INTO EMP_TASK (USERNAME, TASKID) VALUES (?,?)";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-
-        try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
-            pstmt.setString(1, username);
-            pstmt.setInt(2, taskID);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void removeEmpFromTask(int taskID, String username){
-        String sql;
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        sql = "DELETE FROM EMP_TASK WHERE TASKID = ? AND USERNAME = ?;";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, taskID);
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void removeEmpFromProject(int projectID, String username) {
-        if (findProjectByID(projectID).getParentProjectID() > 0) {
-            removeEmpFromSubProject(projectID, username);
-        } else {
-            removeEmpFromParentProject(projectID, username);
-        }
-    }
-
-
-
+    //---------------------------------------------------------------------------------------------------------------
+    // CREATE SUBPROJECT
+    //---------------------------------------------------------------------------------------------------------------
     public Project createSubProject(int parentProjectID, Project newProject) {
         newProject.setParentProjectID(parentProjectID);
         String SQL = "INSERT INTO project(projectName, startDate, endDate, parentProjectID) values (?,?,?,?);";
@@ -492,7 +227,9 @@ public class AlphaRepository {
 
         return newProject;
     }
-
+    //---------------------------------------------------------------------------------------------------------------
+    // GET SUBPROJECT
+    //---------------------------------------------------------------------------------------------------------------
     public ArrayList<Project> getAllSubProjectsOfProject(int projectID) {
         ArrayList<Project> subProjects = new ArrayList<>();
         String SQL = "SELECT * from project where parentProjectID = ?;";
@@ -511,54 +248,78 @@ public class AlphaRepository {
         return subProjects;
     }
 
-    public double hoursPrDayCalculator(int projectID){
-            int sumOfEstimates = getAllEstimatesInSubProject(projectID);
-            int getLengthOfSubproject = getLengthOfSubProject(projectID);
-            int getNoOfEmpsOnSubproject = getNoOfEmpsOnSubproject(projectID);
-
-        return (double)sumOfEstimates/getLengthOfSubproject/getNoOfEmpsOnSubproject;
-    }
-
-    public int getAllEstimatesInSubProject(int projectID){
-        String SQL = "SELECT SUM(estimate) AS total_estimate FROM task WHERE projectID = ?;";
+    //---------------------------------------------------------------------------------------------------------------
+    // CREATE EMP
+    //---------------------------------------------------------------------------------------------------------------
+    public Emp createEmpWithSkills(Emp newEmp, ArrayList<String> skills) {
+        newEmp.setUsername(createUsername(newEmp.getFirstName(), newEmp.getLastName()));
+        String sql = "INSERT INTO emp(firstName, lastName, username, password, jobTypeID) VALUES (?, ?, ?, ?, ?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
-        int sumOfEstimates = 0;
-        try (PreparedStatement pstmt = connection.prepareStatement(SQL)){
-            pstmt.setInt(1, projectID);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                sumOfEstimates = rs.getInt("total_estimate");
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, newEmp.getFirstName());
+            pstmt.setString(2, newEmp.getLastName());
+            pstmt.setString(3, newEmp.getUsername());
+            pstmt.setString(4, newEmp.getPassword());
+            pstmt.setInt(5, newEmp.getJobType());
+            pstmt.executeUpdate();
+            if (skills != null) {
+                saveSkills(newEmp.getUsername(), skills);
             }
+            return newEmp;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return sumOfEstimates;
     }
 
-    public int getLengthOfSubProject(int subProjectID) {
-        String SQL = "SELECT DATEDIFF('day', startDate, endDate) " +
-                "       - (DATEDIFF('week', startDate, endDate) * 2)" +
-                "       - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
-                "       + CASE WHEN DAY_OF_WEEK(endDate) = 1 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
+    //---------------------------------------------------------------------------------------------------------------
+    // ADD EMP
+    //---------------------------------------------------------------------------------------------------------------
+
+    public void addEmpToTask(String username, int taskID){
+        String SQL = "INSERT INTO EMP_TASK (USERNAME, TASKID) VALUES (?,?)";
         Connection connection = ConnectionManager.getConnection(url, user, password);
-        int lengthOfSubProject = 0;
+
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
-            pstmt.setInt(1, subProjectID);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()){
-                lengthOfSubProject = rs.getInt("dateDifference");
+            pstmt.setString(1, username);
+            pstmt.setInt(2, taskID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addEmpToProject(String username, int projectID) {
+        String sql = "INSERT INTO PROJECT_EMP (USERNAME, PROJECTID) VALUES (?, ?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, projectID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //---------------------------------------------------------------------------------------------------------------
+    // GET EMP
+    //---------------------------------------------------------------------------------------------------------------
+
+
+    public List<Emp> getAllEmp() {
+        List<Emp> allEmp = new ArrayList<>();
+        String sql = "SELECT * FROM Emp;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                allEmp.add(createEmpFromResultSet(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return lengthOfSubProject;
-    }
-
-
-
-    public int getNoOfEmpsOnSubproject(int projectID){
-        return getEmpsOnProject(projectID).size();
+        return allEmp;
     }
 
     public List<Emp> getEmpsOnProject(int projectID) {
@@ -625,23 +386,208 @@ public class AlphaRepository {
         return empList;
     }
 
-    public List<Task> getTasksForEmp(String username) {
-        List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?) ORDER BY task.endDate ASC;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
+    //---------------------------------------------------------------------------------------------------------------
+    // FIND EMP
+    //---------------------------------------------------------------------------------------------------------------
 
-            while (rs.next()) {
-                tasks.add(createTaskFromResultSet(rs));
+
+    public Emp findEmpByUsername(String username) {
+        Emp emp = new Emp();
+        String sql = "SELECT * FROM emp WHERE username like (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, username);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                emp = createEmpFromResultSet(rs);
             }
+            return emp;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return tasks;
     }
 
+    public List<Emp> findEmpsContaining(String searchQuery) {
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT * FROM emp WHERE username LIKE (?) OR firstName LIKE (?) OR lastName LIKE (?);";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, "%" + searchQuery + "%");
+            psmt.setString(2, "%" + searchQuery + "%");
+            psmt.setString(3, "%" + searchQuery + "%");
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Emp> findEmpsContainingInParentProject(String searchQuery, int projectID){
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT e.* " +
+                "FROM emp e " +
+                "JOIN project_emp pe ON e.username = pe.username " +
+                "WHERE (e.username LIKE ? OR e.firstName LIKE ? OR e.lastName LIKE ?) " +
+                "AND pe.projectID = ? " +
+                "AND e.username NOT IN (" +
+                "    SELECT username " +
+                "    FROM project_emp " +
+                "    WHERE projectID = ?" +
+                ");";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement psmt = connection.prepareStatement(sql)) {
+            psmt.setString(1, "%" + searchQuery + "%");
+            psmt.setString(2, "%" + searchQuery + "%");
+            psmt.setString(3, "%" + searchQuery + "%");
+            psmt.setInt(4, findProjectByID(projectID).getParentProjectID());
+            psmt.setInt(5, projectID);
+            ResultSet rs = psmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public List<Emp> findEmpsContainingNotOnProject(String searchQuery, int projectID) {
+        List<Emp> searchResults = new ArrayList<>();
+        String sql = "SELECT emp.* FROM emp LEFT JOIN project_emp ON emp.username = project_emp.username AND project_emp.projectID = (?) WHERE project_emp.username IS NULL AND (emp.username LIKE (?) OR emp.firstName LIKE (?) OR emp.lastName LIKE (?));";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, projectID);
+            pstmt.setString(2, "%" + searchQuery + "%");
+            pstmt.setString(3, "%" + searchQuery + "%");
+            pstmt.setString(4, "%" + searchQuery + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                searchResults.add(createEmpFromResultSet(rs));
+            }
+            return searchResults;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    // UPDATE EMP
+    //---------------------------------------------------------------------------------------------------------------
+    public Emp updateEmp(Emp emp, List<String> empSkills) {
+        String updateEmpQuery = "UPDATE emp SET firstName = ?, lastName = ?, password = ?, jobTypeID = ? WHERE username = ?;";
+        String deleteEmpSkillsQuery = "DELETE FROM emp_skill WHERE username = ?;";
+        String insertEmpSkillsQuery = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
+
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        Emp updatedEmp = null;
+
+        try {
+            PreparedStatement updateEmpStatement = con.prepareStatement(updateEmpQuery);
+            PreparedStatement delete = con.prepareStatement(deleteEmpSkillsQuery);
+            PreparedStatement insert = con.prepareStatement(insertEmpSkillsQuery);
+
+            updateEmpStatement.setString(1, emp.getFirstName());
+            updateEmpStatement.setString(2, emp.getLastName());
+            updateEmpStatement.setString(3, emp.getPassword());
+            updateEmpStatement.setInt(4, emp.getJobType());
+            updateEmpStatement.setString(5, emp.getUsername());
+            updateEmpStatement.executeUpdate();
+
+            delete.setString(1, emp.getUsername());
+            delete.executeUpdate();
+
+            for (String skill : empSkills) {
+                insert.setString(1, emp.getUsername());
+                insert.setString(2, skill);
+                insert.executeUpdate();
+            }
+
+            updatedEmp = findEmpByUsername(emp.getUsername());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return updatedEmp;
+    }
+
+
+    //---------------------------------------------------------------------------------------------------------------
+    // DELETE EMP
+    //---------------------------------------------------------------------------------------------------------------
+
+    public void deleteEmp(String username) {
+        String deleteFromEmp = "DELETE FROM EMP WHERE username = ?";
+        String deleteFromProject_Emp = "DELETE FROM PROJECT_EMP WHERE username = ?";
+        String deleteFromEmp_Task = "DELETE FROM EMP_TASK WHERE username =?";
+        String deleteFromEmp_Skill = "DELETE FROM EMP_SKILL WHERE username =?";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            connection.setAutoCommit(false);
+            PreparedStatement deleteFromProject_EmpPstmt = connection.prepareStatement(deleteFromProject_Emp);
+            deleteFromProject_EmpPstmt.setString(1, username);
+            deleteFromProject_EmpPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmp_TaskPstmt = connection.prepareStatement(deleteFromEmp_Task);
+            deleteFromEmp_TaskPstmt.setString(1, username);
+            deleteFromEmp_TaskPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmp_SkillPstmt = connection.prepareStatement(deleteFromEmp_Skill);
+            deleteFromEmp_SkillPstmt.setString(1, username);
+            deleteFromEmp_SkillPstmt.executeUpdate();
+
+            PreparedStatement deleteFromEmpPstmt = connection.prepareStatement(deleteFromEmp);
+            deleteFromEmpPstmt.setString(1, username);
+            deleteFromEmpPstmt.executeUpdate();
+
+            connection.commit();
+            connection.setAutoCommit(true);
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException("Failed to roll back transaction", ex);
+            }
+            throw new RuntimeException("Failed to delete emp", e);
+        }
+    }
+
+    public void removeEmpFromProject(int projectID, String username) {
+        if (findProjectByID(projectID).getParentProjectID() > 0) {
+            removeEmpFromSubProject(projectID, username);
+        } else {
+            removeEmpFromParentProject(projectID, username);
+        }
+    }
+
+    public void removeEmpFromTask(int taskID, String username){
+        String sql;
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        sql = "DELETE FROM EMP_TASK WHERE TASKID = ? AND USERNAME = ?;";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, taskID);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    //---------------------------------------------------------------------------------------------------------------
+    // CREATE TASK
+    //---------------------------------------------------------------------------------------------------------------
     public Task createTask(Task newTask, int projectID) {
         String SQL = "INSERT INTO TASK(TASKNAME, PROJECTID, CATEGORYID, DESCRIPTION, ESTIMATE, STARTDATE, ENDDATE) values (?,?,?,?,?,?,?)";
         Connection con = ConnectionManager.getConnection(url, user, password);
@@ -668,26 +614,46 @@ public class AlphaRepository {
         }
         return newTask;
     }
-
-
-    public List<Map<String, Object>> getAllCategories() {
-        List<Map<String, Object>> categories = new ArrayList<>();
-        String SQL = "SELECT categoryID, categoryName FROM category;";
+    //---------------------------------------------------------------------------------------------------------------
+    // GET TASK
+    //---------------------------------------------------------------------------------------------------------------
+    public ArrayList<Task> getAllTaskOfSubProject(int projectID) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        String SQL = "SELECT * FROM TASK WHERE ProjectID = ?;";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(SQL);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Map<String, Object> category = new HashMap<>();
-                category.put("categoryID", rs.getInt("categoryID"));
-                category.put("categoryName", rs.getString("categoryName"));
-                categories.add(category);
+                Task currentTask = createTaskFromResultSet(rs);
+                tasks.add(currentTask);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to load categories", e);
+            throw new RuntimeException(e);
         }
-        return categories;
+        return tasks;
     }
 
+    public List<Task> getTasksForEmp(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT task.* FROM task JOIN emp_task ON task.taskID = emp_task.taskID WHERE emp_task.username = (?) ORDER BY task.endDate ASC;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                tasks.add(createTaskFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    // FIND TASK
+    //---------------------------------------------------------------------------------------------------------------
     public Task findTaskByTaskId(int taskId) {
         String sql = "SELECT * FROM task WHERE taskID = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
@@ -722,6 +688,32 @@ public class AlphaRepository {
         }
     }
 
+    //---------------------------------------------------------------------------------------------------------------
+    // UPDATE TASK
+    //---------------------------------------------------------------------------------------------------------------
+    public Task updateTask(Task task) {
+        String SQL = "UPDATE TASK SET taskName = ?, categoryID = ?, description = ? , estimate = ?, startDate = ?, endDate = ? WHERE taskID =?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, task.getTaskName());
+            preparedStatement.setInt(2, task.getCategoryID());
+            preparedStatement.setString(3, task.getDescription());
+            preparedStatement.setInt(4, task.getEstimate());
+            preparedStatement.setDate(5, java.sql.Date.valueOf(task.getStartDate()));
+            preparedStatement.setDate(6, java.sql.Date.valueOf(task.getEndDate()));
+            preparedStatement.setInt(7, task.getTaskID());
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException("ups");
+        }
+        return task;
+    }
+    //---------------------------------------------------------------------------------------------------------------
+    // DELETE TASK
+    //---------------------------------------------------------------------------------------------------------------
 
     public void deleteTask(int taskID) {
         String taskEmpSql = "DELETE FROM emp_task WHERE taskID = (?);";
@@ -740,22 +732,114 @@ public class AlphaRepository {
         }
     }
 
-
-    public ArrayList<Task> getAllTaskOfSubProject(int projectID) {
-        ArrayList<Task> tasks = new ArrayList<>();
-        String SQL = "SELECT * FROM TASK WHERE ProjectID = ?;";
+    // ---------------------------------------------------------------------------------------------------------------
+    // GET SKILLS
+    //---------------------------------------------------------------------------------------------------------------
+    public List<String> getSkillsList() {
+        List<String> skillsList = new ArrayList<>();
+        String SQL = "SELECT SKILLNAME FROM SKILL;";
         Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(SQL)) {
-            pstmt.setInt(1, projectID);
-            ResultSet rs = pstmt.executeQuery();
+
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(SQL);
+
             while (rs.next()) {
-                Task currentTask = createTaskFromResultSet(rs);
-                tasks.add(currentTask);
+                String skillName = rs.getString("skillName");
+                skillsList.add(skillName);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return tasks;
+
+        return skillsList;
+    }
+
+    public List<String> getEmpSkillList(String username) {
+        List<String> empSkillList = new ArrayList<>();
+        String sql = "SELECT username, skillName FROM emp_skill LEFT JOIN skill ON emp_skill.skillID = skill.skillID WHERE username LIKE (?);";
+
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                empSkillList.add(rs.getString("skillName"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return empSkillList;
+    }
+    // ---------------------------------------------------------------------------------------------------------------
+    // CATEGORY METHODS
+    //---------------------------------------------------------------------------------------------------------------
+    public List<Map<String, Object>> getAllCategories() {
+        List<Map<String, Object>> categories = new ArrayList<>();
+        String SQL = "SELECT categoryID, categoryName FROM category;";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(SQL);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> category = new HashMap<>();
+                category.put("categoryID", rs.getInt("categoryID"));
+                category.put("categoryName", rs.getString("categoryName"));
+                categories.add(category);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to load categories", e);
+        }
+        return categories;
+    }
+
+
+    // ---------------------------------------------------------------------------------------------------------------
+    // CALCULATION RELATED METHODS
+    //---------------------------------------------------------------------------------------------------------------
+
+    public double hoursPrDayCalculator(int projectID){
+            int sumOfEstimates = getAllEstimatesInSubProject(projectID);
+            int getLengthOfSubproject = getLengthOfSubProject(projectID);
+            int getNoOfEmpsOnSubproject = getNoOfEmpsOnSubproject(projectID);
+
+        return (double)sumOfEstimates/getLengthOfSubproject/getNoOfEmpsOnSubproject;
+    }
+
+    public int getAllEstimatesInSubProject(int projectID){
+        String SQL = "SELECT SUM(estimate) AS total_estimate FROM task WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        int sumOfEstimates = 0;
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)){
+            pstmt.setInt(1, projectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                sumOfEstimates = rs.getInt("total_estimate");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sumOfEstimates;
+    }
+
+    public int getLengthOfSubProject(int subProjectID) {
+        String SQL = "SELECT DATEDIFF('day', startDate, endDate) " +
+                "       - (DATEDIFF('week', startDate, endDate) * 2)" +
+                "       - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
+                "       + CASE WHEN DAY_OF_WEEK(endDate) = 1 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
+        Connection connection = ConnectionManager.getConnection(url, user, password);
+        int lengthOfSubProject = 0;
+        try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
+            pstmt.setInt(1, subProjectID);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()){
+                lengthOfSubProject = rs.getInt("dateDifference");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return lengthOfSubProject;
     }
 
     public int sumOfEstimates(int projectID) {
@@ -778,28 +862,6 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    public Task updateTask(Task task) {
-        String SQL = "UPDATE TASK SET taskName = ?, categoryID = ?, description = ? , estimate = ?, startDate = ?, endDate = ? WHERE taskID =?;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
-            preparedStatement.setString(1, task.getTaskName());
-            preparedStatement.setInt(2, task.getCategoryID());
-            preparedStatement.setString(3, task.getDescription());
-            preparedStatement.setInt(4, task.getEstimate());
-            preparedStatement.setDate(5, java.sql.Date.valueOf(task.getStartDate()));
-            preparedStatement.setDate(6, java.sql.Date.valueOf(task.getEndDate()));
-            preparedStatement.setInt(7, task.getTaskID());
-            preparedStatement.executeUpdate();
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-            throw new RuntimeException("ups");
-        }
-        return task;
     }
 
     public double updatehoursDone(double hoursDoneToday, int taskID) {
@@ -868,21 +930,10 @@ public class AlphaRepository {
     //HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER HJÆLPEMETODER
     //---------------------------------------------------------------------------------------------------------------
 
-    private Emp createEmpFromResultSet(ResultSet resultSet) {
-        Emp emp = new Emp();
 
-        try {
-            emp.setFirstName(resultSet.getString("firstName"));
-            emp.setLastName(resultSet.getString("lastName"));
-            emp.setUsername(resultSet.getString("username"));
-            emp.setPassword(resultSet.getString("password"));
-            emp.setJobType(resultSet.getInt("jobTypeID"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return emp;
-    }
-
+    //---------------------------------------------------------------------------------------------------------------
+    //LOGIN
+    //---------------------------------------------------------------------------------------------------------------
     private String createUsername(String firstName, String lastName) {
         Random random = new Random();
         String username = "";
@@ -912,7 +963,9 @@ public class AlphaRepository {
         }
         return nameIsUnique;
     }
-
+    //---------------------------------------------------------------------------------------------------------------
+    //PROJECT
+    //---------------------------------------------------------------------------------------------------------------
     private Project createProjectFromResultSet(ResultSet rs) {
         Project project = new Project();
 
@@ -927,42 +980,22 @@ public class AlphaRepository {
         }
         return project;
     }
-
-    private void saveSkills(String username, ArrayList<String> skills) {
-        String sql = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
-        Connection con = ConnectionManager.getConnection(url, user, password);
-        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-            for (String skill : skills) {
-                pstmt.setString(1, username);
-                pstmt.setString(2, skill);
-                pstmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    private Task createTaskFromResultSet(ResultSet rs) {
-        Task task = new Task();
+    //---------------------------------------------------------------------------------------------------------------
+    //EMP
+    //---------------------------------------------------------------------------------------------------------------
+    private Emp createEmpFromResultSet(ResultSet resultSet) {
+        Emp emp = new Emp();
 
         try {
-            task.setTaskID(rs.getInt("taskID"));
-            task.setTaskName(rs.getString("taskName"));
-            task.setProjectID(rs.getInt("projectID"));
-            task.setCategoryID(rs.getInt("categoryID"));
-            task.setDescription(rs.getString("description"));
-            task.setEstimate(rs.getInt("estimate"));
-            task.setStartDate(rs.getDate("startDate").toLocalDate());
-            task.setEndDate(rs.getDate("endDate").toLocalDate());
-            task.setDone(rs.getBoolean("isDone"));
-            task.setHoursDone(rs.getDouble("hoursDone"));
+            emp.setFirstName(resultSet.getString("firstName"));
+            emp.setLastName(resultSet.getString("lastName"));
+            emp.setUsername(resultSet.getString("username"));
+            emp.setPassword(resultSet.getString("password"));
+            emp.setJobType(resultSet.getInt("jobTypeID"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return task;
-
+        return emp;
     }
 
     private void removeEmpFromSubProject(int projectID, String username) {
@@ -1043,6 +1076,52 @@ public class AlphaRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private int getNoOfEmpsOnSubproject(int projectID){
+        return getEmpsOnProject(projectID).size();
+    }
+    //---------------------------------------------------------------------------------------------------------------
+    //TASK
+    //---------------------------------------------------------------------------------------------------------------
+    private Task createTaskFromResultSet(ResultSet rs) {
+        Task task = new Task();
+
+        try {
+            task.setTaskID(rs.getInt("taskID"));
+            task.setTaskName(rs.getString("taskName"));
+            task.setProjectID(rs.getInt("projectID"));
+            task.setCategoryID(rs.getInt("categoryID"));
+            task.setDescription(rs.getString("description"));
+            task.setEstimate(rs.getInt("estimate"));
+            task.setStartDate(rs.getDate("startDate").toLocalDate());
+            task.setEndDate(rs.getDate("endDate").toLocalDate());
+            task.setDone(rs.getBoolean("isDone"));
+            task.setHoursDone(rs.getDouble("hoursDone"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return task;
+
+    }
+    //---------------------------------------------------------------------------------------------------------------
+    //OTHERS
+    //---------------------------------------------------------------------------------------------------------------
+
+    private void saveSkills(String username, ArrayList<String> skills) {
+        String sql = "INSERT INTO emp_skill (username, skillID) VALUES (?, (SELECT skillID FROM skill WHERE skillName = ?));";
+        Connection con = ConnectionManager.getConnection(url, user, password);
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            for (String skill : skills) {
+                pstmt.setString(1, username);
+                pstmt.setString(2, skill);
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
