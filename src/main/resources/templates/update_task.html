@@ -10,8 +10,8 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Opdater opgave</h2>
-    <form th:action="@{/projects/{projectID}/{taskID}/update(projectID=${projectID}, taskID=${taskID})}" method="post">
+    <h2>Opdater Opgaver</h2>
+    <form th:action="@{'/projects/' + ${projectID} + '/view-tasks/' + ${taskID} + '/update/submit'}" method="post">
         <input type="hidden" name="projectID" th:value="${projectID}">
         <input type="hidden" name="taskID" th:value="${taskID}">
         <div class="form-group">

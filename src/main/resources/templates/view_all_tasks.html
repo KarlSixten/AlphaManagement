@@ -12,8 +12,8 @@
 
 <body>
 <div class="container">
-    <h1 th:text="'Tasks for Project ' + ${projectID}">Opgaver i subprojekt</h1>
-    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Opret ny opgave</a>
+    <h1 th:text="'Tasks for ' + ${project.projectName}">Opgaver i subprojekt</h1>
+    <a th:href="@{'/projects/' + ${project.projectID} + '/view-tasks/new'}" class="btn btn-primary mb-3">Opret ny opgave</a>
 
         <table class="table table-bordered">
             <thead>
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             <tr th:each="task : ${tasks}"><td>
-                <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Navn</a>
+                <a th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID}}" th:text="${task.taskName}">Navn</a>
             </td>
                 <td th:text="${task.estimate}">Estimat</td>
                 <td th:text="${task.endDate}">Slut Dato</td>
@@ -36,11 +36,11 @@
                         <input type="hidden" name="projectID" th:value="${projectID}" />
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne opgave?');">Slet</button>
                     </form>
-                    <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
-                        <input type="hidden" name="projectID" th:value="${projectID}" />
-                        <input type="hidden" name="taskID" th:value="${task.taskID}" />
-                        <button type="submit" class="btn btn-primary">Opdater</button>
-                    </form>
+
+
+                    <a class="btn" th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/edit-emps'}">Medarbejdere</a>
+                    <a class="btn" th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/update'}">Opdater</a>
+
                 </td>
 
             </tr>

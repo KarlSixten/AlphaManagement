@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/generalStyles.css">
+    <link rel="stylesheet" href="/headerStyles.css">
+</head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
+</head>
+<body>
+<div class="container">
+    <h1>Task Details</h1>
+    <div>
+        <h2 th:text="'Task Name: ' + ${task.taskName}"></h2>
+        <p th:text="'Description: ' + ${task.description}"></p>
+        <p th:text="'Start Date: ' + ${task.startDate}"></p>
+        <p th:text="'End Date: ' + ${task.endDate}"></p>
+        <p th:text="'Estimated Hours: ' + ${task.estimate}"></p>
+        <p th:text="'Hours of progress on task: ' + ${task.getHoursDone()}">
+        <p th:text="'Input how many hours of work you put on this task today:'">
+        <form th:action="'/projects/' + ${task.projectID} + '/view-tasks/' + ${task.taskID} + '/progressmade'" method="post">
+            <input type="number" name="hoursDone" />
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Hvis arbejde lavet er højere en estimatet vil tasken blive markeret som done. Ændrer estimatet hvis det ikke passer til. Tryk ok hvis du vil fortsætte');">Submit</button>
+        </form>
+        <p th:text="'Project is done: ' + ${task.isDone()}"></p>
+
+    </div>
+    <form th:action="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/toogle-done'}" method="post">
+        <button type="submit">Toggle Done</button>
+    </form>
+
+
+    <div class="container">
+        <a th:href="@{'/projects/' + ${projectID} + '/view-tasks'}" class="btn btn-primary">Go Back</a>
+    </div>
+
+</div>
+</body>
+</html>
