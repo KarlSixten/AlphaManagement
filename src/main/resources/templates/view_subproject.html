@@ -12,7 +12,7 @@
 
 <body>
 <div class="container">
-    <h1 th:text="'Sub-Projects for ' + ${parentProjectName}">Sub-Projects for Project</h1>
+    <h1 th:text="'Sub-Projects for ' + ${parentProject.projectName}">Sub-Projects for Project</h1>
 
     <table class="table table-bordered">
         <thead>
@@ -26,7 +26,7 @@
         <tbody>
         <tr th:each="subProject : ${subProjects}">
             <td>
-                <a th:href="@{'/all-task' + '/view/' + ${subProject.projectID}}" th:text="${subProject.projectName}">Project Name</a>
+                <a th:href="@{/projects/{projectID}/view-tasks(projectID=${subProject.projectID})}" th:text="${subProject.projectName}">Project Name</a>
             </td>
             <td th:text="${subProject.startDate}">Start Date</td>
             <td th:text="${subProject.endDate}">End Date</td>
@@ -39,7 +39,7 @@
         </tbody>
     </table>
 
-    <a th:href="@{'/projects/' + ${parentProjectID} + '/create-subproject'}" class="btn btn-primary">Add New Sub-Project</a>
+    <a th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary">Add New Sub-Project</a>
 </div>
 
 <a href="/home">Tilbage</a>

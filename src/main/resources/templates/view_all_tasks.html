@@ -12,8 +12,8 @@
 
 <body>
 <div class="container">
-    <h1 th:text="'Tasks for Project ' + ${projectID}">Tasks for Project</h1>
-    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Create New Task</a>
+    <h1 th:text="'Tasks for ' + ${project.projectName}">Tasks for Project</h1>
+    <a th:href="@{'/projects/' + ${project.projectID} + '/view-tasks/new'}" class="btn btn-primary mb-3">Create New Task</a>
 
         <table class="table table-bordered">
             <thead>
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             <tr th:each="task : ${tasks}"><td>
-                <a th:href="@{'/tasks' + '/view/' + ${projectID} +'/' + ${task.taskID}}" th:text="${task.taskName}">Name</a>
+                <a th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID}}" th:text="${task.taskName}">Name</a>
             </td>
                 <td th:text="${task.estimate}">Estimate</td>
                 <td th:text="${task.endDate}">End Date</td>
