@@ -72,37 +72,6 @@ public class AlphaController {
     }
 
     //---------------------------------------------------------------------------------------------------------------
-    //CREATE EMP
-    //---------------------------------------------------------------------------------------------------------------
-
-    @GetMapping("/create-emp")
-    public String createEmp(Model model) {
-        if (userIsLoggedIn()) {
-            model.addAttribute("emp", new Emp());
-            model.addAttribute("skillsList", alphaService.getSkillsList());
-            return "create_emp";
-        } else {
-            return "redirect:/";
-        }
-    }
-
-    @PostMapping("/create-emp/submit")
-    public String getSaveNewEmp(@ModelAttribute Emp emp, @RequestParam(value = "skills", required = false) ArrayList<String> skills) {
-        if (alphaService.createEmpWithSkills(emp, skills) != null) {
-            httpSession.setAttribute("newlyCreatedEmp", emp);
-            return "redirect:/create-emp/submit/user-created-success";
-        } else {
-            return "redirect:/";
-        }
-    }
-
-    @GetMapping("/create-emp/submit/user-created-success")
-    public String getCreateUserSuccess(Model model) {
-        model.addAttribute("createdUser", httpSession.getAttribute("newlyCreatedEmp"));
-        return "user_created_success";
-    }
-
-    //---------------------------------------------------------------------------------------------------------------
     //CREATE PROJECT
     //---------------------------------------------------------------------------------------------------------------
 
@@ -181,6 +150,37 @@ public class AlphaController {
         } else {
             return "redirect:/";
         }
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    //CREATE EMP
+    //---------------------------------------------------------------------------------------------------------------
+
+    @GetMapping("/edit-emps/create-emp")
+    public String createEmp(Model model) {
+        if (userIsLoggedIn() && userIsSystemAdmin()) {
+            model.addAttribute("emp", new Emp());
+            model.addAttribute("skillsList", alphaService.getSkillsList());
+            return "create_emp";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/edit-emps/create-emp/submit")
+    public String getSaveNewEmp(@ModelAttribute Emp emp, @RequestParam(value = "skills", required = false) ArrayList<String> skills) {
+        if (alphaService.createEmpWithSkills(emp, skills) != null) {
+            httpSession.setAttribute("newlyCreatedEmp", emp);
+            return "redirect:/edit-emps/create-emp/submit/user-created-success";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/edit-emps/create-emp/submit/user-created-success")
+    public String getCreateUserSuccess(Model model) {
+        model.addAttribute("createdUser", httpSession.getAttribute("newlyCreatedEmp"));
+        return "user_created_success";
     }
 
     //---------------------------------------------------------------------------------------------------------------
