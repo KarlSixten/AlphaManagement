@@ -13,7 +13,7 @@
 <body>
 <div class="container mt-4 mb-4">
     <h1 th:text="'Opgaver for Projekt: ' + ${project.projectName}">Opgaver i subprojekt</h1>
-    <a th:href="@{'/tasks/new/' + ${projectID}}" class="btn btn-primary mb-3">Opret ny opgave</a>
+    <a th:href="@{'/projects/' + ${projectID} + '/view-tasks/new'}" class="btn">Opret ny opgave</a>
 
     <div class="row">
         <div class="col-md-8">
