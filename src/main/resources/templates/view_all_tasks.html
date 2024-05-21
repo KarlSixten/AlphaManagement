@@ -39,11 +39,7 @@
                             <input type="hidden" name="projectID" th:value="${projectID}" />
                             <button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker på at du vil slette denne opgave?');">Slet</button>
                         </form>
-                        <form th:action="@{'/projects/' + ${projectID} + '/' + ${task.taskID} + '/update'}" method="get" style="display: inline-block;">
-                            <input type="hidden" name="projectID" th:value="${projectID}" />
-                            <input type="hidden" name="taskID" th:value="${task.taskID}" />
-                            <button type="submit" class="btn btn-primary">Opdater</button>
-                        </form>
+                        <a class="btn" th:href="@{'/projects/' + ${projectID} + '/view-tasks/' + ${task.taskID} + '/update'}">Opdater</a>
                     </td>
                 </tr>
                 </tbody>

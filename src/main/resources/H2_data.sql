@@ -97,6 +97,7 @@ INSERT INTO skill (skillName) VALUES ('HTML');
 
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Karl', 'Bjarnø', 'kabj0000', 'test', 3);
+INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('pm', 'pm', 'pm', 'pm', 2);
 INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('user', 'user', 'user', 'user', 1);
 
 INSERT INTO emp_skill (username,skillID) values ('test',2);
@@ -115,11 +116,24 @@ INSERT INTO project_emp (projectID, username) VALUES (3, 'test');
 INSERT INTO project_emp (projectID, username) VALUES (4, 'test');
 
 INSERT INTO project_emp (projectID, username) VALUES (2, 'kabj0000');
+
+INSERT INTO project_emp (projectID, username) VALUES (1, 'user');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'user');
+INSERT INTO project_emp (projectID, username) VALUES (3, 'user');
+INSERT INTO project_emp (projectID, username) VALUES (4, 'user');
+
+INSERT INTO project_emp (projectID, username) VALUES (1, 'pm');
+INSERT INTO project_emp (projectID, username) VALUES (2, 'pm');
+INSERT INTO project_emp (projectID, username) VALUES (3, 'pm');
+INSERT INTO project_emp (projectID, username) VALUES (4, 'pm');
 
 INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 1);
 INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 2);
 INSERT INTO emp_skill (username, skillID) VALUES ('kabj0000', 3);
+
+INSERT INTO emp_skill (username, skillID) VALUES ('pm', 1);
+INSERT INTO emp_skill (username, skillID) VALUES ('pm', 2);
+INSERT INTO emp_skill (username, skillID) VALUES ('pm', 3);
 
 INSERT INTO project_emp (projectID, username) VALUES (4, 'kabj0000');
 INSERT INTO project_emp (projectID, username) VALUES (4, 'user');
@@ -129,3 +143,7 @@ INSERT INTO emp_task(username, taskID) VALUES ('user', 2);
 
 INSERT INTO emp_task(username, taskID) VALUES ('test', 1);
 INSERT INTO emp_task(username, taskID) VALUES ('test', 2);
+
+INSERT INTO emp_task(username, taskID) VALUES ('pm', 1);
+INSERT INTO emp_task(username, taskID) VALUES ('pm', 2);
+
