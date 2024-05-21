@@ -15,13 +15,6 @@
 
 <h1 th:text="'Tilføj medarbejdere til ' + ${project.projectName}"></h1>
 
-<div class="search-container">
-    <form class="searchBar" th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
-        <input type="text" name="searchString" placeholder="Search for employees...">
-        <button class="btn" type="submit">Søg</button>
-    </form>
-</div>
-
 <div>
     <ul>
         <li th:each="emp : ${empsToAdd}">
