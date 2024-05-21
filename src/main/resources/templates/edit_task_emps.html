@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee to task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/generalStyles.css">
+    <link rel="stylesheet" href="/headerStyles.css">
+</head>
+
+<div th:replace="~{fragments/header :: header}" class="header"></div>
+
+<body>
+
+<h1 th:text="'Tilføj medarbejdere til ' + ${task.taskName}"></h1>
+<div id="emp-container">
+    <div class="empBox" th:each="emp : ${empsToAdd}">
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">full name</h2>
+        <h5 class="username" th:text="${emp.username}">username</h5>
+
+        <div class="button-group">
+            <form th:action="@{'/projects/' + ${project.projectID} + '/view-tasks/' + ${taskID} + '/edit-emps/add/' + ${emp.username}}" method="post">
+                <button class="btn" type="submit">Tilføj til task</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h1 th:text="'Fjern medarbejdere fra ' + ${task.taskName}"></h1>
+
+<div id="emp-container">
+    <div class="empBox" th:each="emp : ${empsOnTask}">
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">full name</h2>
+        <h5 class="username" th:text="${emp.username}">username</h5>
+        <div class="button-group">
+            <form th:action="@{'/projects/' + ${project.projectID} + '/view-tasks/' + ${taskID} + '/edit-emps/remove/' + ${emp.username}}" method="post">
+                <button class="btn" type="submit">Fjern fra task</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

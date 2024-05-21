@@ -13,7 +13,7 @@
     <body>
     <div class="container">
         <h2 th:text="'Opdater ' + ${project.projectName}"></h2>
-        <form method="post" th:action="@{/projects/{projectID}/update(projectID=${project.projectID})}" th:object="${project}">
+        <form method="post" th:action="@{/projects/{projectID}/update/submit(projectID=${project.projectID})}" th:object="${project}">
             <input type="hidden" th:field="*{projectID}" />
             <input type="hidden" th:field="*{parentProjectID}" />
 

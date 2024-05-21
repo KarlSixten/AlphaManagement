@@ -8,7 +8,6 @@ import org.example.alphamanagement.repository.util.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.*;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
@@ -725,12 +724,17 @@ public class AlphaRepository {
 
 
     public void deleteTask(int taskID) {
-        String SQL = "DELETE FROM TASK WHERE TASKID = ?";
+        String taskEmpSql = "DELETE FROM emp_task WHERE taskID = (?);";
+        String taskSql = "DELETE FROM TASK WHERE TASKID = (?);";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         try {
-            PreparedStatement pstmt = connection.prepareStatement(SQL);
-            pstmt.setInt(1, taskID);
-            pstmt.executeUpdate();
+            PreparedStatement taskEmpPstmt = connection.prepareStatement(taskEmpSql);
+            taskEmpPstmt.setInt(1, taskID);
+            taskEmpPstmt.executeUpdate();
+
+            PreparedStatement taskPstmt = connection.prepareStatement(taskSql);
+            taskPstmt.setInt(1, taskID);
+            taskPstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

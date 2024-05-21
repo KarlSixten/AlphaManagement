@@ -33,10 +33,10 @@
 <h1 class="myTasksTitle">Mine opgaver</h1>
 <div id="task-container">
     <div class="projekt" th:each="task : ${tasks}">
-        <a th:href="@{'tasks/view/' + ${task.projectID} + '/' + ${task.taskID}}" class="project-link">
+        <a th:href="@{'/projects/' + ${task.projectID} + '/view-tasks/' + ${task.taskID}}" class="project-link">
             <h2 class="projectTitle" th:text="${task.taskName}">Opgavenavn</h2>
             <p class="taskStartDate" th:text="'Start Dato: ' + ${task.startDate}">Start Dato</p>
-            <p class="projectEndDate" th:text="'Slut dato: ' + ${task.endDate}">Slut dato</p>
+            <p class="projectEndDate" th:text="'Slut dato: ' + ${task.endDate}">Slut Dato</p>
         </a>
     </div>
 </div>

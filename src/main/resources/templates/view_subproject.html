@@ -11,9 +11,8 @@
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
 <body>
-<div class="container mt-4 mb-4">
-    <h1 th:text="'Subprojekter for ' + ${parentProjectName}">Subprojeker for projekt</h1>
-    <a th:href="@{'/projects/' + ${parentProjectID} + '/create-subproject'}" class="btn btn-primary">Tilføj nyt subprojekt</a>
+<div class="container">
+    <h1 th:text="'Subprojekter for ' + ${parentProject.projectName}">Subprojeker for projekt</h1>
 
     <table class="table table-bordered mt-4 mb-4">
         <thead>
@@ -27,7 +26,7 @@
         <tbody>
         <tr th:each="subProject : ${subProjects}">
             <td>
-                <a th:href="@{'/all-task' + '/view/' + ${subProject.projectID}}" th:text="${subProject.projectName}">Projektnavn</a>
+                <a th:href="@{/projects/{projectID}/view-tasks(projectID=${subProject.projectID})}" th:text="${subProject.projectName}">Projektnavn</a>
             </td>
             <td th:text="${subProject.startDate}">Start Dato</td>
             <td th:text="${subProject.endDate}">Slut Dato</td>
@@ -39,8 +38,11 @@
         </tr>
         </tbody>
     </table>
+
+    <a th:href="@{'/projects/' + ${parentProject.projectID} + '/create-subproject'}" class="btn btn-primary">Tilføj nyt subprojekt</a>
     <a th:href="'/home'" class="btn btn-primary">Tilbage</a>
 </div>
+
 
 </body>
 </html>
