@@ -318,7 +318,7 @@ public class AlphaController {
                 return "update_project_emps";
             }
         } else {
-            return "inocorrect_jobtype_error";
+            return "incorrect_jobtype_error";
         }
     }
 
