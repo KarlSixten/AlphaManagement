@@ -157,7 +157,6 @@ INSERT INTO task(taskName, projectID, categoryID, description, estimate, startDa
 
 
 -- Insert emps to parent-projects
-INSERT INTO project_emp (projectID, username) VALUES (1, 'emp');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'emp');
 INSERT INTO project_emp (projectID, username) VALUES (3, 'emp');
 INSERT INTO project_emp (projectID, username) VALUES (1, 'pm');
@@ -166,6 +165,7 @@ INSERT INTO project_emp (projectID, username) VALUES (3, 'pm');
 INSERT INTO project_emp (projectID, username) VALUES (1, 'admin');
 INSERT INTO project_emp (projectID, username) VALUES (2, 'admin');
 INSERT INTO project_emp (projectID, username) VALUES (3, 'admin');
+
 
 
 -- Insert emps to sub-projects

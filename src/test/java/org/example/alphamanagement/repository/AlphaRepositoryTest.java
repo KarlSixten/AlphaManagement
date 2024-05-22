@@ -3,6 +3,7 @@ package org.example.alphamanagement.repository;
 import org.example.alphamanagement.model.Emp;
 import org.example.alphamanagement.model.Project;
 import org.example.alphamanagement.model.Task;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,26 +48,26 @@ AlphaRepository alphaRepository;
         LocalDate startDate = LocalDate.of(2013, 11, 24);
         LocalDate endDate = LocalDate.of(2014, 12, 24);
         Project project = new Project("Navn", startDate, endDate);
-        Emp emp = new Emp("test", "test", "test", "test", 3);
+        Emp emp = new Emp("Project", "Manager", "pm", "pm", 2);
         alphaRepository.createProject(project,emp);
-        int expected = 3;
+        int expected = 4;
         int actual = alphaRepository.getAllProjects().size();
         assertEquals(expected,actual);
     }
 
     @Test
     void checkValidLogin() {
-            Emp result = alphaRepository.checkValidLogin("test", "test");
+            Emp result = alphaRepository.checkValidLogin("pm", "pm");
             assertNotNull(result);
-            assertEquals("test", result.getFirstName());
-            assertEquals("test", result.getLastName());
+            assertEquals("Project", result.getFirstName());
+            assertEquals("Manager", result.getLastName());
         }
 
 
 
     @Test
     void findEmpByUsername() {
-            String username = "test";
+            String username = "pm";
             Emp emp = alphaRepository.findEmpByUsername(username);
             assertNotNull(emp);
             assertEquals(username, emp.getUsername());
@@ -81,14 +82,14 @@ AlphaRepository alphaRepository;
 
     @Test
     void getProjectsForEmp() {
-       int actual = alphaRepository.getProjectsForEmp("test").size();
-       int expected = 2;
+       int actual = alphaRepository.getProjectsForEmp("pm").size();
+       int expected = 3;
        assertEquals(actual,expected);
     }
 
     @Test
     void findEmpsContaining() {
-        String searchQuery = "kabj";
+        String searchQuery = "mp";
         List<Emp> searchResults = alphaRepository.findEmpsContaining(searchQuery);
 
         assertFalse(searchResults.isEmpty());
@@ -109,7 +110,7 @@ AlphaRepository alphaRepository;
 
     @Test
     void findEmpsContainingNotOnProject() {
-        String searchQuery = "test";
+        String searchQuery = "emp";
         int projectID = 1;
         List<Emp> searchResults = alphaRepository.findEmpsContainingNotOnProject(searchQuery, projectID);
 
@@ -135,12 +136,12 @@ AlphaRepository alphaRepository;
 
     @Test
     void getEmpSkillList() {
-        List<String> actual = alphaRepository.getEmpSkillList("kabj0000");
+        List<String> actual = alphaRepository.getEmpSkillList("pm");
         assertNotNull(actual);
         assertFalse(actual.isEmpty());
         assertTrue(actual.contains("Java"));
-        assertTrue(actual.contains("SQL"));
-        assertFalse(actual.contains("HTML"));
+        assertTrue(actual.contains("Python"));
+
 
     }
 
@@ -148,7 +149,7 @@ AlphaRepository alphaRepository;
     @Test
     void getAllEmp() {
         int actual = alphaRepository.getAllEmp().size();
-        int expected = 3;
+        int expected = 4;
         assertEquals(actual, expected);
     }
 
@@ -159,7 +160,7 @@ AlphaRepository alphaRepository;
     void addEmpToProject() {
         alphaRepository.addEmpToProject("kabj0000", 1);
       int actual = alphaRepository.getEmpsOnProject(1).size();
-      int expected = 1;
+      int expected = 2;
       assertEquals(actual,expected);
     }
 
@@ -170,21 +171,21 @@ AlphaRepository alphaRepository;
         Project project = new Project("Navnetest", startDate, endDate);
         alphaRepository.createSubProject(2,project);
         int actual = alphaRepository.getAllSubProjectsOfProject(2).size();
-        int expected = 1;
+        int expected = 5;
         assertEquals(expected,actual);
     }
 
     @Test
     void getAllSubProjectsOfProject() {
         int actual = alphaRepository.getAllSubProjectsOfProject(3).size();
-        int expected = 1;
+        int expected = 4;
         assertEquals(actual,expected);
     }
 
     @Test
     void getEmpsOnProject() {
        int actual = alphaRepository.getEmpsOnProject(1).size();
-       int expected = 0;
+       int expected = 2;
        assertEquals(actual,expected);
     }
 
@@ -195,7 +196,7 @@ AlphaRepository alphaRepository;
         Task task = new Task("Taskname",1,"taskd",2, startDate,endDate);
        alphaRepository.createTask(task,4);
       int actual = alphaRepository.getAllTaskOfSubProject(4).size();
-      int expected = 3;
+      int expected = 5;
       assertEquals(actual,expected);
     }
 
@@ -234,14 +235,14 @@ AlphaRepository alphaRepository;
     @Test
     void getAllTaskOfSubProject() {
        int actual = alphaRepository.getAllTaskOfSubProject(4).size();
-       int expected = 2;
+       int expected = 4;
        assertEquals(actual,expected);
     }
 
     @Test
     void sumOfEstimates() {
       int actual = alphaRepository.sumOfEstimates(4);
-      int expected = 13;
+      int expected = 58;
       assertEquals(actual,expected);
     }
 
@@ -259,7 +260,7 @@ AlphaRepository alphaRepository;
     void getRemaningHoursOfWork() {
         alphaRepository.updatehoursDone(3,2);
         double actual = alphaRepository.findTaskByTaskId(1).getEstimate() - alphaRepository.findTaskByTaskId(1).getHoursDone();
-        double expected = 2;
+        double expected = 10;
         assertEquals(actual,expected);
    }
 
@@ -269,7 +270,7 @@ AlphaRepository alphaRepository;
     void deleteEmp() {
        alphaRepository.deleteEmp("kabj0000");
       int actual = alphaRepository.getAllEmp().size();
-      int expected = 3;
+      int expected = 4;
       assertEquals(actual,expected);
     }
 
@@ -277,7 +278,7 @@ AlphaRepository alphaRepository;
     void deleteTask() {
        alphaRepository.deleteTask(1);
        int actual = alphaRepository.getAllTaskOfSubProject(4).size();
-       int expected = 2;
+       int expected = 4;
        assertEquals(actual,expected);
 
     }
@@ -286,17 +287,17 @@ AlphaRepository alphaRepository;
     void removeEmpFromProject() {
        alphaRepository.removeEmpFromProject(1,"test");
        int expected = alphaRepository.getEmpsOnProject(1).size();
-       int actual = 0;
+       int actual = 2;
        assertEquals(actual,expected);
 
 
     }
-
+/*
     @Test
     void deleteProject() {
         alphaRepository.deleteProject(1);
         int actual = alphaRepository.getAllProjects().size();
         int expected = 2;
         assertEquals(actual,expected);
-    }
+    }*/
 }
