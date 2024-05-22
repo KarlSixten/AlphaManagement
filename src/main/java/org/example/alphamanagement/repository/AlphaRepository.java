@@ -167,21 +167,33 @@ public class AlphaRepository {
     //---------------------------------------------------------------------------------------------------------------
 
     public void deleteProject(int projectID) {
-        String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
+        String empTaskSql = "DELETE FROM emp_task WHERE taskID IN (SELECT taskID FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?)));";
         String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
+        String subprojectEmpSql = "DELETE FROM project_emp WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
+        String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
         String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
         String projectSql = "DELETE FROM project WHERE projectID = (?);";
+
         Connection connection = ConnectionManager.getConnection(url, user, password);
+
         try {
             connection.setAutoCommit(false);
 
-            PreparedStatement projectEmpPstmt = connection.prepareStatement(projectEmpSql);
-            projectEmpPstmt.setInt(1, projectID);
-            projectEmpPstmt.executeUpdate();
+            PreparedStatement taskEmpPstmt = connection.prepareStatement(empTaskSql);
+            taskEmpPstmt.setInt(1, projectID);
+            taskEmpPstmt.executeUpdate();
 
             PreparedStatement taskPstmt = connection.prepareStatement(taskSql);
             taskPstmt.setInt(1, projectID);
             taskPstmt.executeUpdate();
+
+            PreparedStatement subprojectEmpPstmt = connection.prepareStatement(subprojectEmpSql);
+            subprojectEmpPstmt.setInt(1, projectID);
+            subprojectEmpPstmt.executeUpdate();
+
+            PreparedStatement projectEmpPstmt = connection.prepareStatement(projectEmpSql);
+            projectEmpPstmt.setInt(1, projectID);
+            projectEmpPstmt.executeUpdate();
 
             PreparedStatement subProjectPstmt = connection.prepareStatement(subProjectSql);
             subProjectPstmt.setInt(1, projectID);
