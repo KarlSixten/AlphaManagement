@@ -32,6 +32,7 @@ AlphaRepository alphaRepository;
 
         int expected = 4;
         int actual = alphaRepository.getAllEmp().size();
+
         assertEquals(actual,expected);
     }
 
