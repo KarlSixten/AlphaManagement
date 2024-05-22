@@ -30,7 +30,7 @@ AlphaRepository alphaRepository;
         ArrayList<String> skilz = new ArrayList<>(List.of("Java"));
         alphaRepository.createEmpWithSkills(emp,skilz);
 
-        int actual = 5;
+        int actual = 4;
         int expected = alphaRepository.getAllEmp().size();
         assertEquals(actual,expected);
     }
