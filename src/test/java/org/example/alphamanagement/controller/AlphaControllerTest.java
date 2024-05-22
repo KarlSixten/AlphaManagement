@@ -86,19 +86,23 @@ class AlphaControllerTest {
 
 
     @Test
-    void showCreateProjectForm() throws Exception {
+    void showCreateProjectFormForProjectManager() throws Exception {
 
         empLoggedIn.setJobType(2);
         mockMvc.perform(get("/projects/new").session(mockSession))
                 .andExpect(status().isOk())
                 .andExpect(view().name("create_project"));
 
-        empLoggedIn.setJobType(3);
-        mockMvc.perform(get("/projects/new").session(mockSession))
-                .andExpect(status().isOk())
-                .andExpect(view().name("incorrect_jobtype_error"));
+
     }
 
+@Test
+void showCreateProjectFormForSystemAdmin() throws Exception{
+    empLoggedIn.setJobType(3);
+    mockMvc.perform(get("/projects/new").session(mockSession))
+            .andExpect(status().isOk())
+            .andExpect(view().name("incorrect_jobtype_error"));
+}
 
     @Test
     void showEmployees() throws Exception {
@@ -122,13 +126,18 @@ class AlphaControllerTest {
     }
 
     @Test
-    void showCreateSubproject() throws Exception {
+    void showCreateSubprojectForProjectManager() throws Exception {
         empLoggedIn.setJobType(2);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/projects/{projectID}/create-subproject", 1).session(mockSession))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("create_subproject"));
 
+
+
+    }
+    @Test
+    void showCreateSubprojectForEmployee() throws Exception{
         empLoggedIn.setJobType(1);
         mockMvc.perform(MockMvcRequestBuilders.get("/projects/{projectID}/create-subproject", 1).session(mockSession))
                 .andExpect(MockMvcResultMatchers.status().isOk())
