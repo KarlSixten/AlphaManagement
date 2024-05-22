@@ -956,7 +956,9 @@ public class AlphaRepository {
         String username = "";
 
         do {
-            username = firstName.substring(0, 2) + lastName.substring(0, 2) + random.nextInt(10000);
+            int digits = random.nextInt(10000);
+            String digitsFormatted = String.format("%04d", digits);
+            username = firstName.substring(0, 2) + lastName.substring(0, 2) + digitsFormatted;
         } while (!usernameIsUnique(username));
 
         return username;
