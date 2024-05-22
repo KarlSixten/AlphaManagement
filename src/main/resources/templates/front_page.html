@@ -14,7 +14,7 @@
 <body>
 <h1 class="myProjectsTitle">Mine projekter</h1>
 
-<a class="btn createProject" th:if="${jobType == 2 or jobType == 3}" href="/projects/new" >+Opret projekt</a>
+<a class="btn createProject" th:if="${jobType == 2}" href="/projects/new" >+Opret projekt</a>
 
 <div id="projekt-container">
     <div class="projekt" th:each="project : ${projects}">
