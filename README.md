@@ -26,7 +26,7 @@ The Alpha Management System is a robust application developed using Spring Boot,
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/KarlSixten/AlphaManagement.git
-   cd alpha-management-system
+   cd Alphamanagement
 2. **Make sure profile is set to Dev under application properties
 3. Login with one of the predefined users. See them under the H2_data.sql
 
