@@ -167,12 +167,12 @@ public class AlphaRepository {
     //---------------------------------------------------------------------------------------------------------------
 
     public void deleteProject(int projectID) {
-        String empTaskSql = "DELETE FROM emp_task WHERE taskID IN (SELECT taskID FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?)));";
-        String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
-        String subprojectEmpSql = "DELETE FROM project_emp WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = (?));";
-        String projectEmpSql = "DELETE FROM project_emp WHERE projectID = (?);";
-        String subProjectSql = "DELETE FROM project WHERE parentProjectID = (?);";
-        String projectSql = "DELETE FROM project WHERE projectID = (?);";
+        String empTaskSql = "DELETE FROM emp_task WHERE taskID IN (SELECT taskID FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = ? OR projectID = ?));";
+        String taskSql = "DELETE FROM task WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = ? OR projectID = ?);";
+        String subprojectEmpSql = "DELETE FROM project_emp WHERE projectID IN (SELECT projectID FROM project WHERE parentProjectID = ?);";
+        String projectEmpSql = "DELETE FROM project_emp WHERE projectID = ?;";
+        String subProjectSql = "DELETE FROM project WHERE parentProjectID = ?;";
+        String projectSql = "DELETE FROM project WHERE projectID = ?;";
 
         Connection connection = ConnectionManager.getConnection(url, user, password);
 
@@ -181,10 +181,12 @@ public class AlphaRepository {
 
             PreparedStatement taskEmpPstmt = connection.prepareStatement(empTaskSql);
             taskEmpPstmt.setInt(1, projectID);
+            taskEmpPstmt.setInt(2, projectID);
             taskEmpPstmt.executeUpdate();
 
             PreparedStatement taskPstmt = connection.prepareStatement(taskSql);
             taskPstmt.setInt(1, projectID);
+            taskPstmt.setInt(2, projectID);
             taskPstmt.executeUpdate();
 
             PreparedStatement subprojectEmpPstmt = connection.prepareStatement(subprojectEmpSql);
@@ -215,6 +217,7 @@ public class AlphaRepository {
             throw new RuntimeException("Failed to delete project", e);
         }
     }
+
 
 
 
