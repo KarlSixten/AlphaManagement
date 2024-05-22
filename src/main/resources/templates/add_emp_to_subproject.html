@@ -15,34 +15,31 @@
 
 <h1 th:text="'Tilføj medarbejdere til ' + ${project.projectName}"></h1>
 
-<div class="search-container">
-    <form class="searchBar" th:action="@{'/projects/' + ${projectID} + '/update-emps'}" method="get">
-        <input type="text" name="searchString" placeholder="Search for employees...">
-        <button class="btn" type="submit">Søg</button>
-    </form>
-</div>
+<div id="emp-container">
+    <div class="empBox" th:each="emp : ${empsToAdd}">
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">Fulde navn</h2>
+        <h5 class="username" th:text="${emp.username}">Brugernavn</h5>
 
-<div>
-    <ul>
-        <li th:each="emp : ${empsToAdd}">
-            <span th:text="${emp.username}"></span>
+        <div class="button-group">
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/add/' + ${emp.username}}" method="post">
-                <button type="submit">Tilføj til projekt</button>
+                <button class="btn" type="submit">Tilføj til projekt</button>
             </form>
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
 
-<h1>Medarbejdere på projektet</h1>
-<div>
-    <ul>
-        <li th:each="emp : ${empsOnProject}">
-            <span th:text="${emp.username}"></span>
+<h1 th:text="'Fjern medarbejdere fra ' + ${project.projectName}"></h1>
+
+<div id="emp-container">
+    <div class="empBox" th:each="emp : ${empsOnProject}">
+        <h2 class="fullName" th:text="${emp.firstName} + ' ' + ${emp.lastName}">Fulde navn</h2>
+        <h5 class="username" th:text="${emp.username}">Brugernavn</h5>
+        <div class="button-group">
             <form th:action="@{'/projects/' + ${projectID} + '/update-emps/remove/' + ${emp.username}}" method="post">
-                <button type="submit">Fjern fra projekt</button>
+                <button class="btn" type="submit">Fjern fra projekt</button>
             </form>
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
 
 <a th:href="'/projects/' + ${parentProjectID} +  '/subprojects'">Tilbage</a>

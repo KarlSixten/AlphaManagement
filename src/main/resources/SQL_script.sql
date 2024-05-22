@@ -93,4 +93,4 @@ INSERT INTO skill (skillName) VALUES ('C#');
 INSERT INTO skill (skillName) VALUES ('C++');
 INSERT INTO skill (skillName) VALUES ('HTML');
 
-INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('test', 'test', 'test', 'test', 3);
+INSERT INTO emp (firstName, lastName, username, password, jobTypeID) VALUES ('Admin', 'Admin', 'admin0000', 'admin', 3);
