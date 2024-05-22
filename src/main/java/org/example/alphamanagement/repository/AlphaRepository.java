@@ -810,6 +810,8 @@ public class AlphaRepository {
     // CALCULATION RELATED METHODS
     //---------------------------------------------------------------------------------------------------------------
 
+    //TODO: Flytte
+
     public double hoursPrDayCalculator(int projectID){
             int sumOfEstimates = getAllEstimatesInSubProject(projectID);
             int getLengthOfSubproject = getLengthOfSubProject(projectID);
