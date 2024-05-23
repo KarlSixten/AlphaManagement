@@ -28,8 +28,10 @@
             <label for="endDate"><strong>Slut dato:</strong></label>
             <input type="date" id="endDate" name="endDate" th:value="*{endDate}" class="form-control" required>
         </div>
-
+        <div>
         <button type="submit" class="btn btn-primary">Opret subprojekt</button>
+        <a th:href="'/projects/' + ${projectID} + '/subprojects'" class="btn btn-secondary mb-2">Fortryd og gå tilbage</a>
+        </div>
     </form>
 </div>
 </body>
