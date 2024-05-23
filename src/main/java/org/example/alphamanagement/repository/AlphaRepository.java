@@ -131,7 +131,7 @@ public class AlphaRepository {
             }
 
             PreparedStatement projectEmpPreparedStatement = connection.prepareStatement(projectEmpSQL);
-            projectEmpPreparedStatement.setInt(1, generatedKeys.getInt(1));
+            projectEmpPreparedStatement.setInt(1, newProject.getProjectID());
             projectEmpPreparedStatement.setString(2, projectCreatorEmp.getUsername());
             projectEmpPreparedStatement.executeUpdate();
 
