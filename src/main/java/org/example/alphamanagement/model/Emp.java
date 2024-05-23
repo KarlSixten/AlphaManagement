@@ -1,8 +1,5 @@
 package org.example.alphamanagement.model;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Emp {
     private String username;

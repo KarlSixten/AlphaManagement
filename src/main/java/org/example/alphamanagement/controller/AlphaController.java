@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -533,8 +532,4 @@ public class AlphaController {
         return empLoggedIn != null && empLoggedIn.getJobType() == 3;
     }
 
-    private boolean userHasRole(int jobType) {
-        Emp emp = (Emp) httpSession.getAttribute("empLoggedIn");
-        return emp != null && emp.getJobType() == jobType;
-    }
 }

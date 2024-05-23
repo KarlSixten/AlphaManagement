@@ -1,7 +1,6 @@
 package org.example.alphamanagement.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Project {
     private String projectName;
