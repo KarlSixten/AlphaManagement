@@ -8,24 +8,29 @@
     <link rel="stylesheet" href="/headerStyles.css">
 </head>
 
+<body>
 <div th:replace="~{fragments/header :: header}" class="header"></div>
 
-<body>
-<h1>Opret nyt subprojekt</h1>
-<form action="#" th:action="@{'/projects/' + ${parentProjectID} + '/create-subproject/submit'}" th:object="${subProject}" method="post">
-    <label for="projectName">Projektnavn:</label>
-    <input type="text" id="projectName" name="projectName" th:value="*{projectName}" required>
-    <br>
+<div class="container mt-4">
+    <h1 class="mb-4">Opret nyt subprojekt</h1>
+    <form action="#" th:action="@{'/projects/' + ${parentProjectID} + '/create-subproject/submit'}" th:object="${subProject}" method="post">
+        <div class="form-group">
+            <label for="projectName"><strong>Projektnavn:</strong></label>
+            <input type="text" id="projectName" name="projectName" th:value="*{projectName}" class="form-control" required>
+        </div>
 
-    <label for="startDate">Start dato:</label>
-    <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required>
-    <br>
+        <div class="form-group">
+            <label for="startDate"><strong>Start dato:</strong></label>
+            <input type="date" id="startDate" name="startDate" th:value="*{startDate}" class="form-control" required>
+        </div>
 
-    <label for="endDate">Slut dato:</label>
-    <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required>
-    <br>
+        <div class="form-group">
+            <label for="endDate"><strong>Slut dato:</strong></label>
+            <input type="date" id="endDate" name="endDate" th:value="*{endDate}" class="form-control" required>
+        </div>
 
-    <button type="submit">Opret subprojekt</button>
-</form>
+        <button type="submit" class="btn btn-primary">Opret subprojekt</button>
+    </form>
+</div>
 </body>
 </html>
