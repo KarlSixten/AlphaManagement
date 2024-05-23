@@ -356,6 +356,7 @@ public class AlphaController {
             model.addAttribute("workProgressPercentage", alphaService.getWorkProgressPercentage(projectID));
             model.addAttribute("workRemainingHours", alphaService.getRemaningHoursOfWork(projectID));
             model.addAttribute("hoursPrDay", alphaService.hoursPrDayCalculator(projectID));
+            model.addAttribute("lengthOfSubProject", alphaService.getLengthOfSubProject(projectID));
             return "view_all_tasks.html";
         } else {
             return "incorrect_jobtype_error";

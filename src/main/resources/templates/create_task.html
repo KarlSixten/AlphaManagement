@@ -42,7 +42,10 @@
             <label for="endDate">End Dato:</label>
             <input type="date" id="endDate" th:field="*{endDate}" required="required" class="form-control"/>
         </div>
+        <div>
         <button type="submit" class="btn btn-primary">Opret opgave</button>
+        <a th:href="'/projects/' + ${projectID} + '/view-tasks'" class="btn btn-secondary mb-2">Fortryd og gå tilbage</a>
+        </div>
     </form>
 </div>
 </body>

@@ -136,6 +136,10 @@ public class AlphaService {
 
     }
 
+    public int getLengthOfSubProject(int subProjectID) {
+        return alphaRepository.getLengthOfSubProject(subProjectID);
+    }
+
     public int getRemaningHoursOfWork(int projectID){
         return alphaRepository.getRemainingHoursOfWork(projectID);
     }

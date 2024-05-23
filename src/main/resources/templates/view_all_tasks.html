@@ -69,6 +69,11 @@
                     <p class="card-text" th:text="'Projektet er estimeret til: ' + ${#numbers.formatDecimal(hoursPrDay, 1, 2)} + ' timer pr. dag pr. person. Weekender er ikke talt med'"></p>
                 </div>
             </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p class="card-text" th:text="'Projektet er ' + ${lengthOfSubProject} + ' dage langt'"></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
