@@ -51,27 +51,27 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <p class="card-text" th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer'"></p>
+                    <p class="card-text" th:text="'Total antal timer estimeret: ' + ${totalEstimate} + ' timer.'"></p>
                 </div>
             </div>
             <div class="card mt-3">
                 <div class="card-body">
-                    <p class="card-text" th:text="'Total antal timer tilbage: ' + ${workRemainingHours} + ' timer'"></p>
+                    <p class="card-text" th:text="'Total antal timer tilbage: ' + ${workRemainingHours} + ' timer.'"></p>
                 </div>
             </div>
             <div class="card mt-3">
                 <div class="card-body">
-                    <p class="card-text" th:text="' ' + ${workProgressPercentage} + '% færdig'"></p>
+                    <p class="card-text" th:text="' ' + ${workProgressPercentage} + '% færdig.'"></p>
                 </div>
             </div>
             <div class="card mt-3">
                 <div class="card-body">
-                    <p class="card-text" th:text="'Projektet er estimeret til: ' + ${#numbers.formatDecimal(hoursPrDay, 1, 2)} + ' timer pr. dag pr. person. Weekender er ikke talt med.'"></p>
+                    <p class="card-text" th:text="'Projektet er estimeret til: ' + ${#numbers.formatDecimal(hoursPrDay, 1, 2)} + ' timer pr. dag pr. person. Weekender ikke talt med.'"></p>
                 </div>
             </div>
             <div class="card mt-3">
                 <div class="card-body">
-                    <p class="card-text" th:text="'Projektet er ' + ${lengthOfSubProject} + ' dage langt'"></p>
+                    <p class="card-text" th:text="'Projektet er ' + ${lengthOfSubProject} + ' arbejdsdage langt.'"></p>
                 </div>
             </div>
         </div>
