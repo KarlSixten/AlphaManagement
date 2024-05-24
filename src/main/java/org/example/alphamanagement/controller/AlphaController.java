@@ -18,8 +18,8 @@ public class AlphaController {
     private final AlphaService alphaService;
     private final HttpSession httpSession;
 
-    public AlphaController(AlphaService wishyService, HttpSession httpSession) {
-        this.alphaService = wishyService;
+    public AlphaController(AlphaService alphaService, HttpSession httpSession) {
+        this.alphaService = alphaService;
         this.httpSession = httpSession;
     }
 
