@@ -28,7 +28,8 @@ The Alpha Management System is a robust application developed using Spring Boot,
    git clone https://github.com/KarlSixten/AlphaManagement.git
    cd Alphamanagement
 2. **Make sure profile is set to Dev under application properties**
-3. **Login with one of the predefined users. See them under the H2_data.sql**
+3. **Go to http://localhost:8080**
+4. **Login with one of the predefined users. See them under the H2_data.sql**
 
 ## Usage
 
