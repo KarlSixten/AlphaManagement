@@ -686,22 +686,6 @@ public class AlphaRepository {
         }
     }
 
-    public Task findTaskByProjectID(int projectID) {
-        String sql = "SELECT * FROM task WHERE projectID = ?;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setInt(1, projectID);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return createTaskFromResultSet(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find task by ID", e);
-        }
-    }
 
     //---------------------------------------------------------------------------------------------------------------
     // UPDATE TASK

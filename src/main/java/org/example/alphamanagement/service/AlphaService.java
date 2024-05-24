@@ -99,9 +99,7 @@ public class AlphaService {
     public Task findTaskById(int taskId){
         return alphaRepository.findTaskByTaskId(taskId);
     }
-    public Task findTaskByProjectID(int projectID){
-        return alphaRepository.findTaskByProjectID(projectID);
-    }
+
 
     public List<Emp> findByUsernameContainingNotOnProject(String searchString, int projectID) {
         return alphaRepository.findEmpsContainingNotOnProject(searchString, projectID);
