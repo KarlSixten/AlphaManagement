@@ -27,6 +27,11 @@ jobs:
           JDBC_USERNAME: ${{ secrets.JDBC_USERNAME }}
           JDBC_PASSWORD: ${{ secrets.JDBC_PASSWORD }}
         run: mvn -B clean install --file pom.xml
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-app
+          path: target/*.jar  # Adjust this path according to where your JAR files are placed
 
   qodana:
     needs: build
