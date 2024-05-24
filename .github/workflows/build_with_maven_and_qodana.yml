@@ -1,14 +1,14 @@
-name: Maven build and Quodana scan
+name: Java Build, Scan and Deploy Workflow
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -21,17 +21,51 @@ jobs:
           cache: maven
       - name: Display Maven version
         run: mvn -v
-
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        env:
+          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+          JDBC_USERNAME: ${{ secrets.JDBC_USERNAME }}
+          JDBC_PASSWORD: ${{ secrets.JDBC_PASSWORD }}
+        run: mvn -B clean install --file pom.xml
 
   qodana:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: 'Qodana Scan'
+      - name: Qodana Scan
         uses: JetBrains/qodana-action@v2023.2
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
+  deploy:
+    needs: qodana
+    runs-on: ubuntu-latest
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: java-app
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6FA92F6D891047C2827B176B9CC8A0AD }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_13AC345DA56040129322B0CA8C473DEA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4762DBB3A520450D91449AF28D9AD020 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'AlphaManagementGAAK'
+          slot-name: 'Production'
+          package: '*.jar'
