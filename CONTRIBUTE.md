@@ -1,4 +1,4 @@
-# Contributing to the Wishywishy project #
+# Contributing to the AlphaManagement project #
 
 - [Code of Conduct](#book-code-of-conduct)
 - [Asking Questions](#bulb-asking-questions)
