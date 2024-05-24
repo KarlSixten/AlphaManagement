@@ -686,22 +686,6 @@ public class AlphaRepository {
         }
     }
 
-    public Task findTaskByProjectID(int projectID) {
-        String sql = "SELECT * FROM task WHERE projectID = ?;";
-        Connection connection = ConnectionManager.getConnection(url, user, password);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setInt(1, projectID);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return createTaskFromResultSet(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to find task by ID", e);
-        }
-    }
 
     //---------------------------------------------------------------------------------------------------------------
     // UPDATE TASK
@@ -840,10 +824,11 @@ public class AlphaRepository {
     }
 
     public int getLengthOfSubProject(int subProjectID) {
-        String SQL = "SELECT DATEDIFF('day', startDate, endDate) " +
-                "       - (DATEDIFF('week', startDate, endDate) * 2)" +
-                "       - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
-                "       + CASE WHEN DAY_OF_WEEK(endDate) = 1 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
+        String SQL = "SELECT DATEDIFF(dd, startDate, endDate)" +
+                " - (DATEDIFF(wk, startDate, endDate) * 2) " +
+                " - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
+                " - CASE WHEN DAY_OF_WEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference " +
+                "FROM project WHERE projectID = ?;";
         Connection connection = ConnectionManager.getConnection(url, user, password);
         int lengthOfSubProject = 0;
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {

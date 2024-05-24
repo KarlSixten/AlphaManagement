@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import org.example.alphamanagement.model.Emp;  // Ensure you import your Emp model
+import org.example.alphamanagement.model.Emp;
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;

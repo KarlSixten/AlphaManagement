@@ -224,12 +224,6 @@ class AlphaRepositoryTest {
 
     }
 
-    @Test
-    void findTaskByProjectID() {
-        String actual = alphaRepository.findTaskByProjectID(4).getTaskName();
-        String expected = "TASK 1";
-        assertEquals(actual, expected);
-    }
 
 
     @Test
