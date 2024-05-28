@@ -14,6 +14,8 @@ import java.util.*;
 
 @Repository
 public class AlphaRepository {
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
     @Value("${spring.datasource.url}")
     private String url;
     @Value("${spring.datasource.username}")
@@ -824,11 +826,17 @@ public class AlphaRepository {
     }
 
     public int getLengthOfSubProject(int subProjectID) {
-        String SQL = "SELECT DATEDIFF(dd, startDate, endDate)" +
-                " - (DATEDIFF(wk, startDate, endDate) * 2) " +
-                " - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
-                " - CASE WHEN DAY_OF_WEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference " +
-                "FROM project WHERE projectID = ?;";
+        String SQL;
+        if ("dev".equals(activeProfile)) {
+            SQL = "SELECT DATEDIFF(dd, startDate, endDate)" +
+                    " - (DATEDIFF(wk, startDate, endDate) * 2) " +
+                    " - CASE WHEN DAY_OF_WEEK(startDate) = 1 THEN 1 ELSE 0 END" +
+                    " - CASE WHEN DAY_OF_WEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference " +
+                    "FROM project WHERE projectID = ?;";
+        } else {
+            SQL = "SELECT DATEDIFF(endDate, startDate) - (FLOOR(DATEDIFF(endDate, startDate) / 7) * 2) - CASE WHEN DAYOFWEEK(startDate) = 1 THEN 1 ELSE 0 END - CASE WHEN DAYOFWEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
+        }
+
         Connection connection = ConnectionManager.getConnection(url, user, password);
         int lengthOfSubProject = 0;
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
