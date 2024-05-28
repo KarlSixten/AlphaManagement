@@ -834,7 +834,11 @@ public class AlphaRepository {
                     " - CASE WHEN DAY_OF_WEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference " +
                     "FROM project WHERE projectID = ?;";
         } else {
-            SQL = "SELECT DATEDIFF(endDate, startDate) - (FLOOR(DATEDIFF(endDate, startDate) / 7) * 2) - CASE WHEN DAYOFWEEK(startDate) = 1 THEN 1 ELSE 0 END - CASE WHEN DAYOFWEEK(endDate) = 7 THEN 1 ELSE 0 END AS dateDifference FROM project WHERE projectID = ?;";
+            SQL = "SELECT DATEDIFF(endDate, startDate)" +
+                    " - (FLOOR(DATEDIFF(endDate, startDate) / 7) * 2)" +
+                    " - CASE WHEN DAYOFWEEK(startDate) = 1 THEN 1 ELSE 0 END" +
+                    " - CASE WHEN DAYOFWEEK(endDate) = 7 THEN 1 ELSE 0 END AS" +
+                    " dateDifference FROM project WHERE projectID = ?;";
         }
 
         Connection connection = ConnectionManager.getConnection(url, user, password);
